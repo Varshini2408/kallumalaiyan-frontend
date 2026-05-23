@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 
-const API = ' https://setback-product-cubical.ngrok-free.dev'
+const API = 'https://kallumalaiyan-backend.onrender.com'
 
 export default function Shop() {
   const [products, setProducts] = useState([])
@@ -265,3 +265,4 @@ export default function Shop() {
     </div>
   )
 }
+

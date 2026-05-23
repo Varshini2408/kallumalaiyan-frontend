@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { useCart } from '../context/CartContext'
 
-const API = ' https://setback-product-cubical.ngrok-free.dev'
+const API = 'https://kallumalaiyan-backend.onrender.com'
 const colors = ['Black and White', 'Color']
 const sizes = ['A4', 'A3']
 const sizePrices = { 'A4': 60, 'A3': 80 }
@@ -295,3 +295,4 @@ export default function ProductDetail() {
     </div>
   )
 }
+

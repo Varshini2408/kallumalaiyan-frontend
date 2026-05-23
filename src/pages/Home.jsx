@@ -11,7 +11,7 @@ import bannerTop from '../assets/banner-top.jpg'
 import bannerPromo from '../assets/banner-promo.jpg'
 import { useState, useEffect, useRef } from 'react'
 
-const API = ' https://setback-product-cubical.ngrok-free.dev'
+const API = 'https://kallumalaiyan-backend.onrender.com'
 const slides = [slide1, slide2, slide3, slide4, slide5]
 const staticImages = {
   'Lord Murugan': lordMuruga,
@@ -522,3 +522,4 @@ const navArrow = (side) => ({
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
 })
+

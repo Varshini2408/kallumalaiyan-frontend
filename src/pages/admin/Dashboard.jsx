@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-const API = ' https://setback-product-cubical.ngrok-free.dev'
+const API = 'https://kallumalaiyan-backend.onrender.com'
 
 const DEFAULT_CATEGORIES = ['Lord Murugan', 'Lord Shiva', 'Lord Sai Baba']
 
@@ -791,5 +791,6 @@ const inputStyle = {
   borderRadius: '4px', fontSize: '13px', fontFamily: 'inherit',
   outline: 'none', boxSizing: 'border-box'
 }
+
 
 
