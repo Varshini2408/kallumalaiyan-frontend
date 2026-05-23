@@ -249,3 +249,4 @@ const inputStyle = {
   borderRadius: '4px', fontSize: '13px', fontFamily: 'inherit',
   outline: 'none', boxSizing: 'border-box'
 }
+
