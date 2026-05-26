@@ -95,7 +95,7 @@ export default function Home() {
           fontSize: "13px", color: "#555",
           lineHeight: "1.7", marginBottom: "20px"
         }}>
-          Sacred devotional artwork — digitally sketched portraits of Hindu deities
+          Sacred devotional artwork - digitally sketched portraits of Hindu deities
           and lord names in artistic calligraphy, crafted with soul and devotion.
         </p>
       </div>
