@@ -116,6 +116,12 @@ export default function Shop() {
 
   const getCatName = (cat) => typeof cat === "string" ? cat : cat.name
 
+  const getProductImg = (product) =>
+    (product.imagesBW && product.imagesBW.length > 0 ? product.imagesBW[0] : null) ||
+    product.imageBW ||
+    (product.images && product.images.length > 0 ? product.images[0] : null) ||
+    product.image || null
+
   const sortProducts = (list) => {
     const sorted = [...list]
     switch (sortBy) {
@@ -139,12 +145,11 @@ export default function Shop() {
     <div style={{ background: "white", minHeight: "100vh" }}>
       <Navbar />
 
-      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 24px 0" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "24px 24px 0" }}>
 
-        {/* Header */}
-        <div style={{ marginBottom: "20px" }}>
+        <div style={{ marginBottom: "16px" }}>
           <h1 style={{
-            fontSize: "clamp(20px, 3vw, 28px)", fontWeight: "700",
+            fontSize: "clamp(18px, 3vw, 28px)", fontWeight: "700",
             color: "#1A1714", marginBottom: "8px"
           }}>
             {selected === "All" ? "Sketch Art" : selected}
@@ -155,18 +160,14 @@ export default function Shop() {
         </div>
 
         {/* Sort button */}
-        <div style={{
-          display: "flex", justifyContent: "flex-end",
-          marginBottom: "20px"
-        }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
           <button
             onClick={() => setShowSort(true)}
             style={{
               display: "flex", alignItems: "center", gap: "6px",
               background: "none", border: "1px solid #E8E2D9",
               borderRadius: "6px", cursor: "pointer",
-              fontSize: "13px", color: "#1A1714",
-              padding: "8px 14px"
+              fontSize: "13px", color: "#1A1714", padding: "8px 14px"
             }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -179,7 +180,7 @@ export default function Shop() {
           </button>
         </div>
 
-        {/* Products Grid */}
+        {/* Products */}
         {loading ? (
           <p style={{ textAlign: "center", padding: "60px", color: "#888" }}>Loading...</p>
         ) : paginated.length === 0 ? (
@@ -192,25 +193,17 @@ export default function Shop() {
           </div>
         ) : (
           <>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              gap: "16px"
-            }}>
+            <div className="product-grid">
               {paginated.map(product => {
-                const img = product.imageBW || (product.images && product.images.length > 0
-                  ? product.images[0] : product.image)
+                const img = getProductImg(product)
                 return (
                   <div
                     key={product._id}
                     onClick={() => navigate("/product/" + product._id)}
                     style={{
                       border: "1px solid #E8E2D9", borderRadius: "8px",
-                      overflow: "hidden", background: "white",
-                      cursor: "pointer", transition: "transform 0.2s"
+                      overflow: "hidden", background: "white", cursor: "pointer"
                     }}
-                    onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                    onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
                   >
                     <div style={{ aspectRatio: "3/4", overflow: "hidden", background: "#F5F5F5" }}>
                       {img ? (
@@ -220,11 +213,12 @@ export default function Shop() {
                       ) : (
                         <div style={{
                           width: "100%", height: "100%", display: "flex",
-                          alignItems: "center", justifyContent: "center", fontSize: "48px"
-                        }}>🎨</div>
+                          alignItems: "center", justifyContent: "center",
+                          fontSize: "13px", color: "#ccc"
+                        }}>No Image</div>
                       )}
                     </div>
-                    <div style={{ padding: "12px", textAlign: "center" }}>
+                    <div style={{ padding: "10px 12px", textAlign: "center" }}>
                       {product.isHotSelling && (
                         <span style={{
                           background: "#FEE2E2", color: "#DC2626", fontSize: "9px",
@@ -239,12 +233,10 @@ export default function Shop() {
                           display: "inline-block", marginBottom: "4px", marginLeft: "4px"
                         }}>NEW</span>
                       )}
-                      <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "2px" }}>
+                      <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>
                         {product.name}
                       </p>
-                      <p style={{ fontSize: "12px", color: "#666" }}>
-                        From RM 45
-                      </p>
+                      <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
                     </div>
                   </div>
                 )
@@ -262,16 +254,13 @@ export default function Shop() {
                     key={p}
                     onClick={() => { setPage(p); window.scrollTo(0, 0) }}
                     style={{
-                      background: "none", border: "none",
-                      cursor: "pointer", fontSize: "14px",
-                      fontWeight: page === p ? "700" : "400",
+                      background: "none", border: "none", cursor: "pointer",
+                      fontSize: "14px", fontWeight: page === p ? "700" : "400",
                       color: "#1A1714",
                       borderBottom: page === p ? "2px solid #1A1714" : "none",
                       paddingBottom: "2px"
                     }}
-                  >
-                    {p}
-                  </button>
+                  >{p}</button>
                 ))}
               </div>
             )}
@@ -281,17 +270,13 @@ export default function Shop() {
         {/* Other Collections */}
         {selected !== "All" && categories.length > 0 && (
           <div style={{ marginTop: "40px" }}>
-            <div style={{ background: "#F0F0F0", padding: "14px 0", marginBottom: "24px" }}>
+            <div style={{ background: "#F0F0F0", padding: "14px 0", marginBottom: "20px" }}>
               <h2 style={{
                 fontSize: "16px", fontWeight: "700",
                 color: "#1A1714", margin: 0, textAlign: "center"
               }}>Other Collections</h2>
             </div>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              gap: "16px"
-            }}>
+            <div className="product-grid">
               {categories
                 .filter(c => getCatName(c) !== selected)
                 .slice(0, 4)
@@ -299,26 +284,15 @@ export default function Shop() {
                   const name = getCatName(cat)
                   const img = typeof cat === "object" ? cat.image : null
                   const catProducts = products.filter(p => p.category === name)
-                  const firstImg = img || (catProducts[0] && (
-                    catProducts[0].imageBW ||
-                    catProducts[0].images?.[0] ||
-                    catProducts[0].image
-                  ))
+                  const firstImg = img || (catProducts[0] && getProductImg(catProducts[0]))
                   return (
                     <div
                       key={name}
-                      onClick={() => {
-                        setSelected(name)
-                        setPage(1)
-                        window.scrollTo(0, 0)
-                      }}
+                      onClick={() => { setSelected(name); setPage(1); window.scrollTo(0, 0) }}
                       style={{
                         border: "1px solid #E8E2D9", borderRadius: "8px",
-                        overflow: "hidden", cursor: "pointer",
-                        transition: "transform 0.2s"
+                        overflow: "hidden", cursor: "pointer"
                       }}
-                      onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                      onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
                     >
                       <div style={{ aspectRatio: "3/4", overflow: "hidden", background: "#F5F5F5" }}>
                         {firstImg ? (
@@ -328,15 +302,14 @@ export default function Shop() {
                         ) : (
                           <div style={{
                             width: "100%", height: "100%", display: "flex",
-                            alignItems: "center", justifyContent: "center", fontSize: "40px"
-                          }}>🕉️</div>
+                            alignItems: "center", justifyContent: "center",
+                            fontSize: "13px", color: "#ccc"
+                          }}>No Image</div>
                         )}
                       </div>
                       <div style={{ padding: "10px 12px", textAlign: "center" }}>
                         <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
-                        <p style={{ fontSize: "12px", color: "#666" }}>
-                            From RM 45
-                        </p>
+                        <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
                       </div>
                     </div>
                   )
@@ -379,9 +352,8 @@ export default function Shop() {
 
             <div style={{ marginBottom: "16px" }}>
               <label style={{
-                fontSize: "12px", color: "#888",
-                marginBottom: "6px", display: "block",
-                textTransform: "uppercase", letterSpacing: "0.08em"
+                fontSize: "12px", color: "#888", marginBottom: "6px",
+                display: "block", textTransform: "uppercase", letterSpacing: "0.08em"
               }}>Order</label>
               <select
                 value={sortBy}
@@ -401,9 +373,8 @@ export default function Shop() {
 
             <div style={{ marginBottom: "20px" }}>
               <label style={{
-                fontSize: "12px", color: "#888",
-                marginBottom: "6px", display: "block",
-                textTransform: "uppercase", letterSpacing: "0.08em"
+                fontSize: "12px", color: "#888", marginBottom: "6px",
+                display: "block", textTransform: "uppercase", letterSpacing: "0.08em"
               }}>Sketch Art Category</label>
               <select
                 value={selected}
@@ -428,8 +399,7 @@ export default function Shop() {
                 width: "100%", padding: "12px",
                 background: "#1A1714", color: "white",
                 border: "none", borderRadius: "6px",
-                fontSize: "14px", cursor: "pointer",
-                fontFamily: "inherit"
+                fontSize: "14px", cursor: "pointer", fontFamily: "inherit"
               }}
             >
               Done

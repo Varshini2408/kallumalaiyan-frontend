@@ -70,30 +70,30 @@ function Footer() {
 function SectionHeader({ title }) {
   return (
     <div style={{
-      background: "#F0F0F0", padding: "14px 24px", marginBottom: "24px"
+      background: "#F0F0F0", padding: "14px 24px", marginBottom: "20px"
     }}>
       <h2 style={{
         fontSize: "16px", fontWeight: "700",
-        color: "#1A1714", margin: 0, textAlign: "center",
-        letterSpacing: "0.02em"
+        color: "#1A1714", margin: 0, textAlign: "center"
       }}>{title}</h2>
     </div>
   )
 }
 
 function ProductCard({ product, onClick }) {
-  const img = product.imageBW || (product.images && product.images.length > 0
-    ? product.images[0] : product.image)
+  const img =
+    (product.imagesBW && product.imagesBW.length > 0 ? product.imagesBW[0] : null) ||
+    product.imageBW ||
+    (product.images && product.images.length > 0 ? product.images[0] : null) ||
+    product.image || null
+
   return (
     <div
       onClick={() => onClick(product._id)}
       style={{
         border: "1px solid #E8E2D9", borderRadius: "8px",
-        overflow: "hidden", background: "white",
-        cursor: "pointer", transition: "transform 0.2s",
+        overflow: "hidden", background: "white", cursor: "pointer"
       }}
-      onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-      onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
     >
       <div style={{ aspectRatio: "3/4", overflow: "hidden", background: "#F5F5F5" }}>
         {img ? (
@@ -103,11 +103,12 @@ function ProductCard({ product, onClick }) {
         ) : (
           <div style={{
             width: "100%", height: "100%", display: "flex",
-            alignItems: "center", justifyContent: "center", fontSize: "48px"
-          }}>🎨</div>
+            alignItems: "center", justifyContent: "center",
+            fontSize: "13px", color: "#ccc"
+          }}>No Image</div>
         )}
       </div>
-      <div style={{ padding: "12px", textAlign: "center" }}>
+      <div style={{ padding: "10px 12px", textAlign: "center" }}>
         {product.isHotSelling && (
           <span style={{
             background: "#FEE2E2", color: "#DC2626", fontSize: "9px",
@@ -158,16 +159,15 @@ export default function Home() {
 
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
-        {/* Hero Intro */}
-        <div style={{ padding: "32px 24px 24px" }}>
+        <div style={{ padding: "24px 24px 16px" }}>
           <h1 style={{
-            fontSize: "clamp(20px, 3vw, 32px)", fontWeight: "700",
-            color: "#1A1714", marginBottom: "12px"
+            fontSize: "clamp(18px, 3vw, 28px)", fontWeight: "700",
+            color: "#1A1714", marginBottom: "10px"
           }}>
             Sketch Art
           </h1>
           <p style={{
-            fontSize: "14px", color: "#555",
+            fontSize: "13px", color: "#555",
             lineHeight: "1.8", maxWidth: "600px"
           }}>
             Sacred devotional artwork - digitally sketched portraits of Hindu deities
@@ -175,14 +175,10 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Categories Section */}
+        {/* Categories */}
         <SectionHeader title="Sketch Art Categories" />
         <div style={{ padding: "0 24px 8px" }}>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: "16px", marginBottom: "16px"
-          }}>
+          <div className="category-grid" style={{ marginBottom: "12px" }}>
             {categories.slice(0, 6).map(cat => {
               const name = typeof cat === "string" ? cat : cat.name
               const img = typeof cat === "object" ? cat.image : null
@@ -192,11 +188,8 @@ export default function Home() {
                   onClick={() => navigate("/shop?category=" + encodeURIComponent(name))}
                   style={{
                     border: "1px solid #E8E2D9", borderRadius: "8px",
-                    overflow: "hidden", cursor: "pointer",
-                    position: "relative", transition: "transform 0.2s"
+                    overflow: "hidden", cursor: "pointer", position: "relative"
                   }}
-                  onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                  onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
                 >
                   <div style={{ aspectRatio: "3/4", overflow: "hidden", background: "#F5F5F5" }}>
                     {img ? (
@@ -206,8 +199,9 @@ export default function Home() {
                     ) : (
                       <div style={{
                         width: "100%", height: "100%", display: "flex",
-                        alignItems: "center", justifyContent: "center", fontSize: "48px"
-                      }}>🕉️</div>
+                        alignItems: "center", justifyContent: "center",
+                        fontSize: "13px", color: "#ccc"
+                      }}>No Image</div>
                     )}
                   </div>
                   <div style={{
@@ -224,9 +218,9 @@ export default function Home() {
           </div>
           {categories.length > 6 && (
             <div style={{ textAlign: "right", marginBottom: "8px" }}>
-              <a href="/shop" style={{
-                fontSize: "12px", color: "#1A1714", textDecoration: "underline"
-              }}>View All Categories</a>
+              <a href="/shop" style={{ fontSize: "12px", color: "#1A1714", textDecoration: "underline" }}>
+                View All Categories
+              </a>
             </div>
           )}
         </div>
@@ -236,11 +230,7 @@ export default function Home() {
           <div style={{ marginTop: "32px" }}>
             <SectionHeader title="Best Seller" />
             <div style={{ padding: "0 24px" }}>
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                gap: "16px"
-              }}>
+              <div className="product-grid">
                 {hotSelling.map(p => (
                   <ProductCard key={p._id} product={p}
                     onClick={id => navigate("/product/" + id)} />
@@ -255,11 +245,7 @@ export default function Home() {
           <div style={{ marginTop: "32px" }}>
             <SectionHeader title="New Collection" />
             <div style={{ padding: "0 24px" }}>
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                gap: "16px"
-              }}>
+              <div className="product-grid">
                 {newArrivals.map(p => (
                   <ProductCard key={p._id} product={p}
                     onClick={id => navigate("/product/" + id)} />
