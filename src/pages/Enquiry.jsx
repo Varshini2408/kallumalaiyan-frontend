@@ -58,8 +58,8 @@ export default function Enquiry() {
             </h2>
 
             {[
-              { icon: "📧", label: "Email", value: "your@email.com" },
-              { icon: "📱", label: "Phone", value: "+60 XX-XXXX XXXX" },
+              { icon: "📧", label: "Email", value: "kallumalaiyansketchart@gmail.com" },
+              { icon: "📱", label: "Phone", value: "+60 19-407 9787" },
               { icon: "📍", label: "Location", value: "Malaysia" },
               { icon: "🕐", label: "Response Time", value: "Within 24 hours" },
             ].map(item => (
