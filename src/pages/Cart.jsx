@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useCart } from "../context/CartContext"
 
+const { cartItems, removeFromCart, updateQty, total } = useCart()
+
 function Footer() {
   return (
     <footer style={{
@@ -175,21 +177,25 @@ export default function Cart() {
                         display: "flex", alignItems: "center",
                         border: "1px solid #E8E2D9", borderRadius: "6px"
                       }}>
-                        <button style={{
-                          background: "none", border: "none",
-                          cursor: "pointer", padding: "6px 14px",
-                          fontSize: "16px", color: "#1A1714"
-                        }}>-</button>
-                        <span style={{
-                          padding: "6px 14px", fontSize: "13px",
-                          borderLeft: "1px solid #E8E2D9",
-                          borderRight: "1px solid #E8E2D9"
-                        }}>{item.qty}</span>
-                        <button style={{
-                          background: "none", border: "none",
-                          cursor: "pointer", padding: "6px 14px",
-                          fontSize: "16px", color: "#1A1714"
-                        }}>+</button>
+                        <button
+  onClick={() => updateQty(item.key, item.qty - 1)}
+  style={{
+    background: "none", border: "none",
+    cursor: "pointer", padding: "6px 14px",
+    fontSize: "16px", color: "#1A1714"
+  }}>-</button>
+<span style={{
+  padding: "6px 14px", fontSize: "13px",
+  borderLeft: "1px solid #E8E2D9",
+  borderRight: "1px solid #E8E2D9"
+}}>{item.qty}</span>
+<button
+  onClick={() => updateQty(item.key, item.qty + 1)}
+  style={{
+    background: "none", border: "none",
+    cursor: "pointer", padding: "6px 14px",
+    fontSize: "16px", color: "#1A1714"
+  }}>+</button>
                       </div>
                       <button
                         onClick={() => removeFromCart(item.key)}

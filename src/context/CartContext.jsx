@@ -7,13 +7,18 @@ export function CartProvider({ children }) {
 
   const addToCart = (product, variant, qty) => {
     setCartItems(prev => {
-      const key = `${product.id}-${variant.color}-${variant.size}`
+      const key = `${product._id}-${variant.color}-${variant.size}`
       const exists = prev.find(i => i.key === key)
       if (exists) {
         return prev.map(i => i.key === key ? { ...i, qty: i.qty + qty } : i)
       }
       return [...prev, { key, product, variant, qty }]
     })
+  }
+
+  const updateQty = (key, newQty) => {
+    if (newQty < 1) return
+    setCartItems(prev => prev.map(i => i.key === key ? { ...i, qty: newQty } : i))
   }
 
   const removeFromCart = (key) => {
@@ -31,6 +36,7 @@ export function CartProvider({ children }) {
       cartItems,
       setCartItems,
       addToCart,
+      updateQty,
       removeFromCart,
       clearCart,
       total
