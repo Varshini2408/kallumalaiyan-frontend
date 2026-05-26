@@ -243,7 +243,7 @@ export default function Shop() {
                         {product.name}
                       </p>
                       <p style={{ fontSize: "12px", color: "#666" }}>
-                        From RM {product.price}
+                        From RM 45
                       </p>
                     </div>
                   </div>
@@ -335,7 +335,7 @@ export default function Shop() {
                       <div style={{ padding: "10px 12px", textAlign: "center" }}>
                         <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
                         <p style={{ fontSize: "12px", color: "#666" }}>
-                          From RM {catProducts[0]?.price || 60}
+                            From RM 45
                         </p>
                       </div>
                     </div>

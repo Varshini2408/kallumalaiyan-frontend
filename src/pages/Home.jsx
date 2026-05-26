@@ -126,7 +126,7 @@ function ProductCard({ product, onClick }) {
           fontSize: "14px", fontWeight: "700",
           color: "#1A1714", marginBottom: "2px"
         }}>{product.name}</p>
-        <p style={{ fontSize: "12px", color: "#666" }}>From RM {product.price}</p>
+        <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
       </div>
     </div>
   )
