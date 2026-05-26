@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useCart } from "../context/CartContext"
+import Footer from "../components/Footer"
 
 const API = "https://kallumalaiyan-backend.onrender.com"
 
@@ -12,60 +13,7 @@ const sizes = [
   { label: "A4 (8.3 x 11.1 Inc)", value: "A4", price: 60 },
   { label: "A3 (11.7 x 16.5 Inc)", value: "A3", price: 80 },
 ]
-function Footer() {
-  return (
-    <footer style={{
-      background: "white", borderTop: "1px solid #E8E2D9",
-      padding: "32px 20px 20px"
-    }}>
-      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-          gap: "24px", marginBottom: "20px"
-        }}>
-          <div>
-            <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Quick Link</p>
-            {[
-              { label: "Home", href: "/" },
-              { label: "Shop", href: "/shop" },
-              { label: "About", href: "/about" },
-              { label: "Enquiry", href: "/enquiry" },
-            ].map(l => (
-              <a key={l.label} href={l.href} style={{
-                display: "block", fontSize: "13px", color: "#555",
-                textDecoration: "none", marginBottom: "6px"
-              }}>{l.label}</a>
-            ))}
-          </div>
-          <div>
-            <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Contacts</p>
-            <p style={{ fontSize: "13px", color: "#555", marginBottom: "4px" }}>your@email.com</p>
-            <p style={{ fontSize: "13px", color: "#555", marginBottom: "4px" }}>+60 XX-XXXX XXXX</p>
-            <p style={{ fontSize: "13px", color: "#555" }}>Malaysia</p>
-          </div>
-          <div>
-            <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Follow Us</p>
-            {["Instagram", "Facebook", "WhatsApp", "TikTok"].map(s => (
-              <a key={s} href="#" style={{
-                display: "block", fontSize: "13px", color: "#555",
-                textDecoration: "none", marginBottom: "6px"
-              }}>{s}</a>
-            ))}
-          </div>
-        </div>
-        <div style={{ borderTop: "1px solid #E8E2D9", paddingTop: "16px" }}>
-          <p style={{ fontSize: "12px", color: "#888", textAlign: "center", marginBottom: "4px" }}>
-            @Kallumalaiyan Sketch Art. All right reserved.
-          </p>
-          <p style={{ fontSize: "11px", color: "#aaa", textAlign: "center" }}>
-            Powered by TechMentor Solutions
-          </p>
-        </div>
-      </div>
-    </footer>
-  )
-}
+
 
 export default function ProductDetail() {
   const { id } = useParams()

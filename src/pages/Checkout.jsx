@@ -2,28 +2,11 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useCart } from "../context/CartContext"
+import Footer from "../components/Footer"
 
 const API = "https://kallumalaiyan-backend.onrender.com"
 
-function Footer() {
-  return (
-    <footer style={{
-      background: "white", borderTop: "1px solid #E8E2D9",
-      padding: "48px 24px 24px", marginTop: "48px"
-    }}>
-      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        <div style={{ borderTop: "1px solid #E8E2D9", paddingTop: "20px", textAlign: "center" }}>
-          <p style={{ fontSize: "12px", color: "#888", marginBottom: "4px" }}>
-            @Kallumalaiyan Sketch Art. All right reserved.
-          </p>
-          <p style={{ fontSize: "11px", color: "#aaa" }}>
-            Powered by TechMentor Solutions
-          </p>
-        </div>
-      </div>
-    </footer>
-  )
-}
+
 
 export default function Checkout() {
   const { cartItems, total, clearCart } = useCart()
