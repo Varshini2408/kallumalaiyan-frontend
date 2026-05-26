@@ -207,9 +207,11 @@ export default function Checkout() {
             ) : (
               <>
                 {cartItems.map(item => {
-                  const img = item.product.imageBW ||
-                    (item.product.images && item.product.images.length > 0
-                      ? item.product.images[0] : item.product.image)
+                  const img = item.variant.color === "Color"
+  ? (item.product.imagesColor?.[0] || item.product.imageColor ||
+     item.product.imageBW || item.product.image)
+  : (item.product.imagesBW?.[0] || item.product.imageBW ||
+     item.product.images?.[0] || item.product.image)
                   return (
                     <div key={item.key} style={{
                       display: "flex", gap: "12px",
