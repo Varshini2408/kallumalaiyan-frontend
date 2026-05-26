@@ -177,7 +177,7 @@ export default function Navbar() {
           }}>
             Bio
           </a>
-          <a href="/shop" onClick={() => setMenuOpen(false)} style={{
+          <a href="/categories" onClick={() => setMenuOpen(false)} style={{
             display: "block", padding: "18px 20px",
             fontSize: "15px", fontWeight: "600",
             color: "#1A1714", textDecoration: "none",
