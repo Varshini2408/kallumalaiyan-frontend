@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+ï»¿import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
 const API = "https://kallumalaiyan-backend.onrender.com"
@@ -394,7 +394,7 @@ export default function Dashboard() {
                         <td style={tdStyle}>
                           {order.items.map((item, i) => (
                             <p key={i} style={{ fontSize: "11px", color: "#3D3830", marginBottom: "2px" }}>
-                              {item.name} · {item.color} · {item.size} x{item.qty}
+                              {item.name} - {item.color} - {item.size} x{item.qty}
                             </p>
                           ))}
                         </td>
@@ -632,7 +632,7 @@ export default function Dashboard() {
                         <img src={getProductImage(product)} alt={product.name}
                           style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                       ) : (
-                        <span style={{ fontSize: "36px" }}>??</span>
+                        <span style={{ fontSize: "36px", color: "#ccc" }}>No Image</span>
                       )}
                       <div style={{ position: "absolute", top: "6px", right: "6px", display: "flex", gap: "4px" }}>
                         {product.isHotSelling && (
@@ -780,8 +780,9 @@ export default function Dashboard() {
                         <div style={{
                           width: "40px", height: "40px", borderRadius: "6px",
                           background: "#EDE8E0", display: "flex",
-                          alignItems: "center", justifyContent: "center", fontSize: "18px"
-                        }}>??</div>
+                          alignItems: "center", justifyContent: "center",
+                          fontSize: "12px", color: "#8B7355"
+                        }}>IMG</div>
                       )}
                       <span style={{ fontSize: "14px", fontWeight: "500" }}>{name}</span>
                     </div>
