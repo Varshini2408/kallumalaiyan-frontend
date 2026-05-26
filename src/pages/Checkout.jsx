@@ -263,7 +263,7 @@ export default function Checkout() {
                       fontSize: "14px", fontFamily: "inherit", fontWeight: "500"
                     }}
                   >
-                    {loading ? "Processing..." : "Pay with ToyyibPay — RM " + total + ".00"}
+                    {loading ? "Processing..." : "Pay RM " + total + ".00"}
                   </button>
 
                   <p style={{
