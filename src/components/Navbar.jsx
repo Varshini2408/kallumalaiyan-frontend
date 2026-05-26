@@ -115,74 +115,87 @@ export default function Navbar() {
               background: "#1A1714", color: "white", border: "none",
               padding: "10px 20px", borderRadius: "4px",
               cursor: "pointer", fontSize: "13px"
-            }}>Search</button>
+            }}>
+              Search
+            </button>
             <button type="button" onClick={() => setSearchOpen(false)} style={{
               background: "none", border: "1px solid #E8E2D9",
               padding: "10px 14px", borderRadius: "4px",
               cursor: "pointer", fontSize: "13px"
-            }}>?</button>
+            }}>
+              X
+            </button>
           </form>
         </div>
       )}
 
-      {/* Side Menu */}
+      {/* Side Menu Overlay */}
       {menuOpen && (
-        <>
-          <div
-            onClick={() => setMenuOpen(false)}
-            style={{
-              position: "fixed", top: 0, left: 0,
-              width: "100vw", height: "100vh",
-              background: "rgba(0,0,0,0.3)", zIndex: 200
-            }}
-          />
-          <div style={{
+        <div
+          onClick={() => setMenuOpen(false)}
+          style={{
             position: "fixed", top: 0, left: 0,
-            width: "280px", height: "100vh",
-            background: "white", zIndex: 201,
-            padding: "0", overflowY: "auto",
-            boxShadow: "4px 0 20px rgba(0,0,0,0.1)"
-          }}>
-            {/* Menu Header */}
-            <div style={{
-              display: "flex", justifyContent: "space-between",
-              alignItems: "center", padding: "16px 20px",
-              borderBottom: "1px solid #E8E2D9"
-            }}>
-              <img src={logo} alt="Logo" style={{
-                width: "44px", height: "44px",
-                objectFit: "contain", borderRadius: "50%",
-                border: "1px solid #E8E2D9"
-              }} />
-              <button onClick={() => setMenuOpen(false)} style={{
-                background: "none", border: "none",
-                cursor: "pointer", fontSize: "20px", color: "#1A1714"
-              }}>?</button>
-            </div>
+            width: "100vw", height: "100vh",
+            background: "rgba(0,0,0,0.3)", zIndex: 200
+          }}
+        />
+      )}
 
-            {/* Menu Items */}
-            {[
-              { label: "Bio", href: "/about" },
-              { label: "Art Categories", href: "/shop" },
-              { label: "Enquiry", href: "/enquiry" },
-            ].map((item, i) => (
-              
-                key={item.label}
-                href={item.href}
-                onClick={() => setMenuOpen(false)}
-                style={{
-                  display: "block", padding: "18px 20px",
-                  fontSize: "15px", fontWeight: "600",
-                  color: "#1A1714", textDecoration: "none",
-                  borderBottom: "1px solid #F0EDE8",
-                  background: i === 0 ? "#F5F5F5" : "white"
-                }}
-              >
-                {item.label}
-              </a>
-            ))}
+      {/* Side Menu Panel */}
+      {menuOpen && (
+        <div style={{
+          position: "fixed", top: 0, left: 0,
+          width: "280px", height: "100vh",
+          background: "white", zIndex: 201,
+          overflowY: "auto",
+          boxShadow: "4px 0 20px rgba(0,0,0,0.1)"
+        }}>
+          <div style={{
+            display: "flex", justifyContent: "space-between",
+            alignItems: "center", padding: "16px 20px",
+            borderBottom: "1px solid #E8E2D9"
+          }}>
+            <img src={logo} alt="Logo" style={{
+              width: "44px", height: "44px",
+              objectFit: "contain", borderRadius: "50%",
+              border: "1px solid #E8E2D9"
+            }} />
+            <button onClick={() => setMenuOpen(false)} style={{
+              background: "none", border: "none",
+              cursor: "pointer", fontSize: "20px", color: "#1A1714"
+            }}>
+              X
+            </button>
           </div>
-        </>
+
+          <a href="/about" onClick={() => setMenuOpen(false)} style={{
+            display: "block", padding: "18px 20px",
+            fontSize: "15px", fontWeight: "600",
+            color: "#1A1714", textDecoration: "none",
+            borderBottom: "1px solid #F0EDE8",
+            background: "#F5F5F5"
+          }}>
+            Bio
+          </a>
+          <a href="/shop" onClick={() => setMenuOpen(false)} style={{
+            display: "block", padding: "18px 20px",
+            fontSize: "15px", fontWeight: "600",
+            color: "#1A1714", textDecoration: "none",
+            borderBottom: "1px solid #F0EDE8",
+            background: "white"
+          }}>
+            Art Categories
+          </a>
+          <a href="/enquiry" onClick={() => setMenuOpen(false)} style={{
+            display: "block", padding: "18px 20px",
+            fontSize: "15px", fontWeight: "600",
+            color: "#1A1714", textDecoration: "none",
+            borderBottom: "1px solid #F0EDE8",
+            background: "white"
+          }}>
+            Enquiry
+          </a>
+        </div>
       )}
     </>
   )
