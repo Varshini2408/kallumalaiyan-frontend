@@ -3,27 +3,28 @@ import { Link } from 'react-router-dom'
 
 const API = 'https://kallumalaiyan-backend.onrender.com'
 
-const DEFAULT_CATEGORIES = ['Lord Murugan', 'Lord Shiva', 'Lord Sai Baba']
-
-const SIZE_PRICES = {
-  'A4': 60,
-  'A3': 80,
-}
-
 const emptyForm = {
   name: '',
   category: '',
   description: '',
   imageFiles: [],
+  imageBWFile: null,
+  imageBWPreview: null,
+  imageColorFile: null,
+  imageColorPreview: null,
   isHotSelling: false,
   isNewArrival: false,
   isRecommended: false,
 }
 
 export default function Dashboard() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [password, setPassword] = useState('')
+  const [loginError, setLoginError] = useState('')
   const [page, setPage] = useState('orders')
   const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
@@ -31,36 +32,40 @@ export default function Dashboard() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [previews, setPreviews] = useState([])
-  const [categories, setCategories] = useState(DEFAULT_CATEGORIES)
   const [showAddCategory, setShowAddCategory] = useState(false)
   const [newCategory, setNewCategory] = useState('')
   const [newCategoryImage, setNewCategoryImage] = useState(null)
   const [newCategoryPreview, setNewCategoryPreview] = useState(null)
 
   useEffect(() => {
-  fetchOrders()
-  fetchProducts()
-  fetchCategories()
-}, [])
+    const auth = sessionStorage.getItem('ksa-admin-auth')
+    if (auth === 'true') setIsLoggedIn(true)
+    fetchOrders()
+    fetchProducts()
+    fetchCategories()
+  }, [])
 
-const fetchCategories = async () => {
-  try {
-    const res = await fetch(API + '/api/categories')
-    const data = await res.json()
-    setCategories(data)
-  } catch (err) {
-    console.error('Categories error:', err)
+  const handleLogin = () => {
+    if (password === 'kallumalaiyan2024') {
+      sessionStorage.setItem('ksa-admin-auth', 'true')
+      setIsLoggedIn(true)
+      setLoginError('')
+    } else {
+      setLoginError('Wrong password! Try again.')
+    }
   }
-}
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('ksa-admin-auth')
+    setIsLoggedIn(false)
+  }
 
   const fetchOrders = async () => {
     try {
       const res = await fetch(API + '/api/orders')
       const data = await res.json()
       setOrders(data)
-    } catch (err) {
-      console.error(err)
-    }
+    } catch (err) { console.error(err) }
     setLoading(false)
   }
 
@@ -69,14 +74,20 @@ const fetchCategories = async () => {
       const res = await fetch(API + '/api/products')
       const data = await res.json()
       setProducts(data)
-    } catch (err) {
-      console.error(err)
-    }
+    } catch (err) { console.error(err) }
+  }
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch(API + '/api/categories')
+      const data = await res.json()
+      setCategories(Array.isArray(data) ? data : [])
+    } catch (err) { console.error(err) }
   }
 
   const handleFormChange = (e) => {
-  setForm({ ...form, [e.target.name]: e.target.value })
-}
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files)
@@ -85,46 +96,37 @@ const fetchCategories = async () => {
   }
 
   const handleAddCategory = async () => {
-  if (!newCategory.trim()) return
-  try {
-    const formData = new FormData()
-    formData.append('name', newCategory.trim())
-    if (newCategoryImage) {
-      formData.append('image', newCategoryImage)
-    }
-    const res = await fetch(API + '/api/categories', {
-      method: 'POST',
-      body: formData
-    })
-    const data = await res.json()
-    if (data.categories) {
-      setCategories(data.categories)
-      setMessage('Category added: ' + newCategory.trim())
-      setNewCategory('')
-      setNewCategoryImage(null)
-      setShowAddCategory(false)
-    } else {
-      setMessage('Error: ' + data.error)
-    }
-  } catch (err) {
-    setMessage('Error: ' + err.message)
+    if (!newCategory.trim()) return
+    try {
+      const formData = new FormData()
+      formData.append('name', newCategory.trim())
+      if (newCategoryImage) formData.append('image', newCategoryImage)
+      const res = await fetch(API + '/api/categories', { method: 'POST', body: formData })
+      const data = await res.json()
+      if (data.categories) {
+        setCategories(data.categories)
+        setMessage('Category added: ' + newCategory.trim())
+        setNewCategory('')
+        setNewCategoryImage(null)
+        setNewCategoryPreview(null)
+        setShowAddCategory(false)
+      } else {
+        setMessage('Error: ' + data.error)
+      }
+    } catch (err) { setMessage('Error: ' + err.message) }
   }
-}
 
-const handleDeleteCategory = async (cat) => {
-  try {
-    const res = await fetch(API + '/api/categories/' + encodeURIComponent(cat), {
-      method: 'DELETE'
-    })
-    const data = await res.json()
-    if (data.categories) {
-      setCategories(data.categories)
-      setMessage('Category removed: ' + cat)
-    }
-  } catch (err) {
-    setMessage('Error removing category')
+  const handleDeleteCategory = async (cat) => {
+    try {
+      const res = await fetch(API + '/api/categories/' + encodeURIComponent(cat), { method: 'DELETE' })
+      const data = await res.json()
+      if (data.categories) {
+        setCategories(data.categories)
+        setMessage('Category removed: ' + cat)
+      }
+    } catch (err) { setMessage('Error removing category') }
   }
-}
+
   const openAddForm = () => {
     setForm(emptyForm)
     setEditingProduct(null)
@@ -138,6 +140,10 @@ const handleDeleteCategory = async (cat) => {
       category: product.category,
       description: product.description || '',
       imageFiles: [],
+      imageBWFile: null,
+      imageBWPreview: null,
+      imageColorFile: null,
+      imageColorPreview: null,
       isHotSelling: product.isHotSelling || false,
       isNewArrival: product.isNewArrival || false,
       isRecommended: product.isRecommended || false,
@@ -166,12 +172,12 @@ const handleDeleteCategory = async (cat) => {
       const formData = new FormData()
       formData.append('name', form.name)
       formData.append('category', form.category)
-      formData.append('size', form.size)
-      formData.append('price', form.price)
       formData.append('description', form.description)
-      formData.append('isHotSelling',  String(form.isHotSelling))
-formData.append('isNewArrival',  String(form.isNewArrival))
-formData.append('isRecommended', String(form.isRecommended))
+      formData.append('isHotSelling', String(form.isHotSelling))
+      formData.append('isNewArrival', String(form.isNewArrival))
+      formData.append('isRecommended', String(form.isRecommended))
+      if (form.imageBWFile) formData.append('imageBW', form.imageBWFile)
+      if (form.imageColorFile) formData.append('imageColor', form.imageColorFile)
       if (form.imageFiles && form.imageFiles.length > 0) {
         form.imageFiles.forEach(file => formData.append('images', file))
       }
@@ -185,9 +191,7 @@ formData.append('isRecommended', String(form.isRecommended))
       } else {
         setMessage('Error: ' + data.error)
       }
-    } catch (err) {
-      setMessage('Error: ' + err.message)
-    }
+    } catch (err) { setMessage('Error: ' + err.message) }
     setSaving(false)
   }
 
@@ -198,9 +202,7 @@ formData.append('isRecommended', String(form.isRecommended))
       await fetch(API + '/api/products/' + productId, { method: 'DELETE' })
       setMessage('Product deleted!')
       fetchProducts()
-    } catch (err) {
-      setMessage('Error deleting product')
-    }
+    } catch (err) { setMessage('Error deleting product') }
   }
 
   const updateOrderStatus = async (orderId, newStatus) => {
@@ -212,14 +214,10 @@ formData.append('isRecommended', String(form.isRecommended))
       })
       const data = await res.json()
       if (data._id) {
-        setOrders(prev =>
-          prev.map(o => o._id === data._id ? { ...o, status: data.status } : o)
-        )
+        setOrders(prev => prev.map(o => o._id === data._id ? { ...o, status: data.status } : o))
         setMessage('Status updated to: ' + newStatus)
       }
-    } catch (err) {
-      setMessage('Error updating status')
-    }
+    } catch (err) { setMessage('Error updating status') }
   }
 
   const getStatusStyle = (status) => {
@@ -232,6 +230,64 @@ formData.append('isRecommended', String(form.isRecommended))
     }
   }
 
+  // LOGIN SCREEN
+  if (!isLoggedIn) {
+    return (
+      <div style={{
+        minHeight: '100vh', display: 'flex',
+        alignItems: 'center', justifyContent: 'center',
+        background: '#F5F3EF'
+      }}>
+        <div style={{
+          background: 'white', padding: '40px',
+          borderRadius: '12px', border: '1px solid #E8E2D9',
+          width: '100%', maxWidth: '380px',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.06)'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <p style={{ fontSize: '24px', fontWeight: '600', color: '#1A1714', marginBottom: '4px' }}>
+              KSA Admin
+            </p>
+            <p style={{ fontSize: '13px', color: '#8B7355' }}>
+              Kallumalaiyan SketchArt Dashboard
+            </p>
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={labelStyle}>Admin Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleLogin()}
+              placeholder="Enter your password"
+              style={inputStyle}
+            />
+          </div>
+          {loginError && (
+            <div style={{
+              background: '#FCEBEB', color: '#A32D2D',
+              padding: '10px 14px', borderRadius: '6px',
+              fontSize: '13px', marginBottom: '16px'
+            }}>
+              {loginError}
+            </div>
+          )}
+          <button onClick={handleLogin} style={{
+            width: '100%', padding: '12px',
+            background: '#1A1714', color: 'white',
+            border: 'none', borderRadius: '6px',
+            fontSize: '14px', cursor: 'pointer'
+          }}>
+            Login
+          </button>
+          <p style={{ textAlign: 'center', fontSize: '11px', color: '#8B7355', marginTop: '20px' }}>
+            Protected area - Kallumalaiyan SketchArt
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
 
@@ -239,7 +295,8 @@ formData.append('isRecommended', String(form.isRecommended))
       <div style={{
         width: '220px', background: '#1A1714',
         padding: '24px 16px', display: 'flex',
-        flexDirection: 'column', gap: '4px'
+        flexDirection: 'column', gap: '4px',
+        flexShrink: 0
       }}>
         <p style={{ color: '#C4A882', fontSize: '18px', fontWeight: '600', marginBottom: '4px' }}>
           KSA Admin
@@ -247,34 +304,32 @@ formData.append('isRecommended', String(form.isRecommended))
         <p style={{ color: '#8B7355', fontSize: '11px', letterSpacing: '0.1em', marginBottom: '24px' }}>
           DASHBOARD
         </p>
-        <button onClick={() => setPage('orders')} style={{
-          padding: '10px 14px',
-          background: page === 'orders' ? 'rgba(255,255,255,0.1)' : 'transparent',
-          color: '#FAF8F4', border: 'none', borderRadius: '6px',
-          cursor: 'pointer', fontSize: '13px', textAlign: 'left'
-        }}>
-          Orders
-        </button>
-        <button onClick={() => setPage('products')} style={{
-          padding: '10px 14px',
-          background: page === 'products' ? 'rgba(255,255,255,0.1)' : 'transparent',
-          color: '#FAF8F4', border: 'none', borderRadius: '6px',
-          cursor: 'pointer', fontSize: '13px', textAlign: 'left'
-        }}>
-          Products
-        </button>
-        <button onClick={() => setPage('categories')} style={{
-          padding: '10px 14px',
-          background: page === 'categories' ? 'rgba(255,255,255,0.1)' : 'transparent',
-          color: '#FAF8F4', border: 'none', borderRadius: '6px',
-          cursor: 'pointer', fontSize: '13px', textAlign: 'left'
-        }}>
-          Categories
-        </button>
-        <div style={{ marginTop: 'auto' }}>
+        {[
+          { id: 'orders', label: 'Orders' },
+          { id: 'products', label: 'Products' },
+          { id: 'categories', label: 'Categories' },
+        ].map(item => (
+          <button key={item.id} onClick={() => setPage(item.id)} style={{
+            padding: '10px 14px',
+            background: page === item.id ? 'rgba(255,255,255,0.1)' : 'transparent',
+            color: '#FAF8F4', border: 'none', borderRadius: '6px',
+            cursor: 'pointer', fontSize: '13px', textAlign: 'left'
+          }}>
+            {item.label}
+          </button>
+        ))}
+        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <Link to="/" style={{ color: '#8B7355', fontSize: '12px', textDecoration: 'none' }}>
-            ← Back to Site
+            Back to Site
           </Link>
+          <button onClick={handleLogout} style={{
+            padding: '8px 14px', background: 'transparent',
+            color: '#8B7355', border: '1px solid #3D3830',
+            borderRadius: '6px', cursor: 'pointer',
+            fontSize: '12px', textAlign: 'left'
+          }}>
+            Logout
+          </button>
         </div>
       </div>
 
@@ -287,14 +342,12 @@ formData.append('isRecommended', String(form.isRecommended))
             padding: '12px 16px', borderRadius: '6px', marginBottom: '16px',
             background: message.includes('Error') ? '#FCEBEB' : '#EAF3DE',
             color: message.includes('Error') ? '#A32D2D' : '#3B6D11',
-            fontSize: '13px', display: 'flex', justifyContent: 'space-between',
-            alignItems: 'center'
+            fontSize: '13px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
           }}>
             {message}
             <button onClick={() => setMessage('')} style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: '18px', lineHeight: 1
-            }}>×</button>
+              background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px'
+            }}>x</button>
           </div>
         )}
 
@@ -302,30 +355,23 @@ formData.append('isRecommended', String(form.isRecommended))
         {page === 'orders' && (
           <div>
             <h2 style={{ fontSize: '24px', fontWeight: '400', marginBottom: '24px' }}>Orders</h2>
-
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '24px' }}>
-              <div style={{ background: 'white', border: '1px solid #E8E2D9', borderRadius: '8px', padding: '16px' }}>
-                <p style={{ fontSize: '11px', color: '#8B7355', letterSpacing: '0.1em', marginBottom: '6px' }}>TOTAL ORDERS</p>
-                <p style={{ fontSize: '26px', fontWeight: '500' }}>{orders.length}</p>
-              </div>
-              <div style={{ background: 'white', border: '1px solid #E8E2D9', borderRadius: '8px', padding: '16px' }}>
-                <p style={{ fontSize: '11px', color: '#8B7355', letterSpacing: '0.1em', marginBottom: '6px' }}>REVENUE</p>
-                <p style={{ fontSize: '26px', fontWeight: '500' }}>
-                  RM {orders.reduce((sum, o) => sum + (o.total || 0), 0)}
-                </p>
-              </div>
-              <div style={{ background: 'white', border: '1px solid #E8E2D9', borderRadius: '8px', padding: '16px' }}>
-                <p style={{ fontSize: '11px', color: '#8B7355', letterSpacing: '0.1em', marginBottom: '6px' }}>PENDING</p>
-                <p style={{ fontSize: '26px', fontWeight: '500' }}>
-                  {orders.filter(o => o.status === 'pending').length}
-                </p>
-              </div>
-              <div style={{ background: 'white', border: '1px solid #E8E2D9', borderRadius: '8px', padding: '16px' }}>
-                <p style={{ fontSize: '11px', color: '#8B7355', letterSpacing: '0.1em', marginBottom: '6px' }}>DELIVERED</p>
-                <p style={{ fontSize: '26px', fontWeight: '500' }}>
-                  {orders.filter(o => o.status === 'delivered').length}
-                </p>
-              </div>
+              {[
+                { label: 'TOTAL ORDERS', value: orders.length },
+                { label: 'REVENUE', value: 'RM ' + orders.reduce((s, o) => s + (o.total || 0), 0) },
+                { label: 'PENDING', value: orders.filter(o => o.status === 'pending').length },
+                { label: 'DELIVERED', value: orders.filter(o => o.status === 'delivered').length },
+              ].map(stat => (
+                <div key={stat.label} style={{
+                  background: 'white', border: '1px solid #E8E2D9',
+                  borderRadius: '8px', padding: '16px'
+                }}>
+                  <p style={{ fontSize: '11px', color: '#8B7355', letterSpacing: '0.1em', marginBottom: '6px' }}>
+                    {stat.label}
+                  </p>
+                  <p style={{ fontSize: '26px', fontWeight: '500' }}>{stat.value}</p>
+                </div>
+              ))}
             </div>
 
             {loading ? (
@@ -337,13 +383,9 @@ formData.append('isRecommended', String(form.isRecommended))
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                   <thead>
                     <tr style={{ background: '#FAF8F4' }}>
-                      <th style={thStyle}>Customer</th>
-                      <th style={thStyle}>Phone</th>
-                      <th style={thStyle}>Address</th>
-                      <th style={thStyle}>Items</th>
-                      <th style={thStyle}>Total</th>
-                      <th style={thStyle}>Status</th>
-                      <th style={thStyle}>Date</th>
+                      {['Customer', 'Phone', 'Address', 'Items', 'Total', 'Status', 'Date'].map(h => (
+                        <th key={h} style={thStyle}>{h}</th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
@@ -364,7 +406,7 @@ formData.append('isRecommended', String(form.isRecommended))
                         <td style={tdStyle}>
                           {order.items.map((item, i) => (
                             <p key={i} style={{ fontSize: '11px', color: '#3D3830', marginBottom: '2px' }}>
-                              {item.name} · {item.color} · {item.size} × {item.qty}
+                              {item.name} · {item.color} · {item.size} x{item.qty}
                             </p>
                           ))}
                         </td>
@@ -374,7 +416,7 @@ formData.append('isRecommended', String(form.isRecommended))
                         <td style={tdStyle}>
                           <select
                             value={order.status}
-                            onChange={(e) => updateOrderStatus(order._id, e.target.value)}
+                            onChange={e => updateOrderStatus(order._id, e.target.value)}
                             style={{
                               padding: '6px 10px', fontSize: '11px',
                               borderRadius: '6px', border: '1px solid #E8E2D9',
@@ -383,20 +425,16 @@ formData.append('isRecommended', String(form.isRecommended))
                               ...getStatusStyle(order.status)
                             }}
                           >
-                            <option value="pending">⏳ Pending</option>
-                            <option value="paid">💰 Paid</option>
-                            <option value="accepted">✅ Accepted</option>
-                            <option value="posted">📦 Posted</option>
-                            <option value="delivered">🎉 Delivered</option>
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="posted">Posted</option>
+                            <option value="delivered">Delivered</option>
                           </select>
                         </td>
                         <td style={tdStyle}>
-                          <p style={{ fontSize: '11px' }}>
-                            {new Date(order.createdAt).toLocaleDateString()}
-                          </p>
-                          <p style={{ fontSize: '11px', color: '#8B7355' }}>
-                            {new Date(order.createdAt).toLocaleTimeString()}
-                          </p>
+                          <p style={{ fontSize: '11px' }}>{new Date(order.createdAt).toLocaleDateString()}</p>
+                          <p style={{ fontSize: '11px', color: '#8B7355' }}>{new Date(order.createdAt).toLocaleTimeString()}</p>
                         </td>
                       </tr>
                     ))}
@@ -420,7 +458,6 @@ formData.append('isRecommended', String(form.isRecommended))
               </button>
             </div>
 
-            {/* Add/Edit Form */}
             {showForm && (
               <div style={{
                 background: 'white', border: '1px solid #E8E2D9',
@@ -429,106 +466,111 @@ formData.append('isRecommended', String(form.isRecommended))
                 <h3 style={{ fontSize: '18px', fontWeight: '500', marginBottom: '20px' }}>
                   {editingProduct ? 'Edit Product' : 'Add New Product'}
                 </h3>
-
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
 
-                  {/* Product Name */}
                   <div>
                     <label style={labelStyle}>Product Name</label>
-                    <input name="name" value={form.name}
-                      onChange={handleFormChange}
-                      placeholder="e.g. Murugan Portrait"
-                      style={inputStyle} />
+                    <input name="name" value={form.name} onChange={handleFormChange}
+                      placeholder="e.g. Lord Murugan Portrait" style={inputStyle} />
                   </div>
 
-                  {/* Category */}
                   <div>
                     <label style={labelStyle}>Category</label>
-                    <select name="category" value={form.category}
-                      onChange={handleFormChange} style={inputStyle}>
+                    <select name="category" value={form.category} onChange={handleFormChange} style={inputStyle}>
                       <option value="">Select category</option>
-                      {categories.map(cat => (
-  <option key={cat.name} value={cat.name}>{cat.name}</option>
-))}
+                      {categories.map(cat => {
+                        const name = typeof cat === 'string' ? cat : cat.name
+                        return <option key={name} value={name}>{name}</option>
+                      })}
                     </select>
                   </div>
 
-
-                  {/* Description */}
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={labelStyle}>Description</label>
-                    <textarea name="description" value={form.description}
-                      onChange={handleFormChange}
-                      placeholder="Describe this product..."
+                    <label style={labelStyle}>Description / Order comes with</label>
+                    <textarea name="description" value={form.description} onChange={handleFormChange}
+                      placeholder="Describe this product and what comes with the order..."
                       rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
                   </div>
 
-                  {/* Product Tags */}
-<div style={{ gridColumn: '1 / -1' }}>
-  <label style={labelStyle}>Product Tags</label>
-  <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-    {[
-  { key: 'isHotSelling',  label: '🔥 Hot Selling' },
-  { key: 'isNewArrival',  label: '✨ New Arrival' },
-  { key: 'isRecommended', label: '⭐ Recommended' },
-].map(tag => (
-  <label key={tag.key} style={{
-    display: 'flex', alignItems: 'center', gap: '8px',
-    cursor: 'pointer', fontSize: '13px', color: '#3D3830'
-  }}>
-    <input
-      type="checkbox"
-      checked={form[tag.key] || false}
-      onChange={e => setForm({ ...form, [tag.key]: e.target.checked })}
-      style={{ width: '16px', height: '16px', accentColor: '#1A1714', cursor: 'pointer' }}
-    />
-    {tag.label}
-  </label>
-))}
-  </div>
-</div>
-
-                  {/* Images */}
+                  {/* Black & White Image */}
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={labelStyle}>Product Images (up to 5)</label>
+                    <label style={labelStyle}>Black and White Image</label>
                     <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageChange}
+                      type="file" accept="image/*"
+                      onChange={e => {
+                        const file = e.target.files[0]
+                        if (file) setForm({ ...form, imageBWFile: file, imageBWPreview: URL.createObjectURL(file) })
+                      }}
                       style={{ ...inputStyle, padding: '8px' }}
                     />
-                    <p style={{ fontSize: '11px', color: '#8B7355', marginTop: '4px' }}>
-                      First image is the main display photo. Customers can slide through all images.
-                    </p>
-                    {previews.length > 0 && (
-                      <div style={{ marginTop: '12px' }}>
-                        <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '8px' }}>
-                          Preview ({previews.length} image{previews.length > 1 ? 's' : ''}):
+                    {(form.imageBWPreview || editingProduct?.imageBW) && (
+                      <div style={{ marginTop: '8px' }}>
+                        <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '4px' }}>
+                          Black and White Preview:
                         </p>
-                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                          {previews.map((src, i) => (
-                            <div key={i} style={{ position: 'relative' }}>
-                              <img src={src} alt={'preview ' + i} style={{
-                                width: '80px', height: '80px', objectFit: 'cover',
-                                borderRadius: '6px',
-                                border: i === 0 ? '2px solid #1A1714' : '1px solid #E8E2D9'
-                              }} />
-                              {i === 0 && (
-                                <span style={{
-                                  position: 'absolute', bottom: '4px', left: 0, right: 0,
-                                  textAlign: 'center', fontSize: '9px',
-                                  background: 'rgba(0,0,0,0.6)', color: 'white',
-                                  padding: '2px 0', borderRadius: '0 0 4px 4px'
-                                }}>
-                                  Main
-                                </span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
+                        <img
+                          src={form.imageBWPreview || editingProduct?.imageBW}
+                          alt="BW"
+                          style={{
+                            width: '80px', height: '100px', objectFit: 'contain',
+                            borderRadius: '6px', border: '1px solid #E8E2D9', background: '#F5F5F5'
+                          }}
+                        />
                       </div>
                     )}
+                  </div>
+
+                  {/* Color Image */}
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={labelStyle}>Color Image</label>
+                    <input
+                      type="file" accept="image/*"
+                      onChange={e => {
+                        const file = e.target.files[0]
+                        if (file) setForm({ ...form, imageColorFile: file, imageColorPreview: URL.createObjectURL(file) })
+                      }}
+                      style={{ ...inputStyle, padding: '8px' }}
+                    />
+                    {(form.imageColorPreview || editingProduct?.imageColor) && (
+                      <div style={{ marginTop: '8px' }}>
+                        <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '4px' }}>
+                          Color Preview:
+                        </p>
+                        <img
+                          src={form.imageColorPreview || editingProduct?.imageColor}
+                          alt="Color"
+                          style={{
+                            width: '80px', height: '100px', objectFit: 'contain',
+                            borderRadius: '6px', border: '1px solid #E8E2D9', background: '#F5F5F5'
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Product Tags */}
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={labelStyle}>Product Tags</label>
+                    <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                      {[
+                        { key: 'isHotSelling', label: 'Hot Selling' },
+                        { key: 'isNewArrival', label: 'New Arrival' },
+                        { key: 'isRecommended', label: 'Recommended' },
+                      ].map(tag => (
+                        <label key={tag.key} style={{
+                          display: 'flex', alignItems: 'center', gap: '8px',
+                          cursor: 'pointer', fontSize: '13px', color: '#3D3830'
+                        }}>
+                          <input
+                            type="checkbox"
+                            checked={form[tag.key] || false}
+                            onChange={e => setForm({ ...form, [tag.key]: e.target.checked })}
+                            style={{ width: '16px', height: '16px', accentColor: '#1A1714' }}
+                          />
+                          {tag.label}
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -541,9 +583,8 @@ formData.append('isRecommended', String(form.isRecommended))
                     {saving ? 'Saving...' : editingProduct ? 'Update Product' : 'Add Product'}
                   </button>
                   <button onClick={() => { setShowForm(false); setPreviews([]) }} style={{
-                    background: 'white', color: '#1A1714',
-                    border: '1px solid #E8E2D9', padding: '10px 24px',
-                    borderRadius: '6px', cursor: 'pointer', fontSize: '13px'
+                    background: 'white', color: '#1A1714', border: '1px solid #E8E2D9',
+                    padding: '10px 24px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px'
                   }}>
                     Cancel
                   </button>
@@ -551,16 +592,13 @@ formData.append('isRecommended', String(form.isRecommended))
               </div>
             )}
 
-            {/* Products Grid */}
             {products.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px', color: '#8B7355' }}>
                 <p style={{ fontSize: '18px', marginBottom: '16px' }}>No products yet!</p>
                 <button onClick={openAddForm} style={{
                   background: '#1A1714', color: 'white', border: 'none',
                   padding: '12px 24px', borderRadius: '6px', cursor: 'pointer'
-                }}>
-                  Add your first product
-                </button>
+                }}>Add your first product</button>
               </div>
             ) : (
               <div style={{
@@ -574,30 +612,37 @@ formData.append('isRecommended', String(form.isRecommended))
                     borderRadius: '8px', overflow: 'hidden'
                   }}>
                     <div style={{
-                      height: '140px',
-                      background: 'linear-gradient(135deg, #EDE8E0, #D4C8B8)',
+                      height: '160px', background: '#F5F5F5',
                       display: 'flex', alignItems: 'center',
-                      justifyContent: 'center', fontSize: '36px',
-                      overflow: 'hidden', position: 'relative'
+                      justifyContent: 'center', overflow: 'hidden',
+                      position: 'relative'
                     }}>
-                      {product.images && product.images.length > 0 ? (
-                        <img src={product.images[0]} alt={product.name}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : product.image ? (
-                        <img src={product.image} alt={product.name}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      {product.imageBW || product.images?.[0] || product.image ? (
+                        <img
+                          src={product.imageBW || product.images?.[0] || product.image}
+                          alt={product.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                        />
                       ) : (
-                        '🎨'
+                        <span style={{ fontSize: '36px' }}>🎨</span>
                       )}
-                      {product.images && product.images.length > 1 && (
-                        <span style={{
-                          position: 'absolute', top: '6px', right: '6px',
-                          background: 'rgba(0,0,0,0.6)', color: 'white',
-                          fontSize: '10px', padding: '2px 6px', borderRadius: '10px'
-                        }}>
-                          {product.images.length} photos
-                        </span>
-                      )}
+                      <div style={{
+                        position: 'absolute', top: '6px', right: '6px',
+                        display: 'flex', gap: '4px'
+                      }}>
+                        {product.isHotSelling && (
+                          <span style={{
+                            background: '#FEE2E2', color: '#DC2626',
+                            fontSize: '9px', padding: '2px 6px', borderRadius: '10px'
+                          }}>HOT</span>
+                        )}
+                        {product.isNewArrival && (
+                          <span style={{
+                            background: '#DCFCE7', color: '#16A34A',
+                            fontSize: '9px', padding: '2px 6px', borderRadius: '10px'
+                          }}>NEW</span>
+                        )}
+                      </div>
                     </div>
                     <div style={{ padding: '12px' }}>
                       <p style={{ fontWeight: '500', fontSize: '14px', marginBottom: '2px' }}>
@@ -607,7 +652,12 @@ formData.append('isRecommended', String(form.isRecommended))
                         {product.category}
                       </p>
                       <p style={{ fontSize: '12px', color: '#8B7355', marginBottom: '8px' }}>
-                        RM {product.price} · {product.size || 'A4'}
+                        RM {product.price}
+                        {product.imageBW && product.imageColor && (
+                          <span style={{ marginLeft: '6px', fontSize: '10px', color: '#3B6D11' }}>
+                            BW + Color
+                          </span>
+                        )}
                       </p>
                       <div style={{ display: 'flex', gap: '6px' }}>
                         <button onClick={() => openEditForm(product)} style={{
@@ -632,141 +682,113 @@ formData.append('isRecommended', String(form.isRecommended))
         {/* CATEGORIES PAGE */}
         {page === 'categories' && (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between',
-              alignItems: 'center', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
               <h2 style={{ fontSize: '24px', fontWeight: '400' }}>Categories</h2>
               <button onClick={() => setShowAddCategory(true)} style={{
                 background: '#1A1714', color: 'white', border: 'none',
-                padding: '10px 20px', borderRadius: '6px',
-                cursor: 'pointer', fontSize: '13px'
+                padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px'
               }}>
                 + Add Category
               </button>
             </div>
 
-            {/* Add Category Form */}
             {showAddCategory && (
-  <div style={{
-    background: 'white', border: '1px solid #E8E2D9',
-    borderRadius: '8px', padding: '20px', marginBottom: '24px'
-  }}>
-    <h3 style={{ fontSize: '16px', fontWeight: '500', marginBottom: '16px' }}>
-      Add New Category
-    </h3>
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-      <div>
-        <label style={labelStyle}>Category Name</label>
-        <input
-          value={newCategory}
-          onChange={e => setNewCategory(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleAddCategory()}
-          placeholder="e.g. Lord Ganesha"
-          style={inputStyle}
-        />
-      </div>
-      <div>
-        <label style={labelStyle}>Category Image</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={e => {
-            const file = e.target.files[0]
-            if (file) {
-              setNewCategoryImage(file)
-              setNewCategoryPreview(URL.createObjectURL(file))
-            }
-          }}
-          style={{ ...inputStyle, padding: '8px' }}
-        />
-      </div>
-      {newCategoryPreview && (
-        <div style={{ gridColumn: '1 / -1' }}>
-          <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '6px' }}>
-            Preview:
-          </p>
-          <img
-            src={newCategoryPreview}
-            alt="preview"
-            style={{
-              width: '80px', height: '80px',
-              objectFit: 'cover', borderRadius: '6px',
-              border: '1px solid #E8E2D9'
-            }}
-          />
-        </div>
-      )}
-    </div>
-    <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-      <button onClick={handleAddCategory} style={{
-        background: '#1A1714', color: 'white', border: 'none',
-        padding: '10px 20px', borderRadius: '6px',
-        cursor: 'pointer', fontSize: '13px'
-      }}>
-        Save Category
-      </button>
-      <button onClick={() => {
-        setShowAddCategory(false)
-        setNewCategory('')
-        setNewCategoryImage(null)
-        setNewCategoryPreview(null)
-      }} style={{
-        background: 'white', color: '#1A1714',
-        border: '1px solid #E8E2D9', padding: '10px 20px',
-        borderRadius: '6px', cursor: 'pointer', fontSize: '13px'
-      }}>
-        Cancel
-      </button>
-    </div>
-  </div>
-)}
-            {/* Categories List */}
-            <div style={{
-              background: 'white', border: '1px solid #E8E2D9',
-              borderRadius: '8px', overflow: 'hidden'
-            }}>
-              {categories.map((cat, i) => (
-  <div key={cat.name} style={{
-    display: 'flex', justifyContent: 'space-between',
-    alignItems: 'center', padding: '12px 20px',
-    borderBottom: i < categories.length - 1 ? '1px solid #F0EDE8' : 'none',
-    background: i % 2 === 0 ? 'white' : '#FAF8F4'
-  }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-      {cat.image ? (
-        <img src={cat.image} alt={cat.name} style={{
-          width: '40px', height: '40px',
-          objectFit: 'cover', borderRadius: '6px',
-          border: '1px solid #E8E2D9'
-        }} />
-      ) : (
-        <div style={{
-          width: '40px', height: '40px', borderRadius: '6px',
-          background: 'linear-gradient(135deg, #EDE8E0, #D4C8B8)',
-          display: 'flex', alignItems: 'center',
-          justifyContent: 'center', fontSize: '18px'
-        }}>
-          🕉️
-        </div>
-      )}
-      <span style={{ fontSize: '14px', fontWeight: '500' }}>{cat.name}</span>
-    </div>
-    <button
-      onClick={() => handleDeleteCategory(cat.name)}
-      style={{
-        background: 'none', border: '1px solid #F7C1C1',
-        color: '#A32D2D', padding: '4px 12px',
-        borderRadius: '4px', cursor: 'pointer', fontSize: '11px'
-      }}
-    >
-      Remove
-    </button>
-  </div>
-))}
-            </div>
+              <div style={{
+                background: 'white', border: '1px solid #E8E2D9',
+                borderRadius: '8px', padding: '20px', marginBottom: '24px'
+              }}>
+                <h3 style={{ fontSize: '16px', fontWeight: '500', marginBottom: '16px' }}>
+                  Add New Category
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <label style={labelStyle}>Category Name</label>
+                    <input
+                      value={newCategory}
+                      onChange={e => setNewCategory(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && handleAddCategory()}
+                      placeholder="e.g. Lord Ganesha"
+                      style={inputStyle}
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Category Image</label>
+                    <input
+                      type="file" accept="image/*"
+                      onChange={e => {
+                        const file = e.target.files[0]
+                        if (file) {
+                          setNewCategoryImage(file)
+                          setNewCategoryPreview(URL.createObjectURL(file))
+                        }
+                      }}
+                      style={{ ...inputStyle, padding: '8px' }}
+                    />
+                  </div>
+                  {newCategoryPreview && (
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <img src={newCategoryPreview} alt="preview" style={{
+                        width: '80px', height: '80px', objectFit: 'cover',
+                        borderRadius: '6px', border: '1px solid #E8E2D9'
+                      }} />
+                    </div>
+                  )}
+                </div>
+                <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                  <button onClick={handleAddCategory} style={{
+                    background: '#1A1714', color: 'white', border: 'none',
+                    padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px'
+                  }}>Save Category</button>
+                  <button onClick={() => {
+                    setShowAddCategory(false)
+                    setNewCategory('')
+                    setNewCategoryImage(null)
+                    setNewCategoryPreview(null)
+                  }} style={{
+                    background: 'white', color: '#1A1714', border: '1px solid #E8E2D9',
+                    padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px'
+                  }}>Cancel</button>
+                </div>
+              </div>
+            )}
 
+            <div style={{ background: 'white', border: '1px solid #E8E2D9', borderRadius: '8px', overflow: 'hidden' }}>
+              {categories.map((cat, i) => {
+                const name = typeof cat === 'string' ? cat : cat.name
+                const img = typeof cat === 'object' ? cat.image : null
+                return (
+                  <div key={name} style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '12px 20px',
+                    borderBottom: i < categories.length - 1 ? '1px solid #F0EDE8' : 'none',
+                    background: i % 2 === 0 ? 'white' : '#FAF8F4'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {img ? (
+                        <img src={img} alt={name} style={{
+                          width: '40px', height: '40px', objectFit: 'cover',
+                          borderRadius: '6px', border: '1px solid #E8E2D9'
+                        }} />
+                      ) : (
+                        <div style={{
+                          width: '40px', height: '40px', borderRadius: '6px',
+                          background: '#EDE8E0', display: 'flex',
+                          alignItems: 'center', justifyContent: 'center', fontSize: '18px'
+                        }}>🕉️</div>
+                      )}
+                      <span style={{ fontSize: '14px', fontWeight: '500' }}>{name}</span>
+                    </div>
+                    <button onClick={() => handleDeleteCategory(name)} style={{
+                      background: 'none', border: '1px solid #F7C1C1',
+                      color: '#A32D2D', padding: '4px 12px',
+                      borderRadius: '4px', cursor: 'pointer', fontSize: '11px'
+                    }}>Remove</button>
+                  </div>
+                )
+              })}
+            </div>
             <p style={{ fontSize: '11px', color: '#8B7355', marginTop: '12px' }}>
-              These categories appear in the product form dropdown. Removing a category
-              does not delete products already using it.
+              Removing a category does not delete products already using it.
             </p>
           </div>
         )}
@@ -791,6 +813,3 @@ const inputStyle = {
   borderRadius: '4px', fontSize: '13px', fontFamily: 'inherit',
   outline: 'none', boxSizing: 'border-box'
 }
-
-
-

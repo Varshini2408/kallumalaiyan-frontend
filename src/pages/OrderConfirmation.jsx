@@ -1,134 +1,99 @@
-import Navbar from '../components/Navbar'
-import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom"
+import Navbar from "../components/Navbar"
 
 export default function OrderConfirmation() {
+  const navigate = useNavigate()
+
   return (
-    <div>
+    <div style={{ background: "white", minHeight: "100vh" }}>
       <Navbar />
 
       <div style={{
-        maxWidth: '500px',
-        margin: '0 auto',
-        padding: '60px 32px',
-        textAlign: 'center'
+        maxWidth: "500px", margin: "0 auto",
+        padding: "60px 24px", textAlign: "center"
       }}>
 
-        {/* Green tick circle */}
+        {/* Success Icon */}
         <div style={{
-          width: '72px',
-          height: '72px',
-          background: '#EAF3DE',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 24px',
-          fontSize: '32px'
+          width: "72px", height: "72px",
+          background: "#EAF3DE", borderRadius: "50%",
+          display: "flex", alignItems: "center",
+          justifyContent: "center", margin: "0 auto 24px",
+          fontSize: "28px"
         }}>
           ✓
         </div>
 
         <h1 style={{
-          fontSize: '32px',
-          fontWeight: '400',
-          marginBottom: '12px',
-          color: '#1A1714'
+          fontSize: "26px", fontWeight: "700",
+          marginBottom: "12px", color: "#1A1714"
         }}>
           Order Confirmed!
         </h1>
 
         <p style={{
-          color: '#3D3830',
-          lineHeight: '1.8',
-          marginBottom: '32px',
-          fontSize: '14px'
+          color: "#555", lineHeight: "1.8",
+          marginBottom: "32px", fontSize: "14px"
         }}>
-          Thank you for your order! You will receive a confirmation 
-          on Telegram shortly. Your sketch will be carefully crafted 
+          Thank you for your order! You will receive a confirmation
+          on Telegram shortly. Your sketch will be carefully crafted
           and shipped within 7 working days.
         </p>
 
-        {/* Order Details Box */}
+        {/* Order Details */}
         <div style={{
-          background: 'white',
-          border: '1px solid #E8E2D9',
-          borderRadius: '8px',
-          padding: '20px',
-          textAlign: 'left',
-          marginBottom: '32px'
+          background: "#FAFAFA", border: "1px solid #E8E2D9",
+          borderRadius: "8px", padding: "20px",
+          textAlign: "left", marginBottom: "32px"
         }}>
-          <div style={rowStyle}>
-            <span style={labelStyle}>Status</span>
-            <span style={{
-              background: '#EAF3DE',
-              color: '#3B6D11',
-              padding: '2px 12px',
-              borderRadius: '12px',
-              fontSize: '12px',
-              fontWeight: '500'
+          {[
+            { label: "Status", value: "Paid" },
+            { label: "Notification", value: "Telegram sent" },
+            { label: "Delivery", value: "Within 7 working days" },
+          ].map(row => (
+            <div key={row.label} style={{
+              display: "flex", justifyContent: "space-between",
+              padding: "10px 0", borderBottom: "1px solid #E8E2D9"
             }}>
-              Paid ✓
-            </span>
-          </div>
-          <div style={rowStyle}>
-            <span style={labelStyle}>Telegram</span>
-            <span style={{ fontSize: '13px' }}>Notification sent ✓</span>
-          </div>
-          <div style={rowStyle}>
-            <span style={labelStyle}>Delivery</span>
-            <span style={{ fontSize: '13px' }}>Within 7 working days</span>
-          </div>
-          <div style={{ ...rowStyle, borderBottom: 'none' }}>
-            <span style={labelStyle}>Questions?</span>
-            <span style={{ fontSize: '13px', color: '#8B7355' }}>
-              Telegram us anytime
-            </span>
+              <p style={{ fontSize: "13px", color: "#888" }}>{row.label}</p>
+              <p style={{ fontSize: "13px", fontWeight: "600" }}>{row.value}</p>
+            </div>
+          ))}
+          <div style={{
+            display: "flex", justifyContent: "space-between",
+            padding: "10px 0"
+          }}>
+            <p style={{ fontSize: "13px", color: "#888" }}>Questions?</p>
+            <p style={{ fontSize: "13px", color: "#555" }}>Telegram us anytime</p>
           </div>
         </div>
 
         {/* Buttons */}
-        <Link to="/shop" style={{
-          display: 'inline-block',
-          background: '#1A1714',
-          color: 'white',
-          padding: '12px 32px',
-          textDecoration: 'none',
-          borderRadius: '4px',
-          fontSize: '14px',
-          letterSpacing: '0.08em',
-          marginRight: '12px'
-        }}>
-          Shop More
-        </Link>
-
-        <Link to="/" style={{
-          display: 'inline-block',
-          background: 'transparent',
-          color: '#1A1714',
-          padding: '12px 32px',
-          textDecoration: 'none',
-          borderRadius: '4px',
-          fontSize: '14px',
-          letterSpacing: '0.08em',
-          border: '1px solid #1A1714'
-        }}>
-          Go Home
-        </Link>
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+          <button
+            onClick={() => navigate("/shop")}
+            style={{
+              background: "#1A1714", color: "white",
+              border: "none", padding: "12px 28px",
+              borderRadius: "6px", cursor: "pointer",
+              fontSize: "14px", fontFamily: "inherit"
+            }}
+          >
+            Shop More
+          </button>
+          <button
+            onClick={() => navigate("/")}
+            style={{
+              background: "white", color: "#1A1714",
+              border: "1px solid #1A1714", padding: "12px 28px",
+              borderRadius: "6px", cursor: "pointer",
+              fontSize: "14px", fontFamily: "inherit"
+            }}
+          >
+            Go Home
+          </button>
+        </div>
       </div>
     </div>
   )
-}
-
-const rowStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '10px 0',
-  borderBottom: '1px solid #E8E2D9'
-}
-
-const labelStyle = {
-  fontSize: '12px',
-  color: '#8B7355',
-  letterSpacing: '0.06em'
 }

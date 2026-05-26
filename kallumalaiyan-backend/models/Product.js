@@ -8,6 +8,8 @@ const ProductSchema = new mongoose.Schema({
   emoji: String,
   image: String,
   images: [String],
+  imageBW: String,
+  imageColor: String,
   variants: {
     colors: [String],
     sizes: [String]
