@@ -166,7 +166,7 @@ export default function Checkout() {
               border: "1px solid #E8E2D9", borderRadius: "6px",
               fontSize: "13px", color: "#555", marginTop: "4px"
             }}>
-              You will be redirected to ToyyibPay to complete payment via FPX / Online Banking
+              
             </div>
           </div>
 
