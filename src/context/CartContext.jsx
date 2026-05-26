@@ -7,7 +7,7 @@ export function CartProvider({ children }) {
 
   const addToCart = (product, variant, qty) => {
     setCartItems(prev => {
-      const key = `${product._id}-${variant.color}-${variant.size}`
+      const key = product._id + "-" + variant.color + "-" + variant.size
       const exists = prev.find(i => i.key === key)
       if (exists) {
         return prev.map(i => i.key === key ? { ...i, qty: i.qty + qty } : i)
@@ -46,4 +46,6 @@ export function CartProvider({ children }) {
   )
 }
 
-export const useCart = () => useContext(CartContext)
+export function useCart() {
+  return useContext(CartContext)
+}
