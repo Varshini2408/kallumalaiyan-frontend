@@ -67,6 +67,12 @@ function Footer() {
   )
 }
 
+const gridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(2, 1fr)",
+  gap: "12px"
+}
+
 export default function Shop() {
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
@@ -75,6 +81,7 @@ export default function Shop() {
   const [sortBy, setSortBy] = useState("newest")
   const [showSort, setShowSort] = useState(false)
   const [page, setPage] = useState(1)
+  const [cols, setCols] = useState(2)
   const perPage = 8
   const navigate = useNavigate()
 
@@ -85,6 +92,15 @@ export default function Shop() {
     if (cat) setSelected(cat)
     fetchProducts(search || "")
     fetchCategories()
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setCols(4)
+      else if (window.innerWidth >= 640) setCols(3)
+      else setCols(2)
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   const fetchProducts = async (search) => {
@@ -141,6 +157,12 @@ export default function Shop() {
   const totalPages = Math.ceil(sorted.length / perPage)
   const paginated = sorted.slice((page - 1) * perPage, page * perPage)
 
+  const dynamicGrid = {
+    display: "grid",
+    gridTemplateColumns: "repeat(" + cols + ", 1fr)",
+    gap: cols === 2 ? "12px" : "16px"
+  }
+
   return (
     <div style={{ background: "white", minHeight: "100vh" }}>
       <Navbar />
@@ -193,7 +215,7 @@ export default function Shop() {
           </div>
         ) : (
           <>
-            <div className="product-grid">
+            <div style={dynamicGrid}>
               {paginated.map(product => {
                 const img = getProductImg(product)
                 return (
@@ -276,7 +298,7 @@ export default function Shop() {
                 color: "#1A1714", margin: 0, textAlign: "center"
               }}>Other Collections</h2>
             </div>
-            <div className="product-grid">
+            <div style={dynamicGrid}>
               {categories
                 .filter(c => getCatName(c) !== selected)
                 .slice(0, 4)

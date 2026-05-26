@@ -80,62 +80,10 @@ function SectionHeader({ title }) {
   )
 }
 
-function ProductCard({ product, onClick }) {
-  const img =
-    (product.imagesBW && product.imagesBW.length > 0 ? product.imagesBW[0] : null) ||
-    product.imageBW ||
-    (product.images && product.images.length > 0 ? product.images[0] : null) ||
-    product.image || null
-
-  return (
-    <div
-      onClick={() => onClick(product._id)}
-      style={{
-        border: "1px solid #E8E2D9", borderRadius: "8px",
-        overflow: "hidden", background: "white", cursor: "pointer"
-      }}
-    >
-      <div style={{ aspectRatio: "3/4", overflow: "hidden", background: "#F5F5F5" }}>
-        {img ? (
-          <img src={img} alt={product.name} style={{
-            width: "100%", height: "100%", objectFit: "contain"
-          }} />
-        ) : (
-          <div style={{
-            width: "100%", height: "100%", display: "flex",
-            alignItems: "center", justifyContent: "center",
-            fontSize: "13px", color: "#ccc"
-          }}>No Image</div>
-        )}
-      </div>
-      <div style={{ padding: "10px 12px", textAlign: "center" }}>
-        {product.isHotSelling && (
-          <span style={{
-            background: "#FEE2E2", color: "#DC2626", fontSize: "9px",
-            padding: "2px 8px", borderRadius: "10px", fontWeight: "600",
-            display: "inline-block", marginBottom: "4px"
-          }}>HOT</span>
-        )}
-        {product.isNewArrival && (
-          <span style={{
-            background: "#DCFCE7", color: "#16A34A", fontSize: "9px",
-            padding: "2px 8px", borderRadius: "10px", fontWeight: "600",
-            display: "inline-block", marginBottom: "4px", marginLeft: "4px"
-          }}>NEW</span>
-        )}
-        <p style={{
-          fontSize: "14px", fontWeight: "700",
-          color: "#1A1714", marginBottom: "2px"
-        }}>{product.name}</p>
-        <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
-      </div>
-    </div>
-  )
-}
-
 export default function Home() {
   const [categories, setCategories] = useState([])
   const [allProducts, setAllProducts] = useState([])
+  const [cols, setCols] = useState(2)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -148,10 +96,79 @@ export default function Home() {
       .then(r => r.json())
       .then(d => setAllProducts(Array.isArray(d) ? d : []))
       .catch(console.error)
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setCols(4)
+      else if (window.innerWidth >= 640) setCols(3)
+      else setCols(2)
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   const hotSelling = allProducts.filter(p => p.isHotSelling)
   const newArrivals = allProducts.filter(p => p.isNewArrival)
+
+  const getProductImg = (product) =>
+    (product.imagesBW && product.imagesBW.length > 0 ? product.imagesBW[0] : null) ||
+    product.imageBW ||
+    (product.images && product.images.length > 0 ? product.images[0] : null) ||
+    product.image || null
+
+  const dynamicGrid = {
+    display: "grid",
+    gridTemplateColumns: "repeat(" + cols + ", 1fr)",
+    gap: cols === 2 ? "12px" : "16px"
+  }
+
+  const ProductCard = ({ product }) => {
+    const img = getProductImg(product)
+    return (
+      <div
+        onClick={() => navigate("/product/" + product._id)}
+        style={{
+          border: "1px solid #E8E2D9", borderRadius: "8px",
+          overflow: "hidden", background: "white", cursor: "pointer"
+        }}
+      >
+        <div style={{ aspectRatio: "3/4", overflow: "hidden", background: "#F5F5F5" }}>
+          {img ? (
+            <img src={img} alt={product.name} style={{
+              width: "100%", height: "100%", objectFit: "contain"
+            }} />
+          ) : (
+            <div style={{
+              width: "100%", height: "100%", display: "flex",
+              alignItems: "center", justifyContent: "center",
+              fontSize: "13px", color: "#ccc"
+            }}>No Image</div>
+          )}
+        </div>
+        <div style={{ padding: "10px 12px", textAlign: "center" }}>
+          {product.isHotSelling && (
+            <span style={{
+              background: "#FEE2E2", color: "#DC2626", fontSize: "9px",
+              padding: "2px 8px", borderRadius: "10px", fontWeight: "600",
+              display: "inline-block", marginBottom: "4px"
+            }}>HOT</span>
+          )}
+          {product.isNewArrival && (
+            <span style={{
+              background: "#DCFCE7", color: "#16A34A", fontSize: "9px",
+              padding: "2px 8px", borderRadius: "10px", fontWeight: "600",
+              display: "inline-block", marginBottom: "4px", marginLeft: "4px"
+            }}>NEW</span>
+          )}
+          <p style={{
+            fontSize: "13px", fontWeight: "700",
+            color: "#1A1714", marginBottom: "2px"
+          }}>{product.name}</p>
+          <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{ background: "white", minHeight: "100vh" }}>
@@ -159,6 +176,7 @@ export default function Home() {
 
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
+        {/* Intro */}
         <div style={{ padding: "24px 24px 16px" }}>
           <h1 style={{
             fontSize: "clamp(18px, 3vw, 28px)", fontWeight: "700",
@@ -178,8 +196,8 @@ export default function Home() {
         {/* Categories */}
         <SectionHeader title="Sketch Art Categories" />
         <div style={{ padding: "0 24px 8px" }}>
-          <div className="category-grid" style={{ marginBottom: "12px" }}>
-            {categories.slice(0, 6).map(cat => {
+          <div style={{ ...dynamicGrid, marginBottom: "12px" }}>
+            {categories.slice(0, cols * 2).map(cat => {
               const name = typeof cat === "string" ? cat : cat.name
               const img = typeof cat === "object" ? cat.image : null
               return (
@@ -216,11 +234,11 @@ export default function Home() {
               )
             })}
           </div>
-          {categories.length > 6 && (
+          {categories.length > cols * 2 && (
             <div style={{ textAlign: "right", marginBottom: "8px" }}>
-              <a href="/shop" style={{ fontSize: "12px", color: "#1A1714", textDecoration: "underline" }}>
-                View All Categories
-              </a>
+              <a href="/shop" style={{
+                fontSize: "12px", color: "#1A1714", textDecoration: "underline"
+              }}>View All Categories</a>
             </div>
           )}
         </div>
@@ -230,10 +248,9 @@ export default function Home() {
           <div style={{ marginTop: "32px" }}>
             <SectionHeader title="Best Seller" />
             <div style={{ padding: "0 24px" }}>
-              <div className="product-grid">
+              <div style={dynamicGrid}>
                 {hotSelling.map(p => (
-                  <ProductCard key={p._id} product={p}
-                    onClick={id => navigate("/product/" + id)} />
+                  <ProductCard key={p._id} product={p} />
                 ))}
               </div>
             </div>
@@ -245,10 +262,9 @@ export default function Home() {
           <div style={{ marginTop: "32px" }}>
             <SectionHeader title="New Collection" />
             <div style={{ padding: "0 24px" }}>
-              <div className="product-grid">
+              <div style={dynamicGrid}>
                 {newArrivals.map(p => (
-                  <ProductCard key={p._id} product={p}
-                    onClick={id => navigate("/product/" + id)} />
+                  <ProductCard key={p._id} product={p} />
                 ))}
               </div>
             </div>
