@@ -402,7 +402,7 @@ const getAllImages = () => {
                         <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>
                           {p.name}
                         </p>
-                        <p style={{ fontSize: "12px", color: "#666" }}>From RM {p.price}</p>
+                        <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
                       </div>
                     </div>
                   )
