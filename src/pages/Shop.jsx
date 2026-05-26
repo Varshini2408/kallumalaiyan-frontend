@@ -10,21 +10,32 @@ export default function Shop() {
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState("All")
   const [sortBy, setSortBy] = useState("newest")
+  const [showSort, setShowSort] = useState(false)
+  const [page, setPage] = useState(1)
+  const perPage = 6
   const navigate = useNavigate()
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const cat = params.get("category")
+    const search = params.get("search")
     if (cat) setSelected(cat)
-    fetchProducts()
+    fetchProducts(search || "")
     fetchCategories()
   }, [])
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (search) => {
     try {
       const res = await fetch(API + "/api/products")
       const data = await res.json()
-      setProducts(Array.isArray(data) ? data : [])
+      let list = Array.isArray(data) ? data : []
+      if (search) {
+        list = list.filter(p =>
+          p.name.toLowerCase().includes(search.toLowerCase()) ||
+          p.category.toLowerCase().includes(search.toLowerCase())
+        )
+      }
+      setProducts(list)
     } catch (err) {
       console.error(err)
       setProducts([])
@@ -58,94 +69,58 @@ export default function Shop() {
     : products.filter(p => p.category === selected)
 
   const sorted = sortProducts(filtered)
+  const totalPages = Math.ceil(sorted.length / perPage)
+  const paginated = sorted.slice((page - 1) * perPage, page * perPage)
+
+  const getCatName = (cat) => typeof cat === "string" ? cat : cat.name
 
   return (
-    <div>
+    <div style={{ background: "white", minHeight: "100vh" }}>
       <Navbar />
-      <div style={{ padding: "32px 24px", maxWidth: "1000px", margin: "0 auto" }}>
 
-        <div style={{ marginBottom: "24px" }}>
-          <h1 style={{ fontSize: "32px", fontWeight: "300", marginBottom: "8px" }}>Shop</h1>
-          <p style={{ color: "#8B7355", fontSize: "14px" }}>Hand-drawn devotional art</p>
+      <div style={{ padding: "20px 20px 8px" }}>
+        <h1 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "8px" }}>
+          {selected === "All" ? "Sketch Art" : selected}
+        </h1>
+        <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.7", marginBottom: "12px" }}>
+          Sacred devotional artwork - digitally sketched portraits of Hindu deities
+          and lord names in artistic calligraphy.
+        </p>
+
+        {/* Sort button */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
+          <button
+            onClick={() => setShowSort(true)}
+            style={{
+              display: "flex", alignItems: "center", gap: "6px",
+              background: "none", border: "none", cursor: "pointer",
+              fontSize: "14px", fontWeight: "500", color: "#1A1714"
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="#1A1714" strokeWidth="2">
+              <line x1="4" y1="6" x2="20" y2="6"/>
+              <line x1="8" y1="12" x2="20" y2="12"/>
+              <line x1="12" y1="18" x2="20" y2="18"/>
+            </svg>
+            Sort
+          </button>
         </div>
+      </div>
 
-        <div style={{
-          display: "flex", gap: "12px", marginBottom: "32px",
-          flexWrap: "wrap", alignItems: "center",
-          padding: "16px", background: "white",
-          border: "1px solid #E8E2D9", borderRadius: "8px"
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ fontSize: "11px", color: "#8B7355",
-              letterSpacing: "0.08em", textTransform: "uppercase" }}>Category:</span>
-            <select
-              value={selected}
-              onChange={e => setSelected(e.target.value)}
-              style={{
-                padding: "8px 12px", border: "1px solid #E8E2D9",
-                borderRadius: "4px", background: "white", color: "#1A1714",
-                cursor: "pointer", fontSize: "13px", fontFamily: "inherit", outline: "none"
-              }}
-            >
-              <option value="All">All Categories</option>
-              {categories.map(cat => {
-                const name = typeof cat === "string" ? cat : cat.name
-                return <option key={name} value={name}>{name}</option>
-              })}
-            </select>
-          </div>
-
-          <div style={{ width: "1px", height: "24px", background: "#E8E2D9" }} />
-
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "11px", color: "#8B7355",
-              letterSpacing: "0.08em", textTransform: "uppercase" }}>Sort:</span>
-            {[
-              { value: "newest", label: "Newest" },
-              { value: "oldest", label: "Oldest" },
-              { value: "az",     label: "A to Z" },
-              { value: "za",     label: "Z to A" },
-            ].map(opt => (
-              <button key={opt.value} onClick={() => setSortBy(opt.value)} style={{
-                padding: "6px 12px", fontSize: "12px", borderRadius: "4px",
-                cursor: "pointer", border: "1px solid #E8E2D9",
-                background: sortBy === opt.value ? "#1A1714" : "white",
-                color: sortBy === opt.value ? "white" : "#1A1714",
-              }}>{opt.label}</button>
-            ))}
-          </div>
-        </div>
-
-        {!loading && (
-          <p style={{ fontSize: "12px", color: "#8B7355", marginBottom: "16px" }}>
-            Showing {sorted.length} product{sorted.length !== 1 ? "s" : ""}
-            {selected !== "All" ? " in " + selected : ""}
-          </p>
-        )}
-
-        {loading && (
-          <p style={{ color: "#8B7355", textAlign: "center", padding: "60px" }}>
-            Loading products...
-          </p>
-        )}
-
-        {!loading && sorted.length === 0 && (
-          <div style={{ textAlign: "center", padding: "60px", color: "#8B7355" }}>
-            <p style={{ fontSize: "18px", marginBottom: "8px" }}>No products found!</p>
-            <p style={{ fontSize: "13px" }}>Try a different category.</p>
-          </div>
-        )}
-
-        {!loading && sorted.length > 0 && (
+      {/* Products Grid */}
+      {loading ? (
+        <p style={{ textAlign: "center", padding: "40px", color: "#888" }}>Loading...</p>
+      ) : paginated.length === 0 ? (
+        <p style={{ textAlign: "center", padding: "40px", color: "#888" }}>No products found</p>
+      ) : (
+        <div style={{ padding: "0 20px" }}>
           <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-            gap: "20px"
+            display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px"
           }}>
-            {sorted.map(product => {
+            {paginated.map(product => {
               const img = product.images && product.images.length > 0
-                ? product.images[0]
-                : product.image
+                ? product.images[0] : product.image
               return (
                 <div
                   key={product._id}
@@ -154,122 +129,248 @@ export default function Shop() {
                     border: "1px solid #E8E2D9", borderRadius: "8px",
                     overflow: "hidden", background: "white", cursor: "pointer"
                   }}
-                  onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.08)"}
-                  onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}
                 >
-                  <div style={{
-                    height: "200px",
-                    background: "linear-gradient(135deg, #EDE8E0, #D4C8B8)",
-                    display: "flex", alignItems: "center",
-                    justifyContent: "center", overflow: "hidden"
-                  }}>
+                  <div style={{ aspectRatio: "3/4", overflow: "hidden", background: "#F5F5F5" }}>
                     {img ? (
-                      <img src={img} alt={product.name}
-                        style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-                    ) : <span style={{ fontSize: "52px" }}>{product.emoji || "??"}</span>}
+                      <img src={img} alt={product.name} style={{
+                        width: "100%", height: "100%", objectFit: "contain"
+                      }} />
+                    ) : (
+                      <div style={{
+                        width: "100%", height: "100%", display: "flex",
+                        alignItems: "center", justifyContent: "center", fontSize: "48px"
+                      }}>🎨</div>
+                    )}
                   </div>
-                  <div style={{ padding: "14px" }}>
-                    <div style={{ marginBottom: "4px", display: "flex", gap: "4px", flexWrap: "wrap" }}>
-                      {product.isHotSelling && (
-                        <span style={{
-                          background: "#FEE2E2", color: "#DC2626", fontSize: "9px",
-                          padding: "2px 8px", borderRadius: "10px", fontWeight: "600"
-                        }}>HOT</span>
-                      )}
-                      {product.isNewArrival && (
-                        <span style={{
-                          background: "#DCFCE7", color: "#16A34A", fontSize: "9px",
-                          padding: "2px 8px", borderRadius: "10px", fontWeight: "600"
-                        }}>NEW</span>
-                      )}
-                    </div>
-                    <p style={{ fontSize: "11px", color: "#8B7355",
-                      letterSpacing: "0.1em", marginBottom: "4px" }}>
-                      {product.category}
-                    </p>
-                    <h3 style={{ fontSize: "16px", fontWeight: "500", marginBottom: "6px" }}>
+                  <div style={{ padding: "10px 12px", textAlign: "center" }}>
+                    <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "2px" }}>
                       {product.name}
-                    </h3>
-                    <p style={{ fontSize: "15px", fontWeight: "500", color: "#3D3830" }}>
-                      RM {product.price}
+                    </p>
+                    <p style={{ fontSize: "12px", color: "#666" }}>
+                      From RM {product.price}
                     </p>
                   </div>
                 </div>
               )
             })}
           </div>
-        )}
-      </div>
 
-      <footer style={{
-        background: "#1A1714", color: "#FAF8F4",
-        padding: "48px 24px 24px", marginTop: "60px"
-      }}>
-        <div style={{
-          maxWidth: "1000px", margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "40px", marginBottom: "40px"
-        }}>
-          <div>
-            <p style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px", color: "#C4A882" }}>
-              Kallumalaiyan SketchArt
-            </p>
-            <p style={{ fontSize: "13px", color: "#8B7355", lineHeight: "1.8" }}>
-              Sacred hand-drawn devotional art crafted with soul and dedication.
-            </p>
-          </div>
-          <div>
-            <p style={{ fontSize: "11px", letterSpacing: "0.12em", color: "#8B7355",
-              textTransform: "uppercase", marginBottom: "16px" }}>Quick Links</p>
-            {[
-              { label: "Home", href: "/" },
-              { label: "Shop", href: "/shop" },
-              { label: "About Us", href: "/about" },
-              { label: "Cart", href: "/cart" },
-            ].map(link => (
-              <a key={link.label} href={link.href} style={{
-                display: "block", color: "#E8E2D9", fontSize: "13px",
-                textDecoration: "none", marginBottom: "8px"
-              }}>{link.label}</a>
-            ))}
-          </div>
-          <div>
-            <p style={{ fontSize: "11px", letterSpacing: "0.12em", color: "#8B7355",
-              textTransform: "uppercase", marginBottom: "16px" }}>Contact</p>
-            <p style={{ fontSize: "13px", color: "#E8E2D9", marginBottom: "8px" }}>your@email.com</p>
-            <p style={{ fontSize: "13px", color: "#E8E2D9", marginBottom: "8px" }}>+60 XX-XXXX XXXX</p>
-            <p style={{ fontSize: "13px", color: "#E8E2D9", marginBottom: "8px" }}>Malaysia</p>
-          </div>
-          <div>
-            <p style={{ fontSize: "11px", letterSpacing: "0.12em", color: "#8B7355",
-              textTransform: "uppercase", marginBottom: "16px" }}>Follow Us</p>
-            {[
-              { label: "Instagram", href: "#" },
-              { label: "Facebook", href: "#" },
-              { label: "WhatsApp", href: "#" },
-              { label: "TikTok", href: "#" },
-            ].map(s => (
-              <a key={s.label} href={s.href} style={{
-                display: "block", color: "#E8E2D9", fontSize: "13px",
-                textDecoration: "none", marginBottom: "8px"
-              }}>{s.label}</a>
-            ))}
-          </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div style={{
+              display: "flex", justifyContent: "center",
+              gap: "16px", padding: "24px 0", alignItems: "center"
+            }}>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  style={{
+                    background: "none", border: "none",
+                    cursor: "pointer", fontSize: "14px",
+                    fontWeight: page === p ? "700" : "400",
+                    color: "#1A1714",
+                    borderBottom: page === p ? "2px solid #1A1714" : "none",
+                    paddingBottom: "2px"
+                  }}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-        <div style={{
-          borderTop: "1px solid #3D3830", paddingTop: "20px",
-          display: "flex", justifyContent: "space-between",
-          alignItems: "center", flexWrap: "wrap", gap: "8px"
-        }}>
-          <p style={{ fontSize: "12px", color: "#8B7355" }}>
-            2024 Kallumalaiyan SketchArt. All rights reserved.
+      )}
+
+      {/* Other Collections */}
+      {selected !== "All" && categories.length > 0 && (
+        <>
+          <div style={{
+            background: "#F0F0F0", padding: "12px 20px", margin: "20px 0 16px"
+          }}>
+            <h2 style={{
+              fontSize: "16px", fontWeight: "700",
+              color: "#1A1714", margin: 0, textAlign: "center"
+            }}>Other Collections</h2>
+          </div>
+          <div style={{ padding: "0 20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              {categories
+                .filter(c => getCatName(c) !== selected)
+                .slice(0, 4)
+                .map(cat => {
+                  const name = getCatName(cat)
+                  const img = typeof cat === "object" ? cat.image : null
+                  const catProducts = products.filter(p => p.category === name)
+                  const firstProduct = catProducts[0]
+                  const displayImg = img || (firstProduct && (firstProduct.images?.[0] || firstProduct.image))
+                  return (
+                    <div
+                      key={name}
+                      onClick={() => {
+                        setSelected(name)
+                        setPage(1)
+                        window.scrollTo(0, 0)
+                      }}
+                      style={{
+                        border: "1px solid #E8E2D9", borderRadius: "8px",
+                        overflow: "hidden", cursor: "pointer"
+                      }}
+                    >
+                      <div style={{ aspectRatio: "3/4", overflow: "hidden", background: "#F5F5F5" }}>
+                        {displayImg ? (
+                          <img src={displayImg} alt={name} style={{
+                            width: "100%", height: "100%", objectFit: "contain"
+                          }} />
+                        ) : (
+                          <div style={{
+                            width: "100%", height: "100%", display: "flex",
+                            alignItems: "center", justifyContent: "center", fontSize: "40px"
+                          }}>🕉️</div>
+                        )}
+                      </div>
+                      <div style={{ padding: "10px 12px", textAlign: "center" }}>
+                        <p style={{ fontSize: "13px", fontWeight: "700" }}>{name}</p>
+                        <p style={{ fontSize: "11px", color: "#666" }}>
+                          From RM {catProducts[0]?.price || 60}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Footer */}
+      <footer style={{
+        background: "white", borderTop: "1px solid #E8E2D9",
+        padding: "32px 20px 20px", marginTop: "32px"
+      }}>
+        <div style={{ marginBottom: "20px" }}>
+          <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Quick Link</p>
+          {[
+            { label: "Home", href: "/" },
+            { label: "Shop", href: "/shop" },
+            { label: "About", href: "/about" },
+            { label: "Enquiry", href: "/enquiry" },
+          ].map(l => (
+            <a key={l.label} href={l.href} style={{
+              display: "block", fontSize: "13px", color: "#555",
+              textDecoration: "none", marginBottom: "6px"
+            }}>{l.label}</a>
+          ))}
+        </div>
+        <div style={{ marginBottom: "20px" }}>
+          <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Contacts</p>
+          <p style={{ fontSize: "13px", color: "#555", marginBottom: "4px" }}>your@email.com</p>
+          <p style={{ fontSize: "13px", color: "#555", marginBottom: "4px" }}>+60 XX-XXXX XXXX</p>
+          <p style={{ fontSize: "13px", color: "#555" }}>Malaysia</p>
+        </div>
+        <div style={{ marginBottom: "20px" }}>
+          <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Follow Us</p>
+          {["Instagram", "Facebook", "WhatsApp", "TikTok"].map(s => (
+            <a key={s} href="#" style={{
+              display: "block", fontSize: "13px", color: "#555",
+              textDecoration: "none", marginBottom: "6px"
+            }}>{s}</a>
+          ))}
+        </div>
+        <div style={{ borderTop: "1px solid #E8E2D9", paddingTop: "16px" }}>
+          <p style={{ fontSize: "12px", color: "#888", textAlign: "center", marginBottom: "4px" }}>
+            @Kallumalaiyan Sketch Art. All right reserved.
           </p>
-          <p style={{ fontSize: "12px", color: "#8B7355" }}>
+          <p style={{ fontSize: "11px", color: "#aaa", textAlign: "center" }}>
             Powered by TechMentor Solutions
           </p>
         </div>
       </footer>
+
+      {/* Sort Modal */}
+      {showSort && (
+        <>
+          <div
+            onClick={() => setShowSort(false)}
+            style={{
+              position: "fixed", top: 0, left: 0,
+              width: "100vw", height: "100vh",
+              background: "rgba(0,0,0,0.3)", zIndex: 200
+            }}
+          />
+          <div style={{
+            position: "fixed", top: "50%", left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "white", borderRadius: "12px",
+            padding: "24px", width: "300px", zIndex: 201,
+            boxShadow: "0 8px 32px rgba(0,0,0,0.15)"
+          }}>
+            <div style={{
+              display: "flex", justifyContent: "space-between",
+              alignItems: "center", marginBottom: "20px"
+            }}>
+              <h3 style={{ fontSize: "16px", fontWeight: "700", margin: 0 }}>Sort by</h3>
+              <button onClick={() => setShowSort(false)} style={{
+                background: "none", border: "none",
+                cursor: "pointer", fontSize: "18px"
+              }}>X</button>
+            </div>
+
+            <div style={{ marginBottom: "16px" }}>
+              <label style={{ fontSize: "13px", color: "#888", marginBottom: "6px", display: "block" }}>
+                Order
+              </label>
+              <select
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+                style={{
+                  width: "100%", padding: "10px 12px",
+                  border: "1px solid #E8E2D9", borderRadius: "6px",
+                  fontSize: "14px", fontFamily: "inherit", outline: "none"
+                }}
+              >
+                <option value="newest">Latest</option>
+                <option value="oldest">Oldest</option>
+                <option value="az">A to Z</option>
+                <option value="za">Z to A</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ fontSize: "13px", color: "#888", marginBottom: "6px", display: "block" }}>
+                Sketch Art Category
+              </label>
+              <select
+                value={selected}
+                onChange={e => { setSelected(e.target.value); setPage(1) }}
+                style={{
+                  width: "100%", padding: "10px 12px",
+                  border: "1px solid #E8E2D9", borderRadius: "6px",
+                  fontSize: "14px", fontFamily: "inherit", outline: "none"
+                }}
+              >
+                <option value="All">All Categories</option>
+                {categories.map(cat => {
+                  const name = getCatName(cat)
+                  return <option key={name} value={name}>{name}</option>
+                })}
+              </select>
+            </div>
+
+            <button
+              onClick={() => setShowSort(false)}
+              style={{
+                width: "100%", padding: "12px",
+                background: "#1A1714", color: "white",
+                border: "none", borderRadius: "6px",
+                fontSize: "14px", cursor: "pointer", fontFamily: "inherit"
+              }}
+            >
+              Done
+            </button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
