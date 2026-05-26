@@ -8,10 +8,10 @@ const emptyForm = {
   category: '',
   description: '',
   imageFiles: [],
-  imageBWFile: null,
-  imageBWPreview: null,
-  imageColorFile: null,
-  imageColorPreview: null,
+  imageBWFiles: [],
+  imageBWPreviews: [],
+  imageColorFiles: [],
+  imageColorPreviews: [],
   isHotSelling: false,
   isNewArrival: false,
   isRecommended: false,
@@ -140,10 +140,10 @@ export default function Dashboard() {
       category: product.category,
       description: product.description || '',
       imageFiles: [],
-      imageBWFile: null,
-      imageBWPreview: null,
-      imageColorFile: null,
-      imageColorPreview: null,
+      imageBWFiles: [],
+      imageBWPreviews: [],
+      imageColorFiles: [],
+      imageColorPreviews: [],
       isHotSelling: product.isHotSelling || false,
       isNewArrival: product.isNewArrival || false,
       isRecommended: product.isRecommended || false,
@@ -158,10 +158,6 @@ export default function Dashboard() {
   }
 
   const handleSave = async () => {
-    if (!form.name || !form.category) {
-      setMessage('Please fill in name and category!')
-      return
-    }
     setSaving(true)
     setMessage('')
     try {
@@ -492,96 +488,43 @@ export default function Dashboard() {
                       rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
                   </div>
 
-                  {/* Black & White Image */}
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={labelStyle}>Black and White Image</label>
-                    <input
-                      type="file" accept="image/*"
-                      onChange={e => {
-                        const file = e.target.files[0]
-                        if (file) setForm({ ...form, imageBWFile: file, imageBWPreview: URL.createObjectURL(file) })
-                      }}
-                      style={{ ...inputStyle, padding: '8px' }}
-                    />
-                    {(form.imageBWPreview || editingProduct?.imageBW) && (
-                      <div style={{ marginTop: '8px' }}>
-                        <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '4px' }}>
-                          Black and White Preview:
-                        </p>
-                        <img
-                          src={form.imageBWPreview || editingProduct?.imageBW}
-                          alt="BW"
-                          style={{
-                            width: '80px', height: '100px', objectFit: 'contain',
-                            borderRadius: '6px', border: '1px solid #E8E2D9', background: '#F5F5F5'
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Color Image */}
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={labelStyle}>Color Image</label>
-                    <input
-                      type="file" accept="image/*"
-                      onChange={e => {
-                        const file = e.target.files[0]
-                        if (file) setForm({ ...form, imageColorFile: file, imageColorPreview: URL.createObjectURL(file) })
-                      }}
-                      style={{ ...inputStyle, padding: '8px' }}
-                    />
-                    {(form.imageColorPreview || editingProduct?.imageColor) && (
-                      <div style={{ marginTop: '8px' }}>
-                        <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '4px' }}>
-                          Color Preview:
-                        </p>
-                        <img
-                          src={form.imageColorPreview || editingProduct?.imageColor}
-                          alt="Color"
-                          style={{
-                            width: '80px', height: '100px', objectFit: 'contain',
-                            borderRadius: '6px', border: '1px solid #E8E2D9', background: '#F5F5F5'
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Additional Images */}
+                  {/* Black & White Images */}
 <div style={{ gridColumn: '1 / -1' }}>
-  <label style={labelStyle}>Additional Images (up to 5)</label>
+  <label style={labelStyle}>Black and White Images (up to 5)</label>
   <input
-    type="file"
-    accept="image/*"
-    multiple
-    onChange={handleImageChange}
+    type="file" accept="image/*" multiple
+    onChange={e => {
+      const files = Array.from(e.target.files).slice(0, 5)
+      const previews = files.map(f => URL.createObjectURL(f))
+      setForm({ ...form, imageBWFiles: files, imageBWPreviews: previews })
+    }}
     style={{ ...inputStyle, padding: '8px' }}
   />
   <p style={{ fontSize: '11px', color: '#8B7355', marginTop: '4px' }}>
-    These will show in the product image gallery slideshow.
+    First image is the main display photo.
   </p>
-  {previews.length > 0 && (
-    <div style={{ marginTop: '12px' }}>
-      <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '8px' }}>
-        Preview ({previews.length} image{previews.length > 1 ? 's' : ''}):
+  {(form.imageBWPreviews?.length > 0 || editingProduct?.imageBW) && (
+    <div style={{ marginTop: '8px' }}>
+      <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '6px' }}>
+        Black and White Preview:
       </p>
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-        {previews.map((src, i) => (
+        {(form.imageBWPreviews?.length > 0
+          ? form.imageBWPreviews
+          : [editingProduct?.imageBW]
+        ).map((src, i) => (
           <div key={i} style={{ position: 'relative' }}>
-            <img src={src} alt={'preview ' + i} style={{
-              width: '80px', height: '100px',
-              objectFit: 'contain', borderRadius: '6px',
-              border: i === 0 ? '2px solid #1A1714' : '1px solid #E8E2D9',
-              background: '#F5F5F5'
+            <img src={src} alt={'bw ' + i} style={{
+              width: '72px', height: '90px', objectFit: 'contain',
+              borderRadius: '6px', background: '#F5F5F5',
+              border: i === 0 ? '2px solid #1A1714' : '1px solid #E8E2D9'
             }} />
             {i === 0 && (
               <span style={{
-                position: 'absolute', bottom: '4px',
-                left: 0, right: 0, textAlign: 'center',
-                fontSize: '9px', background: 'rgba(0,0,0,0.6)',
-                color: 'white', padding: '2px 0',
-                borderRadius: '0 0 4px 4px'
+                position: 'absolute', bottom: '4px', left: 0, right: 0,
+                textAlign: 'center', fontSize: '9px',
+                background: 'rgba(0,0,0,0.6)', color: 'white',
+                padding: '2px 0', borderRadius: '0 0 4px 4px'
               }}>Main</span>
             )}
           </div>
@@ -590,6 +533,53 @@ export default function Dashboard() {
     </div>
   )}
 </div>
+
+                  {/* Color Images */}
+<div style={{ gridColumn: '1 / -1' }}>
+  <label style={labelStyle}>Color Images (up to 5)</label>
+  <input
+    type="file" accept="image/*" multiple
+    onChange={e => {
+      const files = Array.from(e.target.files).slice(0, 5)
+      const previews = files.map(f => URL.createObjectURL(f))
+      setForm({ ...form, imageColorFiles: files, imageColorPreviews: previews })
+    }}
+    style={{ ...inputStyle, padding: '8px' }}
+  />
+  <p style={{ fontSize: '11px', color: '#8B7355', marginTop: '4px' }}>
+    First image is the main display photo.
+  </p>
+  {(form.imageColorPreviews?.length > 0 || editingProduct?.imageColor) && (
+    <div style={{ marginTop: '8px' }}>
+      <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '6px' }}>
+        Color Preview:
+      </p>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {(form.imageColorPreviews?.length > 0
+          ? form.imageColorPreviews
+          : [editingProduct?.imageColor]
+        ).map((src, i) => (
+          <div key={i} style={{ position: 'relative' }}>
+            <img src={src} alt={'color ' + i} style={{
+              width: '72px', height: '90px', objectFit: 'contain',
+              borderRadius: '6px', background: '#F5F5F5',
+              border: i === 0 ? '2px solid #1A1714' : '1px solid #E8E2D9'
+            }} />
+            {i === 0 && (
+              <span style={{
+                position: 'absolute', bottom: '4px', left: 0, right: 0,
+                textAlign: 'center', fontSize: '9px',
+                background: 'rgba(0,0,0,0.6)', color: 'white',
+                padding: '2px 0', borderRadius: '0 0 4px 4px'
+              }}>Main</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+                  
 
                   {/* Product Tags */}
                   <div style={{ gridColumn: '1 / -1' }}>

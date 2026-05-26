@@ -113,23 +113,31 @@ export default function ProductDetail() {
     } catch (err) { console.error(err) }
   }
 
-  const getDisplayImage = () => {
-    if (selectedColor === "Black and White" && product.imageBW) return product.imageBW
-    if (selectedColor === "Color" && product.imageColor) return product.imageColor
-    const allImages = product.images && product.images.length > 0
-      ? product.images : product.image ? [product.image] : []
-    return allImages[activeImg] || null
+const getDisplayImage = () => {
+  if (selectedColor === "Black and White") {
+    if (product.imagesBW && product.imagesBW.length > 0) return product.imagesBW[activeImg] || product.imagesBW[0]
+    if (product.imageBW) return product.imageBW
   }
+  if (selectedColor === "Color") {
+    if (product.imagesColor && product.imagesColor.length > 0) return product.imagesColor[activeImg] || product.imagesColor[0]
+    if (product.imageColor) return product.imageColor
+  }
+  if (product.images && product.images.length > 0) return product.images[activeImg] || product.images[0]
+  return product.image || null
+}
 
-  const getAllImages = () => {
-    if (product.imageBW && product.imageColor) {
-      return selectedColor === "Black and White"
-        ? [product.imageBW]
-        : [product.imageColor]
-    }
-    return product.images && product.images.length > 0
-      ? product.images : product.image ? [product.image] : []
+const getAllImages = () => {
+  if (selectedColor === "Black and White") {
+    if (product.imagesBW && product.imagesBW.length > 0) return product.imagesBW
+    if (product.imageBW) return [product.imageBW]
   }
+  if (selectedColor === "Color") {
+    if (product.imagesColor && product.imagesColor.length > 0) return product.imagesColor
+    if (product.imageColor) return [product.imageColor]
+  }
+  if (product.images && product.images.length > 0) return product.images
+  return product.image ? [product.image] : []
+}
 
   const handleAddToCart = () => {
     addToCart(
@@ -200,7 +208,7 @@ export default function ProductDetail() {
                 padding: "10px 0", background: "white",
                 borderBottom: "1px solid #E8E2D9"
               }}>
-                <button onClick={() => setActiveImg(i => Math.max(0, i - 1))} style={{
+                <button onClick={() => { setSelectedColor(color); setActiveImg(0) }} style={{
                   background: "none", border: "none", cursor: "pointer",
                   fontSize: "16px", color: "#1A1714"
                 }}>{"<"}</button>

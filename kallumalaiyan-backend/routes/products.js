@@ -23,9 +23,8 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", upload.fields([
-  { name: "imageBW", maxCount: 1 },
-  { name: "imageColor", maxCount: 1 },
-  { name: "images", maxCount: 5 }
+  { name: "imageBW", maxCount: 5 },
+  { name: "imageColor", maxCount: 5 }
 ]), async (req, res) => {
   try {
     const productData = {
@@ -43,21 +42,20 @@ router.post("/", upload.fields([
     };
 
     if (req.files) {
-      if (req.files.imageBW && req.files.imageBW[0]) {
-        const r = await uploadToCloudinary(req.files.imageBW[0].buffer, req.files.imageBW[0].originalname);
-        productData.imageBW = r.secure_url;
-        productData.image = r.secure_url;
-      }
-      if (req.files.imageColor && req.files.imageColor[0]) {
-        const r = await uploadToCloudinary(req.files.imageColor[0].buffer, req.files.imageColor[0].originalname);
-        productData.imageColor = r.secure_url;
-      }
-      if (req.files.images && req.files.images.length > 0) {
+      if (req.files.imageBW && req.files.imageBW.length > 0) {
         const urls = await Promise.all(
-          req.files.images.map(f => uploadToCloudinary(f.buffer, f.originalname))
+          req.files.imageBW.map(f => uploadToCloudinary(f.buffer, f.originalname))
         );
-        productData.images = urls.map(r => r.secure_url);
-        if (!productData.image) productData.image = productData.images[0];
+        productData.imagesBW = urls.map(r => r.secure_url);
+        productData.imageBW = productData.imagesBW[0];
+        productData.image = productData.imageBW;
+      }
+      if (req.files.imageColor && req.files.imageColor.length > 0) {
+        const urls = await Promise.all(
+          req.files.imageColor.map(f => uploadToCloudinary(f.buffer, f.originalname))
+        );
+        productData.imagesColor = urls.map(r => r.secure_url);
+        productData.imageColor = productData.imagesColor[0];
       }
     }
 
@@ -69,9 +67,8 @@ router.post("/", upload.fields([
 });
 
 router.put("/:id", upload.fields([
-  { name: "imageBW", maxCount: 1 },
-  { name: "imageColor", maxCount: 1 },
-  { name: "images", maxCount: 5 }
+  { name: "imageBW", maxCount: 5 },
+  { name: "imageColor", maxCount: 5 }
 ]), async (req, res) => {
   try {
     const updateData = {
@@ -85,20 +82,20 @@ router.put("/:id", upload.fields([
     };
 
     if (req.files) {
-      if (req.files.imageBW && req.files.imageBW[0]) {
-        const r = await uploadToCloudinary(req.files.imageBW[0].buffer, req.files.imageBW[0].originalname);
-        updateData.imageBW = r.secure_url;
-        updateData.image = r.secure_url;
-      }
-      if (req.files.imageColor && req.files.imageColor[0]) {
-        const r = await uploadToCloudinary(req.files.imageColor[0].buffer, req.files.imageColor[0].originalname);
-        updateData.imageColor = r.secure_url;
-      }
-      if (req.files.images && req.files.images.length > 0) {
+      if (req.files.imageBW && req.files.imageBW.length > 0) {
         const urls = await Promise.all(
-          req.files.images.map(f => uploadToCloudinary(f.buffer, f.originalname))
+          req.files.imageBW.map(f => uploadToCloudinary(f.buffer, f.originalname))
         );
-        updateData.images = urls.map(r => r.secure_url);
+        updateData.imagesBW = urls.map(r => r.secure_url);
+        updateData.imageBW = updateData.imagesBW[0];
+        updateData.image = updateData.imageBW;
+      }
+      if (req.files.imageColor && req.files.imageColor.length > 0) {
+        const urls = await Promise.all(
+          req.files.imageColor.map(f => uploadToCloudinary(f.buffer, f.originalname))
+        );
+        updateData.imagesColor = urls.map(r => r.secure_url);
+        updateData.imageColor = updateData.imagesColor[0];
       }
     }
 

@@ -9,7 +9,9 @@ const ProductSchema = new mongoose.Schema({
   image: String,
   images: [String],
   imageBW: String,
+  imagesBW: [String],
   imageColor: String,
+  imagesColor: [String],
   variants: {
     colors: [String],
     sizes: [String]
