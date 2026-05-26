@@ -1,132 +1,159 @@
-import Navbar from '../components/Navbar'
-import { useCart } from '../context/CartContext'
-import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom"
+import Navbar from "../components/Navbar"
+import { useCart } from "../context/CartContext"
 
 export default function Cart() {
   const { cartItems, removeFromCart, total } = useCart()
+  const navigate = useNavigate()
 
   return (
-    <div>
+    <div style={{ background: "white", minHeight: "100vh" }}>
       <Navbar />
 
-      <div style={{ maxWidth: '700px', margin: '0 auto', padding: '40px 32px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: '300', marginBottom: '24px' }}>
-          Your Cart
-        </h1>
+      <div style={{ padding: "20px" }}>
+        <div style={{
+          display: "flex", justifyContent: "space-between",
+          alignItems: "center", marginBottom: "16px"
+        }}>
+          <h1 style={{ fontSize: "18px", fontWeight: "700" }}>Your Cart</h1>
+          <button
+            onClick={() => navigate("/shop")}
+            style={{
+              background: "none", border: "none",
+              cursor: "pointer", fontSize: "13px",
+              color: "#888", textDecoration: "underline"
+            }}
+          >
+            Continue Shopping
+          </button>
+        </div>
 
-        {/* Empty Cart */}
-        {cartItems.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <p style={{ fontSize: '18px', color: '#8B7355', marginBottom: '24px' }}>
-              Your cart is empty!
-            </p>
-            <Link to="/shop" style={{
-              background: '#1A1714',
-              color: 'white',
-              padding: '12px 32px',
-              textDecoration: 'none',
-              borderRadius: '4px',
-              fontSize: '14px'
-            }}>
-              Go Shop
-            </Link>
+        {cartItems.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 0" }}>
+            <p style={{ color: "#888", marginBottom: "20px" }}>Your cart is empty</p>
+            <button onClick={() => navigate("/shop")} style={{
+              background: "#1A1714", color: "white", border: "none",
+              padding: "12px 28px", borderRadius: "6px", cursor: "pointer"
+            }}>Shop Now</button>
           </div>
-        )}
-
-        {/* Cart Items */}
-        {cartItems.map(item => (
-          <div key={item.key} style={{
-            display: 'grid',
-            gridTemplateColumns: '80px 1fr auto',
-            gap: '16px',
-            padding: '20px 0',
-            borderBottom: '1px solid #E8E2D9',
-            alignItems: 'center'
-          }}>
-            {/* Image */}
+        ) : (
+          <>
             <div style={{
-              width: '80px',
-              height: '80px',
-              background: 'linear-gradient(135deg, #EDE8E0, #D4C8B8)',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '32px'
+              display: "flex", justifyContent: "space-between",
+              padding: "8px 0", borderBottom: "1px solid #E8E2D9",
+              marginBottom: "12px"
             }}>
-              {item.product.emoji}
+              <p style={{ fontSize: "11px", color: "#888", letterSpacing: "0.1em" }}>PRODUCT</p>
+              <p style={{ fontSize: "11px", color: "#888", letterSpacing: "0.1em" }}>TOTAL</p>
             </div>
 
-            {/* Info */}
-            <div>
-              <p style={{ fontWeight: '500', fontSize: '16px', marginBottom: '4px' }}>
-                {item.product.name}
+            {cartItems.map(item => {
+              const img = item.product.images && item.product.images.length > 0
+                ? item.product.images[0] : item.product.image
+              return (
+                <div key={item.key} style={{
+                  display: "flex", gap: "12px",
+                  padding: "16px 0", borderBottom: "1px solid #E8E2D9"
+                }}>
+                  <img src={img} alt={item.product.name} style={{
+                    width: "80px", height: "100px",
+                    objectFit: "contain", borderRadius: "6px",
+                    border: "1px solid #E8E2D9", background: "#F5F5F5"
+                  }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      display: "flex", justifyContent: "space-between",
+                      marginBottom: "4px"
+                    }}>
+                      <p style={{ fontSize: "14px", fontWeight: "700" }}>
+                        {item.product.name}
+                      </p>
+                      <p style={{ fontSize: "14px", fontWeight: "700" }}>
+                        RM {item.product.price * item.qty}.00
+                      </p>
+                    </div>
+                    <p style={{ fontSize: "12px", color: "#666", marginBottom: "2px" }}>
+                      Sketch Style: {item.variant.color}
+                    </p>
+                    <p style={{ fontSize: "12px", color: "#666", marginBottom: "12px" }}>
+                      Size: {item.variant.size}
+                    </p>
+                    <div style={{
+                      display: "flex", alignItems: "center",
+                      gap: "0", border: "1px solid #E8E2D9",
+                      borderRadius: "6px", width: "fit-content"
+                    }}>
+                      <button style={{
+                        background: "none", border: "none",
+                        cursor: "pointer", padding: "6px 12px", fontSize: "16px"
+                      }}>-</button>
+                      <span style={{
+                        padding: "6px 12px", fontSize: "13px",
+                        borderLeft: "1px solid #E8E2D9",
+                        borderRight: "1px solid #E8E2D9"
+                      }}>{item.qty}</span>
+                      <button style={{
+                        background: "none", border: "none",
+                        cursor: "pointer", padding: "6px 12px", fontSize: "16px"
+                      }}>+</button>
+                      <button
+                        onClick={() => removeFromCart(item.key)}
+                        style={{
+                          background: "none", border: "none",
+                          cursor: "pointer", padding: "6px 12px",
+                          fontSize: "14px", color: "#888",
+                          borderLeft: "1px solid #E8E2D9"
+                        }}
+                      >
+                        🗑
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+
+            <div style={{ padding: "20px 0" }}>
+              <div style={{
+                display: "flex", justifyContent: "space-between",
+                marginBottom: "6px"
+              }}>
+                <p style={{ fontSize: "14px", fontWeight: "700" }}>Estimated Total Cost</p>
+                <p style={{ fontSize: "14px", fontWeight: "700" }}>RM {total}.00</p>
+              </div>
+              <p style={{ fontSize: "12px", color: "#888", marginBottom: "20px" }}>
+                Taxes and shipping fee will be calculated at checkout
               </p>
-              <p style={{ fontSize: '12px', color: '#8B7355', marginBottom: '4px' }}>
-                {item.variant.color} · {item.variant.size} · Qty: {item.qty}
-              </p>
-              <p style={{ fontSize: '14px', fontWeight: '500' }}>
-                RM {item.product.price * item.qty}.00
-              </p>
+              <button
+                onClick={() => navigate("/checkout")}
+                style={{
+                  width: "100%", padding: "14px",
+                  background: "#1A1714", color: "white",
+                  border: "none", borderRadius: "6px",
+                  cursor: "pointer", fontSize: "14px",
+                  fontFamily: "inherit"
+                }}
+              >
+                Checkout
+              </button>
             </div>
-
-            {/* Remove Button */}
-            <button
-              onClick={() => removeFromCart(item.key)}
-              style={{
-                background: 'none',
-                border: '1px solid #E8E2D9',
-                borderRadius: '4px',
-                padding: '6px 12px',
-                cursor: 'pointer',
-                fontSize: '12px',
-                color: '#8B7355'
-              }}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-
-        {/* Summary */}
-        {cartItems.length > 0 && (
-          <div style={{
-            marginTop: '24px',
-            padding: '24px',
-            background: 'white',
-            border: '1px solid #E8E2D9',
-            borderRadius: '8px'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #E8E2D9', fontSize: '14px', color: '#3D3830' }}>
-              <span>Subtotal</span>
-              <span>RM {total}.00</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #E8E2D9', fontSize: '14px', color: '#3D3830' }}>
-              <span>Shipping</span>
-              <span>RM 8.00</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 0', fontSize: '18px', fontWeight: '500' }}>
-              <span>Total</span>
-              <span>RM {total + 8}.00</span>
-            </div>
-
-            <Link to="/checkout" style={{
-              display: 'block',
-              textAlign: 'center',
-              marginTop: '20px',
-              background: '#1A1714',
-              color: 'white',
-              padding: '14px',
-              textDecoration: 'none',
-              borderRadius: '4px',
-              fontSize: '14px',
-              letterSpacing: '0.08em'
-            }}>
-              Proceed to Checkout
-            </Link>
-          </div>
+          </>
         )}
       </div>
+
+      <footer style={{
+        background: "white", borderTop: "1px solid #E8E2D9",
+        padding: "32px 20px 20px"
+      }}>
+        <div style={{ borderTop: "1px solid #E8E2D9", paddingTop: "16px" }}>
+          <p style={{ fontSize: "12px", color: "#888", textAlign: "center", marginBottom: "4px" }}>
+            @Kallumalaiyan Sketch Art. All right reserved.
+          </p>
+          <p style={{ fontSize: "11px", color: "#aaa", textAlign: "center" }}>
+            Powered by TechMentor Solutions
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

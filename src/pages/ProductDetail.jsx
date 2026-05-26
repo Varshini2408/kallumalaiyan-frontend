@@ -1,33 +1,37 @@
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import Navbar from '../components/Navbar'
-import { useCart } from '../context/CartContext'
+import { useState, useEffect } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import Navbar from "../components/Navbar"
+import { useCart } from "../context/CartContext"
 
-const API = 'https://kallumalaiyan-backend.onrender.com'
-const colors = ['Black and White', 'Color']
-const sizes = ['A4', 'A3']
-const sizePrices = { 'A4': 60, 'A3': 80 }
+const API = "https://kallumalaiyan-backend.onrender.com"
+const colors = ["Black and White", "Color"]
+const sizes = ["A4 (8.3 x 11.1 Inc)", "A3 (11.7 x 16.5 Inc)"]
+const sizePrices = { "A4 (8.3 x 11.1 Inc)": 60, "A3 (11.7 x 16.5 Inc)": 80 }
 
 export default function ProductDetail() {
   const { id } = useParams()
   const { addToCart } = useCart()
+  const navigate = useNavigate()
 
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [selectedColor, setSelectedColor] = useState('Black and White')
-  const [selectedSize, setSelectedSize] = useState('A4')
+  const [relatedProducts, setRelatedProducts] = useState([])
+  const [allProducts, setAllProducts] = useState([])
+  const [selectedColor, setSelectedColor] = useState("Black and White")
+  const [selectedSize, setSelectedSize] = useState("A4 (8.3 x 11.1 Inc)")
   const [qty, setQty] = useState(1)
-  const [added, setAdded] = useState(false)
   const [activeImg, setActiveImg] = useState(0)
-  const [lightbox, setLightbox] = useState(false)
+  const [showCartPopup, setShowCartPopup] = useState(false)
 
   useEffect(() => {
     fetchProduct()
+    fetchAllProducts()
+    window.scrollTo(0, 0)
   }, [id])
 
   const fetchProduct = async () => {
     try {
-      const res = await fetch(API + '/api/products/' + id)
+      const res = await fetch(API + "/api/products/" + id)
       const data = await res.json()
       setProduct(data)
     } catch (err) {
@@ -36,263 +40,378 @@ export default function ProductDetail() {
     setLoading(false)
   }
 
+  const fetchAllProducts = async () => {
+    try {
+      const res = await fetch(API + "/api/products")
+      const data = await res.json()
+      setAllProducts(Array.isArray(data) ? data : [])
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => {
+    if (product && allProducts.length > 0) {
+      const related = allProducts
+        .filter(p => p.category === product.category && p._id !== product._id)
+        .slice(0, 4)
+      setRelatedProducts(related)
+    }
+  }, [product, allProducts])
+
   const handleAddToCart = () => {
     addToCart(
-  { ...product, price: sizePrices[selectedSize] },
-  { color: selectedColor, size: selectedSize },
-  qty
-)
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2000)
+      { ...product, price: sizePrices[selectedSize] },
+      { color: selectedColor, size: selectedSize },
+      qty
+    )
+    setShowCartPopup(true)
   }
 
   if (loading) return (
-    <div><Navbar />
-      <p style={{ padding: '60px', textAlign: 'center', color: '#8B7355' }}>
-        Loading...
-      </p>
+    <div style={{ background: "white", minHeight: "100vh" }}>
+      <Navbar />
+      <p style={{ textAlign: "center", padding: "60px", color: "#888" }}>Loading...</p>
     </div>
   )
 
   if (!product) return (
-    <div><Navbar />
-      <div style={{ padding: '60px', textAlign: 'center' }}>
-        <h2>Product not found!</h2>
-        <a href="/shop">Back to Shop</a>
+    <div style={{ background: "white", minHeight: "100vh" }}>
+      <Navbar />
+      <div style={{ padding: "40px", textAlign: "center" }}>
+        <p style={{ marginBottom: "16px" }}>Product not found</p>
+        <button onClick={() => navigate("/shop")} style={{
+          background: "#1A1714", color: "white", border: "none",
+          padding: "10px 24px", borderRadius: "6px", cursor: "pointer"
+        }}>Back to Shop</button>
       </div>
     </div>
   )
 
   const allImages = product.images && product.images.length > 0
-    ? product.images
-    : product.image ? [product.image] : []
+    ? product.images : product.image ? [product.image] : []
 
   return (
-    <div>
+    <div style={{ background: "white", minHeight: "100vh" }}>
       <Navbar />
 
-      <div style={{ padding: '12px 24px', fontSize: '12px', color: '#8B7355',
-        borderBottom: '1px solid #E8E2D9' }}>
-        <a href="/" style={{ color: '#8B7355' }}>Home</a> &nbsp;/&nbsp;
-        <a href="/shop" style={{ color: '#8B7355' }}>Shop</a> &nbsp;/&nbsp;
-        {product.name}
-      </div>
-
-      <div
-        className="detail-grid"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '40px',
-          padding: '40px 24px',
-          maxWidth: '900px',
-          margin: '0 auto'
-        }}
-      >
-        {/* Left - Image Gallery */}
-        <div>
-          <div
-            onClick={() => allImages.length > 0 && setLightbox(true)}
-            style={{
-              background: 'linear-gradient(135deg, #EDE8E0, #D4C8B8)',
-              borderRadius: '8px',
-              aspectRatio: '1',
-              maxHeight: '400px',
-              display: 'flex', alignItems: 'center',
-              justifyContent: 'center', fontSize: '100px',
-              overflow: 'hidden', marginBottom: '12px',
-              cursor: allImages.length > 0 ? 'zoom-in' : 'default'
-            }}
-          >
-            {allImages.length > 0 ? (
-              <img src={allImages[activeImg]} alt={product.name}
-                style={{ width: '100%', height: '100%',
-                  objectFit: 'cover', borderRadius: '8px' }} />
-            ) : (
-              product.emoji || '🎨'
-            )}
-          </div>
-
-          {allImages.length > 0 && (
-            <p style={{ fontSize: '11px', color: '#8B7355',
-              textAlign: 'center', marginBottom: '10px' }}>
-              Click image to zoom
-            </p>
-          )}
-
-          {allImages.length > 1 && (
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {allImages.map((img, i) => (
-                <div key={i} onClick={() => setActiveImg(i)} style={{
-                  width: '64px', height: '64px', borderRadius: '6px',
-                  overflow: 'hidden', cursor: 'pointer',
-                  border: activeImg === i ? '2px solid #1A1714' : '1px solid #E8E2D9',
-                  opacity: activeImg === i ? 1 : 0.7,
-                  transition: 'opacity 0.2s'
-                }}>
-                  <img src={img} alt={'thumb ' + i}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-              ))}
-            </div>
+      {/* Product Image */}
+      <div style={{ position: "relative", background: "#F5F5F5" }}>
+        <div style={{ aspectRatio: "4/3", overflow: "hidden" }}>
+          {allImages.length > 0 ? (
+            <img src={allImages[activeImg]} alt={product.name} style={{
+              width: "100%", height: "100%", objectFit: "contain"
+            }} />
+          ) : (
+            <div style={{
+              width: "100%", height: "100%", display: "flex",
+              alignItems: "center", justifyContent: "center", fontSize: "80px"
+            }}>🎨</div>
           )}
         </div>
 
-        {/* Right - Product Info */}
-        <div>
-          <p style={{ fontSize: '11px', letterSpacing: '0.12em',
-            color: '#8B7355', marginBottom: '8px' }}>
-            {product.category}
-          </p>
-          <h1 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: '400',
-            marginBottom: '8px', color: '#1A1714' }}>
+        {/* Image pagination dots */}
+        {allImages.length > 1 && (
+          <div style={{
+            display: "flex", justifyContent: "center",
+            alignItems: "center", gap: "8px", padding: "10px 0",
+            background: "white"
+          }}>
+            <button onClick={() => setActiveImg(i => Math.max(0, i - 1))} style={{
+              background: "none", border: "none", cursor: "pointer",
+              fontSize: "16px", color: "#1A1714"
+            }}>{"<"}</button>
+            {allImages.map((_, i) => (
+              <button key={i} onClick={() => setActiveImg(i)} style={{
+                background: "none", border: "none", cursor: "pointer",
+                fontSize: "14px", fontWeight: activeImg === i ? "700" : "400",
+                color: "#1A1714",
+                borderBottom: activeImg === i ? "2px solid #1A1714" : "none"
+              }}>{i + 1}</button>
+            ))}
+            <button onClick={() => setActiveImg(i => Math.min(allImages.length - 1, i + 1))} style={{
+              background: "none", border: "none", cursor: "pointer",
+              fontSize: "16px", color: "#1A1714"
+            }}>{">"}</button>
+          </div>
+        )}
+      </div>
+
+      {/* Product Info */}
+      <div style={{ padding: "16px 20px" }}>
+        <div style={{
+          display: "flex", justifyContent: "space-between",
+          alignItems: "flex-start", marginBottom: "16px"
+        }}>
+          <h1 style={{ fontSize: "18px", fontWeight: "700", color: "#1A1714", margin: 0 }}>
             {product.name}
           </h1>
-          <p style={{ fontSize: '22px', fontWeight: '500',
-  marginBottom: '20px', color: '#3D3830' }}>
-  RM {sizePrices[selectedSize]}.00
-</p>
-          <p style={{ fontSize: '14px', lineHeight: '1.8',
-            color: '#3D3830', marginBottom: '28px' }}>
-            {product.description}
-          </p>
-
-          <p style={{ fontSize: '11px', letterSpacing: '0.1em',
-            marginBottom: '10px', fontWeight: '500' }}>COLOR</p>
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-            {colors.map(color => (
-              <button key={color} onClick={() => setSelectedColor(color)} style={{
-                padding: '8px 18px',
-                border: '1px solid ' + (selectedColor === color ? '#1A1714' : '#E8E2D9'),
-                borderRadius: '4px',
-                background: selectedColor === color ? '#1A1714' : 'white',
-                color: selectedColor === color ? 'white' : '#1A1714',
-                cursor: 'pointer', fontSize: '13px'
-              }}>{color}</button>
-            ))}
-          </div>
-
-          <p style={{ fontSize: '11px', letterSpacing: '0.1em',
-            marginBottom: '10px', fontWeight: '500' }}>SIZE</p>
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', flexWrap: 'wrap' }}>
-            {sizes.map(size => (
-              <button key={size} onClick={() => setSelectedSize(size)} style={{
-                padding: '8px 18px',
-                border: '1px solid ' + (selectedSize === size ? '#1A1714' : '#E8E2D9'),
-                borderRadius: '4px',
-                background: selectedSize === size ? '#1A1714' : 'white',
-                color: selectedSize === size ? 'white' : '#1A1714',
-                cursor: 'pointer', fontSize: '13px'
-              }}>{size}</button>
-            ))}
-          </div>
-
-          <p style={{ fontSize: '11px', letterSpacing: '0.1em',
-            marginBottom: '10px', fontWeight: '500' }}>QUANTITY</p>
-          <div style={{ display: 'flex', alignItems: 'center',
-            gap: '16px', marginBottom: '24px' }}>
-            <button onClick={() => setQty(q => Math.max(1, q - 1))} style={{
-              width: '36px', height: '36px', border: '1px solid #E8E2D9',
-              background: 'white', borderRadius: '4px',
-              fontSize: '18px', cursor: 'pointer'
-            }}>−</button>
-            <span style={{ fontSize: '16px', fontWeight: '500',
-              minWidth: '24px', textAlign: 'center' }}>
-              {qty}
-            </span>
-            <button onClick={() => setQty(q => q + 1)} style={{
-              width: '36px', height: '36px', border: '1px solid #E8E2D9',
-              background: 'white', borderRadius: '4px',
-              fontSize: '18px', cursor: 'pointer'
-            }}>+</button>
-          </div>
-
-          <button onClick={handleAddToCart} style={{
-            width: '100%', padding: '14px',
-            background: added ? '#3B6D11' : '#1A1714',
-            color: 'white', border: 'none', borderRadius: '4px',
-            fontSize: '14px', letterSpacing: '0.1em', cursor: 'pointer',
-            transition: 'background 0.3s'
-          }}>
-            {added ? '✓ Added to Cart!' : 'Add to Cart — RM ' + (sizePrices[selectedSize] * qty) + '.00'}
-          </button>
-
-          <p style={{ fontSize: '12px', color: '#8B7355',
-            marginTop: '16px', lineHeight: '1.8' }}>
-            ✦ Hand-drawn original &nbsp;·&nbsp;
-            ✦ Ships in 7 days &nbsp;·&nbsp;
-            ✦ Framing available
+          <p style={{ fontSize: "18px", fontWeight: "700", margin: 0, whiteSpace: "nowrap" }}>
+            RM{sizePrices[selectedSize]}.00
           </p>
         </div>
-      </div>
 
-      {/* Lightbox */}
-      {lightbox && (
-        <div
-          onClick={() => setLightbox(false)}
+        {/* Sketch Style */}
+        <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "10px" }}>Sketch Style</p>
+        <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+          {colors.map(color => (
+            <button
+              key={color}
+              onClick={() => setSelectedColor(color)}
+              style={{
+                flex: 1, padding: "10px",
+                border: "1px solid #1A1714", borderRadius: "6px",
+                background: selectedColor === color ? "#1A1714" : "white",
+                color: selectedColor === color ? "white" : "#1A1714",
+                cursor: "pointer", fontSize: "13px", fontFamily: "inherit"
+              }}
+            >
+              {color}
+            </button>
+          ))}
+        </div>
+
+        {/* Size */}
+        <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "10px" }}>Size</p>
+        <div style={{
+          display: "grid", gridTemplateColumns: "1fr 1fr",
+          gap: "10px", marginBottom: "16px"
+        }}>
+          {sizes.map(size => (
+            <button
+              key={size}
+              onClick={() => setSelectedSize(size)}
+              style={{
+                padding: "10px 8px",
+                border: "1px solid #1A1714", borderRadius: "6px",
+                background: selectedSize === size ? "#1A1714" : "white",
+                color: selectedSize === size ? "white" : "#1A1714",
+                cursor: "pointer", fontSize: "12px", fontFamily: "inherit"
+              }}
+            >
+              {size}
+            </button>
+          ))}
+        </div>
+
+        {/* Quantity */}
+        <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "10px" }}>Quantity</p>
+        <div style={{
+          display: "flex", alignItems: "center", gap: "0",
+          border: "1px solid #E8E2D9", borderRadius: "6px",
+          width: "fit-content", marginBottom: "20px"
+        }}>
+          <button onClick={() => setQty(q => Math.max(1, q - 1))} style={{
+            background: "none", border: "none", cursor: "pointer",
+            padding: "8px 16px", fontSize: "18px", color: "#1A1714"
+          }}>-</button>
+          <span style={{
+            padding: "8px 16px", fontSize: "14px",
+            borderLeft: "1px solid #E8E2D9", borderRight: "1px solid #E8E2D9"
+          }}>{qty}</span>
+          <button onClick={() => setQty(q => q + 1)} style={{
+            background: "none", border: "none", cursor: "pointer",
+            padding: "8px 16px", fontSize: "18px", color: "#1A1714"
+          }}>+</button>
+        </div>
+
+        {/* Add to Cart */}
+        <button
+          onClick={handleAddToCart}
           style={{
-            position: 'fixed', top: 0, left: 0,
-            width: '100vw', height: '100vh',
-            background: 'rgba(0,0,0,0.92)',
-            display: 'flex', alignItems: 'center',
-            justifyContent: 'center', zIndex: 1000, cursor: 'zoom-out'
+            width: "100%", padding: "14px",
+            border: "1px solid #1A1714", borderRadius: "6px",
+            background: "white", color: "#1A1714",
+            cursor: "pointer", fontSize: "14px",
+            fontFamily: "inherit", fontWeight: "500",
+            marginBottom: "20px"
           }}
         >
-          <img
-            src={allImages[activeImg]}
-            alt="fullscreen"
+          Add to Cart
+        </button>
+
+        {/* Order comes with */}
+        {product.description && (
+          <div style={{ marginBottom: "20px" }}>
+            <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "8px" }}>
+              Order comes with:
+            </p>
+            <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.7" }}>
+              {product.description}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* You May Also Like */}
+      {relatedProducts.length > 0 && (
+        <>
+          <div style={{
+            background: "#F0F0F0", padding: "12px 20px", marginBottom: "16px"
+          }}>
+            <h2 style={{
+              fontSize: "16px", fontWeight: "700",
+              color: "#1A1714", margin: 0, textAlign: "center"
+            }}>You May Also Like</h2>
+          </div>
+          <div style={{ padding: "0 20px 32px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              {relatedProducts.map(p => {
+                const img = p.images && p.images.length > 0 ? p.images[0] : p.image
+                return (
+                  <div
+                    key={p._id}
+                    onClick={() => navigate("/product/" + p._id)}
+                    style={{
+                      border: "1px solid #E8E2D9", borderRadius: "8px",
+                      overflow: "hidden", cursor: "pointer"
+                    }}
+                  >
+                    <div style={{ aspectRatio: "3/4", overflow: "hidden", background: "#F5F5F5" }}>
+                      {img ? (
+                        <img src={img} alt={p.name} style={{
+                          width: "100%", height: "100%", objectFit: "contain"
+                        }} />
+                      ) : (
+                        <div style={{
+                          width: "100%", height: "100%", display: "flex",
+                          alignItems: "center", justifyContent: "center", fontSize: "40px"
+                        }}>🎨</div>
+                      )}
+                    </div>
+                    <div style={{ padding: "10px 12px", textAlign: "center" }}>
+                      <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>
+                        {p.name}
+                      </p>
+                      <p style={{ fontSize: "12px", color: "#666" }}>From RM {p.price}</p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Footer */}
+      <footer style={{
+        background: "white", borderTop: "1px solid #E8E2D9",
+        padding: "32px 20px 20px"
+      }}>
+        <div style={{ marginBottom: "20px" }}>
+          <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Quick Link</p>
+          {[
+            { label: "Home", href: "/" },
+            { label: "Shop", href: "/shop" },
+            { label: "About", href: "/about" },
+            { label: "Enquiry", href: "/enquiry" },
+          ].map(l => (
+            <a key={l.label} href={l.href} style={{
+              display: "block", fontSize: "13px", color: "#555",
+              textDecoration: "none", marginBottom: "6px"
+            }}>{l.label}</a>
+          ))}
+        </div>
+        <div style={{ borderTop: "1px solid #E8E2D9", paddingTop: "16px" }}>
+          <p style={{ fontSize: "12px", color: "#888", textAlign: "center", marginBottom: "4px" }}>
+            @Kallumalaiyan Sketch Art. All right reserved.
+          </p>
+          <p style={{ fontSize: "11px", color: "#aaa", textAlign: "center" }}>
+            Powered by TechMentor Solutions
+          </p>
+        </div>
+      </footer>
+
+      {/* Add to Cart Popup */}
+      {showCartPopup && (
+        <>
+          <div
+            onClick={() => setShowCartPopup(false)}
             style={{
-              maxWidth: '90%', maxHeight: '88vh',
-              objectFit: 'contain', borderRadius: '4px'
+              position: "fixed", top: 0, left: 0,
+              width: "100vw", height: "100vh",
+              background: "rgba(0,0,0,0.3)", zIndex: 200
             }}
           />
-
-          {allImages.length > 1 && activeImg > 0 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); setActiveImg(i => i - 1) }}
-              style={{
-                position: 'absolute', left: '16px',
-                background: 'rgba(255,255,255,0.15)', color: 'white',
-                border: 'none', borderRadius: '50%',
-                width: '48px', height: '48px', fontSize: '22px', cursor: 'pointer'
-              }}
-            >‹</button>
-          )}
-
-          {allImages.length > 1 && activeImg < allImages.length - 1 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); setActiveImg(i => i + 1) }}
-              style={{
-                position: 'absolute', right: '16px',
-                background: 'rgba(255,255,255,0.15)', color: 'white',
-                border: 'none', borderRadius: '50%',
-                width: '48px', height: '48px', fontSize: '22px', cursor: 'pointer'
-              }}
-            >›</button>
-          )}
-
-          {allImages.length > 1 && (
+          <div style={{
+            position: "fixed", bottom: 0, left: 0, right: 0,
+            background: "white", zIndex: 201,
+            borderRadius: "16px 16px 0 0",
+            padding: "24px 20px",
+            boxShadow: "0 -4px 20px rgba(0,0,0,0.1)"
+          }}>
             <div style={{
-              position: 'absolute', bottom: '20px',
-              background: 'rgba(0,0,0,0.5)', color: 'white',
-              padding: '6px 14px', borderRadius: '20px', fontSize: '13px'
+              display: "flex", justifyContent: "space-between",
+              alignItems: "center", marginBottom: "16px"
             }}>
-              {activeImg + 1} / {allImages.length}
+              <p style={{ fontSize: "14px", fontWeight: "600" }}>
+                (1) Item added to your cart
+              </p>
+              <button onClick={() => setShowCartPopup(false)} style={{
+                background: "none", border: "none",
+                cursor: "pointer", fontSize: "18px"
+              }}>X</button>
             </div>
-          )}
 
-          <button
-            onClick={() => setLightbox(false)}
-            style={{
-              position: 'absolute', top: '16px', right: '16px',
-              background: 'rgba(255,255,255,0.15)', color: 'white',
-              border: 'none', borderRadius: '50%',
-              width: '44px', height: '44px', fontSize: '18px', cursor: 'pointer'
-            }}
-          >×</button>
-        </div>
+            <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
+              {allImages.length > 0 && (
+                <img src={allImages[0]} alt={product.name} style={{
+                  width: "80px", height: "100px",
+                  objectFit: "contain", borderRadius: "6px",
+                  border: "1px solid #E8E2D9", background: "#F5F5F5"
+                }} />
+              )}
+              <div>
+                <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "4px" }}>
+                  {product.name}
+                </p>
+                <p style={{ fontSize: "12px", color: "#666", marginBottom: "2px" }}>
+                  Sketch Style: {selectedColor}
+                </p>
+                <p style={{ fontSize: "12px", color: "#666" }}>
+                  Size: {selectedSize}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => { setShowCartPopup(false); navigate("/cart") }}
+              style={{
+                width: "100%", padding: "12px",
+                border: "1px solid #1A1714", borderRadius: "6px",
+                background: "white", color: "#1A1714",
+                cursor: "pointer", fontSize: "14px",
+                fontFamily: "inherit", marginBottom: "10px"
+              }}
+            >
+              View Cart (1)
+            </button>
+            <button
+              onClick={() => { setShowCartPopup(false); navigate("/checkout") }}
+              style={{
+                width: "100%", padding: "12px",
+                border: "none", borderRadius: "6px",
+                background: "#1A1714", color: "white",
+                cursor: "pointer", fontSize: "14px",
+                fontFamily: "inherit", marginBottom: "10px"
+              }}
+            >
+              Checkout
+            </button>
+            <button
+              onClick={() => setShowCartPopup(false)}
+              style={{
+                width: "100%", padding: "8px",
+                border: "none", background: "none",
+                cursor: "pointer", fontSize: "13px",
+                color: "#888", textDecoration: "underline"
+              }}
+            >
+              Continue Shopping
+            </button>
+          </div>
+        </>
       )}
     </div>
   )
 }
-
