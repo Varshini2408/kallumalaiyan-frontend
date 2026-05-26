@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useCart } from "../context/CartContext"
 
-const { cartItems, removeFromCart, updateQty, total } = useCart()
-
 function Footer() {
   return (
     <footer style={{
@@ -68,7 +66,7 @@ function Footer() {
 }
 
 export default function Cart() {
-  const { cartItems, removeFromCart, total } = useCart()
+  const { cartItems, removeFromCart, updateQty, total } = useCart()
   const navigate = useNavigate()
 
   return (
