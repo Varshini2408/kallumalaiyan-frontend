@@ -8,6 +8,7 @@ import ProductDetail from './pages/ProductDetail'
 import Dashboard from './pages/admin/Dashboard'
 import { CartProvider } from './context/CartContext'
 import About from './pages/About'
+import Enquiry from './pages/Enquiry'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/about" element={<About />} />
+          <Route path="/enquiry" element={<Enquiry />} />
         </Routes>
       </BrowserRouter>
     </CartProvider>
