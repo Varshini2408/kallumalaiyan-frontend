@@ -7,10 +7,11 @@ const API = "https://kallumalaiyan-backend.onrender.com"
 
 const colors = ["Black and White", "Color"]
 const sizes = [
+  { label: "4R (4 x 6 Inc)", value: "4R", price: 45 },
+  { label: "5R (5 x 7 Inc)", value: "5R", price: 55 },
   { label: "A4 (8.3 x 11.1 Inc)", value: "A4", price: 60 },
   { label: "A3 (11.7 x 16.5 Inc)", value: "A3", price: 80 },
 ]
-
 function Footer() {
   return (
     <footer style={{
@@ -335,16 +336,25 @@ const getAllImages = () => {
             </button>
 
             {/* Description */}
-            {product.description && (
-              <div>
-                <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "8px" }}>
-                  Order comes with:
-                </p>
-                <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.8" }}>
-                  {product.description}
-                </p>
-              </div>
-            )}
+            <div style={{ marginTop: "8px" }}>
+  <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "10px" }}>
+    Order comes with:
+  </p>
+  <ul style={{ paddingLeft: "16px", margin: 0 }}>
+    {[
+      "Custom Digital Sketch Art (High-resolution, meticulous shading)",
+      "Premium Frame INCLUDED (Ready to hang, completely free)",
+      "100% FREE Postage (No hidden fees, delivered straight to your doorstep)",
+    ].map((item, i) => (
+      <li key={i} style={{
+        fontSize: "13px", color: "#333",
+        lineHeight: "1.8", marginBottom: "4px"
+      }}>
+        {item}
+      </li>
+    ))}
+  </ul>
+</div>
           </div>
         </div>
 
