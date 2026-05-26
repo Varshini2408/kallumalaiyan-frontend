@@ -548,6 +548,49 @@ export default function Dashboard() {
                     )}
                   </div>
 
+                  {/* Additional Images */}
+<div style={{ gridColumn: '1 / -1' }}>
+  <label style={labelStyle}>Additional Images (up to 5)</label>
+  <input
+    type="file"
+    accept="image/*"
+    multiple
+    onChange={handleImageChange}
+    style={{ ...inputStyle, padding: '8px' }}
+  />
+  <p style={{ fontSize: '11px', color: '#8B7355', marginTop: '4px' }}>
+    These will show in the product image gallery slideshow.
+  </p>
+  {previews.length > 0 && (
+    <div style={{ marginTop: '12px' }}>
+      <p style={{ fontSize: '11px', color: '#8B7355', marginBottom: '8px' }}>
+        Preview ({previews.length} image{previews.length > 1 ? 's' : ''}):
+      </p>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {previews.map((src, i) => (
+          <div key={i} style={{ position: 'relative' }}>
+            <img src={src} alt={'preview ' + i} style={{
+              width: '80px', height: '100px',
+              objectFit: 'contain', borderRadius: '6px',
+              border: i === 0 ? '2px solid #1A1714' : '1px solid #E8E2D9',
+              background: '#F5F5F5'
+            }} />
+            {i === 0 && (
+              <span style={{
+                position: 'absolute', bottom: '4px',
+                left: 0, right: 0, textAlign: 'center',
+                fontSize: '9px', background: 'rgba(0,0,0,0.6)',
+                color: 'white', padding: '2px 0',
+                borderRadius: '0 0 4px 4px'
+              }}>Main</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
                   {/* Product Tags */}
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label style={labelStyle}>Product Tags</label>
