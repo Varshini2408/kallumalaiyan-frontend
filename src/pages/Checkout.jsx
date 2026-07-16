@@ -67,7 +67,7 @@ export default function Checkout() {
 
     if (data.success) {
       clearCart()
-      window.location.href = "https://toyyibpay.com/demoks"
+      window.location.href = "https://kallumalaiyan-frontend.vercel.app/"
     } else {
       setError("Order failed: " + data.error)
       setLoading(false)
