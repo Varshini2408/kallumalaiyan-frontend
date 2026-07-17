@@ -62,3 +62,8 @@ body {
   .hamburger { display: block !important; }
   .desktop-nav { display: none !important; }
 }
+
+#best-seller-slider::-webkit-scrollbar,
+#new-collection-slider::-webkit-scrollbar {
+  display: none;
+}
