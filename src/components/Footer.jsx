@@ -68,7 +68,7 @@ export default function Footer() {
         </div>
         <div style={{ borderTop: "1px solid #E8E2D9", paddingTop: "20px", textAlign: "center" }}>
           <p style={{ fontSize: "12px", color: "#888", marginBottom: "4px" }}>
-            @Kallumalaiyan Sketch Art. All right reserved.
+            @Kallumalaiyan Sketchart. All right reserved.
           </p>
           <p style={{ fontSize: "11px", color: "#aaa" }}>
             Powered by TechMentor Solutions

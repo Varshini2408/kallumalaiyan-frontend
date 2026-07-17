@@ -44,7 +44,7 @@ export default function Categories() {
           fontSize: "clamp(18px, 3vw, 28px)", fontWeight: "700",
           color: "#1A1714", marginBottom: "8px"
         }}>
-          Sketch Art Categories
+          Sketchart Categories
         </h1>
         <p style={{
           fontSize: "15px", color: "#555", lineHeight: "1.8",

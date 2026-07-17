@@ -291,7 +291,7 @@ const handleAddToCart = () => {
   </p>
   <ul style={{ paddingLeft: "16px", margin: 0 }}>
     {[
-      "Custom Digital Sketch Art (High-resolution, meticulous shading)",
+      "Custom Digital Sketchart (High-resolution, meticulous shading)",
       "Premium Frame INCLUDED (Ready to hang, completely free)",
       "100% FREE Postage (No hidden fees, delivered straight to your doorstep)",
     ].map((item, i) => (

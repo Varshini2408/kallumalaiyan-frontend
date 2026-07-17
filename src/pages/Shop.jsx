@@ -113,7 +113,7 @@ export default function Shop() {
             fontSize: "clamp(18px, 3vw, 28px)", fontWeight: "700",
             color: "#1A1714", marginBottom: "8px"
           }}>
-            {selected === "All" ? "Sketch Art" : selected}
+            {selected === "All" ? "Sketchart" : selected}
           </h1>
           <p style={{ fontSize: "15px", color: "#555", lineHeight: "1.7" }}>
             Sacred devotional artwork - digitally sketched portraits of Hindu deities.
@@ -354,7 +354,7 @@ export default function Shop() {
               <label style={{
                 fontSize: "12px", color: "#888", marginBottom: "6px",
                 display: "block", textTransform: "uppercase", letterSpacing: "0.08em"
-              }}>Sketch Art Category</label>
+              }}>Sketchart Category</label>
               <select
                 value={selected}
                 onChange={e => { setSelected(e.target.value); setPage(1) }}

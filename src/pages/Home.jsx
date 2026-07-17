@@ -139,7 +139,7 @@ export default function Home() {
             fontSize: "clamp(18px, 3vw, 28px)", fontWeight: "700",
             color: "#1A1714", marginBottom: "10px"
           }}>
-            Sketch Art
+            Sketchart
           </h1>
           <p style={{
             fontSize: "15px", color: "#555",
@@ -151,7 +151,7 @@ export default function Home() {
         </div>
 
         {/* Categories */}
-        <SectionHeader title="Sketch Art Categories" />
+        <SectionHeader title="Sketchart Categories" />
         <div style={{ padding: "0 24px 8px" }}>
           <div style={{ ...dynamicGrid, marginBottom: "12px" }}>
             {categories.slice(0, 4).map(cat => {
