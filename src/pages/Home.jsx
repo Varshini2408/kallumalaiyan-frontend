@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+﻿import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
@@ -100,7 +100,7 @@ export default function Home() {
             }}>NEW</span>
           )}
           <p style={{
-            fontSize: "13px", fontWeight: "700",
+            fontSize: "15px", fontWeight: "700",
             color: "#1A1714", marginBottom: "2px"
           }}>{product.name}</p>
           <p style={{ fontSize: "14px", color: "#666" }}>From RM 45</p>
@@ -216,3 +216,4 @@ export default function Home() {
     </div>
   )
 }
+
