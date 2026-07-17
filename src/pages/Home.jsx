@@ -136,7 +136,7 @@ export default function Home() {
         <SectionHeader title="Sketch Art Categories" />
         <div style={{ padding: "0 24px 8px" }}>
           <div style={{ ...dynamicGrid, marginBottom: "12px" }}>
-            {categories.slice(0, cols * 2).map(cat => {
+            {categories.slice(0, 4).map(cat => {
               const name = typeof cat === "string" ? cat : cat.name
               const img = typeof cat === "object" ? cat.image : null
               return (
@@ -173,7 +173,7 @@ export default function Home() {
               )
             })}
           </div>
-          {categories.length > cols * 2 && (
+          {categories.length > 4 && (
             <div style={{ textAlign: "right", marginBottom: "8px" }}>
               <a href="/shop" style={{
                 fontSize: "12px", color: "#1A1714", textDecoration: "underline"
