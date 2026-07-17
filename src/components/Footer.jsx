@@ -1,7 +1,6 @@
 export default function Footer() {
   const socials = [
     { label: "Instagram", url: "https://www.instagram.com/kallumalaiyan_sketchart?igsh=MXJnOXR2dGlqNTJqaQ==" },
-    { label: "Facebook", url: "https://www.facebook.com/people/Kallumalaiyan-Sketchart/pfbid029NmuYQyUB8C8mXpGE8PHzzt9hokpsq9wvqDq7eSJv2u8SoDiAx2cousuuLBu9b6yl/" },
     { label: "WhatsApp", url: "https://wa.me/600194079787" },
     { label: "TikTok", url: "https://www.tiktok.com/@kallumalaiyan_sketchart" },
   ]

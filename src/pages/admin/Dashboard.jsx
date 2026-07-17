@@ -36,6 +36,8 @@ export default function Dashboard() {
   const [newCategory, setNewCategory] = useState("")
   const [newCategoryImage, setNewCategoryImage] = useState(null)
   const [newCategoryPreview, setNewCategoryPreview] = useState(null)
+  const [adminProductSort, setAdminProductSort] = useState("newest")
+  const [adminProductCategory, setAdminProductCategory] = useState("All")
 
   useEffect(() => {
     const auth = sessionStorage.getItem("ksa-admin-auth")
@@ -139,13 +141,10 @@ export default function Dashboard() {
         ? product.imagesBW
         : product.imageBW ? [product.imageBW] : [],
       imageColorFiles: [],
-      imageColorPreviews: product.imagesColor && product.imagesColor.length > 0
-        ? product.imagesColor
-        : product.imageColor ? [product.imageColor] : [],
+      imageColorPreviews: [],
       isHotSelling: product.isHotSelling || false,
       isNewArrival: product.isNewArrival || false,
       isRecommended: product.isRecommended || false,
-      
     })
     setEditingProduct(product)
     setShowForm(true)
@@ -174,9 +173,6 @@ export default function Dashboard() {
       formData.append("isRecommended", String(form.isRecommended))
       if (form.imageBWFiles && form.imageBWFiles.length > 0) {
         form.imageBWFiles.forEach(file => formData.append("imageBW", file))
-      }
-      if (form.imageColorFiles && form.imageColorFiles.length > 0) {
-        form.imageColorFiles.forEach(file => formData.append("imageColor", file))
       }
       const res = await fetch(url, { method, body: formData })
       const data = await res.json()
@@ -231,6 +227,20 @@ export default function Dashboard() {
     if (product.imageBW) return product.imageBW
     if (product.images && product.images.length > 0) return product.images[0]
     return product.image || null
+  }
+
+  const getFilteredSortedProducts = () => {
+    let filtered = [...products]
+    if (adminProductCategory !== "All") {
+      filtered = filtered.filter(p => p.category === adminProductCategory)
+    }
+    switch (adminProductSort) {
+      case "oldest": filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); break
+      case "az":     filtered.sort((a, b) => a.name.localeCompare(b.name)); break
+      case "za":     filtered.sort((a, b) => b.name.localeCompare(a.name)); break
+      default:       filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    }
+    return filtered
   }
 
   if (!isLoggedIn) {
@@ -292,6 +302,8 @@ export default function Dashboard() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
+
+      {/* Sidebar */}
       <div style={{
         width: "220px", background: "#1A1714",
         padding: "24px 16px", display: "flex",
@@ -332,6 +344,7 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Main Content */}
       <div style={{ flex: 1, padding: "32px", background: "#F5F3EF", overflowY: "auto" }}>
 
         {message && (
@@ -348,6 +361,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* ORDERS PAGE */}
         {page === "orders" && (
           <div>
             <h2 style={{ fontSize: "24px", fontWeight: "400", marginBottom: "24px" }}>Orders</h2>
@@ -401,7 +415,7 @@ export default function Dashboard() {
                         <td style={tdStyle}>
                           {order.items.map((item, i) => (
                             <p key={i} style={{ fontSize: "11px", color: "#3D3830", marginBottom: "2px" }}>
-                              {item.name} - {item.color} - {item.size} x{item.qty}
+                              {item.name} - {item.size} x{item.qty}
                             </p>
                           ))}
                         </td>
@@ -440,9 +454,10 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* PRODUCTS PAGE */}
         {page === "products" && (
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <h2 style={{ fontSize: "24px", fontWeight: "400" }}>Products</h2>
               <button onClick={openAddForm} style={{
                 background: "#1A1714", color: "white", border: "none",
@@ -480,35 +495,23 @@ export default function Dashboard() {
                   </div>
 
                   <div>
-  <label style={labelStyle}>Base Price (RM) — Lowest size price</label>
-  <input
-    name="price"
-    value={form.price || "80"}
-    onChange={handleFormChange}
-    placeholder="80"
-    type="number"
-    style={inputStyle}
-  />
-</div>
+                    <label style={labelStyle}>Base Price (RM)</label>
+                    <input name="price" value={form.price || "80"} onChange={handleFormChange}
+                      placeholder="80" type="number" style={inputStyle} />
+                  </div>
 
                   <div>
                     <label style={labelStyle}>Discount % — Leave empty if no promo</label>
-  <input
-    name="promoDiscount"
-    value={form.promoDiscount || ""}
-    onChange={handleFormChange}
-    placeholder="e.g. 10 for 10% off"
-    type="number"
-    min="1"
-    max="99"
-    style={inputStyle}
-  />
-  {form.promoDiscount && (
-    <p style={{ fontSize: "11px", color: "#E8572A", marginTop: "4px" }}>
-      {form.promoDiscount}% discount active! Price will show strikethrough with discounted price.
-    </p>
-  )}
-</div>
+                    <input name="promoDiscount" value={form.promoDiscount || ""}
+                      onChange={handleFormChange}
+                      placeholder="e.g. 10 for 10% off"
+                      type="number" min="1" max="99" style={inputStyle} />
+                    {form.promoDiscount && (
+                      <p style={{ fontSize: "11px", color: "#E8572A", marginTop: "4px" }}>
+                        {form.promoDiscount}% discount active!
+                      </p>
+                    )}
+                  </div>
 
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Description / Order comes with</label>
@@ -516,8 +519,6 @@ export default function Dashboard() {
                       placeholder="Describe this product..."
                       rows={3} style={{ ...inputStyle, resize: "vertical" }} />
                   </div>
-
-                  
 
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Product Pictures (up to 5)</label>
@@ -535,12 +536,12 @@ export default function Dashboard() {
                     {form.imageBWPreviews && form.imageBWPreviews.length > 0 && (
                       <div style={{ marginTop: "10px" }}>
                         <p style={{ fontSize: "11px", color: "#8B7355", marginBottom: "6px" }}>
-                          Product Pictures Preview ({form.imageBWPreviews.length} image{form.imageBWPreviews.length > 1 ? "s" : ""}):
+                          Preview ({form.imageBWPreviews.length} image{form.imageBWPreviews.length > 1 ? "s" : ""}):
                         </p>
                         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                           {form.imageBWPreviews.map((src, i) => (
                             <div key={i} style={{ position: "relative" }}>
-                              <img src={src} alt={"bw " + i} style={{
+                              <img src={src} alt={"preview " + i} style={{
                                 width: "72px", height: "90px", objectFit: "contain",
                                 borderRadius: "6px", background: "#F5F5F5",
                                 border: i === 0 ? "2px solid #1A1714" : "1px solid #E8E2D9"
@@ -559,7 +560,6 @@ export default function Dashboard() {
                       </div>
                     )}
                   </div>
-
 
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Product Tags</label>
@@ -604,9 +604,56 @@ export default function Dashboard() {
               </div>
             )}
 
-            {products.length === 0 ? (
+            {/* Filter & Sort Bar */}
+            <div style={{
+              display: "flex", gap: "12px", marginBottom: "20px",
+              flexWrap: "wrap", alignItems: "center",
+              padding: "12px 16px", background: "white",
+              border: "1px solid #E8E2D9", borderRadius: "8px"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <label style={{ fontSize: "12px", color: "#8B7355" }}>Category:</label>
+                <select
+                  value={adminProductCategory}
+                  onChange={e => setAdminProductCategory(e.target.value)}
+                  style={{
+                    padding: "6px 10px", border: "1px solid #E8E2D9",
+                    borderRadius: "4px", fontSize: "13px",
+                    fontFamily: "inherit", outline: "none"
+                  }}
+                >
+                  <option value="All">All Categories</option>
+                  {categories.map(cat => {
+                    const name = typeof cat === "string" ? cat : cat.name
+                    return <option key={name} value={name}>{name}</option>
+                  })}
+                </select>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <label style={{ fontSize: "12px", color: "#8B7355" }}>Sort:</label>
+                <select
+                  value={adminProductSort}
+                  onChange={e => setAdminProductSort(e.target.value)}
+                  style={{
+                    padding: "6px 10px", border: "1px solid #E8E2D9",
+                    borderRadius: "4px", fontSize: "13px",
+                    fontFamily: "inherit", outline: "none"
+                  }}
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="az">A to Z</option>
+                  <option value="za">Z to A</option>
+                </select>
+              </div>
+              <p style={{ fontSize: "12px", color: "#8B7355", marginLeft: "auto" }}>
+                {getFilteredSortedProducts().length} products
+              </p>
+            </div>
+
+            {getFilteredSortedProducts().length === 0 ? (
               <div style={{ textAlign: "center", padding: "60px", color: "#8B7355" }}>
-                <p style={{ fontSize: "18px", marginBottom: "16px" }}>No products yet!</p>
+                <p style={{ fontSize: "18px", marginBottom: "16px" }}>No products found!</p>
                 <button onClick={openAddForm} style={{
                   background: "#1A1714", color: "white", border: "none",
                   padding: "12px 24px", borderRadius: "6px", cursor: "pointer"
@@ -618,7 +665,7 @@ export default function Dashboard() {
                 gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
                 gap: "16px"
               }}>
-                {products.map(product => (
+                {getFilteredSortedProducts().map(product => (
                   <div key={product._id} style={{
                     background: "white", border: "1px solid #E8E2D9",
                     borderRadius: "8px", overflow: "hidden"
@@ -632,9 +679,9 @@ export default function Dashboard() {
                         <img src={getProductImage(product)} alt={product.name}
                           style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                       ) : (
-                        <span style={{ fontSize: "36px", color: "#ccc" }}>No Image</span>
+                        <span style={{ fontSize: "13px", color: "#ccc" }}>No Image</span>
                       )}
-                      <div style={{ position: "absolute", top: "6px", right: "6px", display: "flex", gap: "4px" }}>
+                      <div style={{ position: "absolute", top: "6px", right: "6px", display: "flex", gap: "4px", flexWrap: "wrap" }}>
                         {product.isHotSelling && (
                           <span style={{
                             background: "#FEE2E2", color: "#DC2626",
@@ -647,6 +694,12 @@ export default function Dashboard() {
                             fontSize: "9px", padding: "2px 6px", borderRadius: "10px"
                           }}>NEW</span>
                         )}
+                        {product.promoDiscount && (
+                          <span style={{
+                            background: "#FEE2E2", color: "#DC2626",
+                            fontSize: "9px", padding: "2px 6px", borderRadius: "10px"
+                          }}>{product.promoDiscount}% OFF</span>
+                        )}
                       </div>
                     </div>
                     <div style={{ padding: "12px" }}>
@@ -658,10 +711,9 @@ export default function Dashboard() {
                       </p>
                       <p style={{ fontSize: "12px", color: "#8B7355", marginBottom: "8px" }}>
                         RM {product.price}
-                        {((product.imagesBW && product.imagesBW.length > 0) ||
-                          (product.imagesColor && product.imagesColor.length > 0)) && (
-                          <span style={{ marginLeft: "6px", fontSize: "10px", color: "#3B6D11" }}>
-                            BW+Color
+                        {product.promoDiscount && (
+                          <span style={{ marginLeft: "6px", color: "#DC2626" }}>
+                            ({product.promoDiscount}% OFF - RM {Math.round(product.price * (1 - product.promoDiscount / 100))})
                           </span>
                         )}
                       </p>
@@ -685,6 +737,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* CATEGORIES PAGE */}
         {page === "categories" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
