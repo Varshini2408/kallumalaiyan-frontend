@@ -477,8 +477,7 @@ export default function Dashboard() {
                   </div>
 
                   <div>
-  <div>
-  <label style={labelStyle}>Discount % — Leave empty if no promo</label>
+                    <label style={labelStyle}>Discount % — Leave empty if no promo</label>
   <input
     name="promoDiscount"
     value={form.promoDiscount || ""}
