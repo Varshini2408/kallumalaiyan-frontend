@@ -87,14 +87,15 @@ const getAllImages = () => {
   return product.image ? [product.image] : []
 }
 
-  const handleAddToCart = () => {
-    addToCart(
-      { ...product, price: selectedSize.price },
-      { color: selectedColor, size: selectedSize.label },
-      qty
-    )
-    setShowCartPopup(true)
-  }
+const handleAddToCart = () => {
+  const finalPrice = product.promoPrice ? product.promoPrice : selectedSize.price
+  addToCart(
+    { ...product, price: finalPrice },
+    { color: selectedColor, size: selectedSize.label },
+    qty
+  )
+  setShowCartPopup(true)
+}
 
   if (loading) return (
     <div style={{ background: "white", minHeight: "100vh" }}>
@@ -186,12 +187,38 @@ const getAllImages = () => {
               <h1 style={{ fontSize: "20px", fontWeight: "700", color: "#1A1714", margin: 0 }}>
                 {product.name}
               </h1>
-              <p style={{
-                fontSize: "20px", fontWeight: "700", margin: 0,
-                whiteSpace: "nowrap", marginLeft: "12px"
-              }}>
-                RM{selectedSize.price}.00
-              </p>
+              <div style={{ marginLeft: "12px", textAlign: "right" }}>
+  {product.promoPrice ? (
+    <>
+      <p style={{
+        fontSize: "14px", color: "#999",
+        textDecoration: "line-through", margin: 0
+      }}>
+        RM{selectedSize.price}.00
+      </p>
+      <p style={{
+        fontSize: "22px", fontWeight: "700",
+        color: "#E8572A", margin: 0
+      }}>
+        RM{product.promoPrice}.00
+      </p>
+      <span style={{
+        background: "#FEE2E2", color: "#DC2626",
+        fontSize: "11px", padding: "2px 8px",
+        borderRadius: "10px", fontWeight: "600"
+      }}>
+        PROMO
+      </span>
+    </>
+  ) : (
+    <p style={{
+      fontSize: "22px", fontWeight: "700",
+      margin: 0, whiteSpace: "nowrap"
+    }}>
+      RM{selectedSize.price}.00
+    </p>
+  )}
+</div>
             </div>
 
             {/* Size */}

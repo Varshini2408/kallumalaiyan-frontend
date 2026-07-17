@@ -103,7 +103,20 @@ export default function Home() {
             fontSize: "15px", fontWeight: "700",
             color: "#1A1714", marginBottom: "2px"
           }}>{product.name}</p>
-          <p style={{ fontSize: "14px", color: "#666" }}>From RM 80</p>
+          {product.promoPrice ? (
+  <div style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
+    <p style={{
+      fontSize: "13px", color: "#999",
+      textDecoration: "line-through", margin: 0
+    }}>RM 80</p>
+    <p style={{
+      fontSize: "15px", color: "#E8572A",
+      fontWeight: "700", margin: 0
+    }}>RM {product.promoPrice}</p>
+  </div>
+) : (
+  <p style={{ fontSize: "14px", color: "#666" }}>From RM 80</p>
+)}
         </div>
       </div>
     )

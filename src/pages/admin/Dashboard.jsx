@@ -7,6 +7,7 @@ const emptyForm = {
   name: "",
   category: "",
   description: "",
+  promoPrice: "",
   imageBWFiles: [],
   imageBWPreviews: [],
   imageColorFiles: [],
@@ -130,6 +131,7 @@ export default function Dashboard() {
       name: product.name,
       category: product.category,
       description: product.description || "",
+      promoPrice: product.promoPrice || "",
       imageBWFiles: [],
       imageBWPreviews: product.imagesBW && product.imagesBW.length > 0
         ? product.imagesBW
@@ -141,6 +143,7 @@ export default function Dashboard() {
       isHotSelling: product.isHotSelling || false,
       isNewArrival: product.isNewArrival || false,
       isRecommended: product.isRecommended || false,
+      
     })
     setEditingProduct(product)
     setShowForm(true)
@@ -162,6 +165,7 @@ export default function Dashboard() {
       formData.append("name", form.name)
       formData.append("category", form.category)
       formData.append("description", form.description)
+      formData.append("promoPrice", form.promoPrice || "")
       formData.append("isHotSelling", String(form.isHotSelling))
       formData.append("isNewArrival", String(form.isNewArrival))
       formData.append("isRecommended", String(form.isRecommended))
@@ -472,12 +476,31 @@ export default function Dashboard() {
                     </select>
                   </div>
 
+                  <div>
+  <label style={labelStyle}>Promo Price (RM) — Leave empty if no promo</label>
+  <input
+    name="promoPrice"
+    value={form.promoPrice || ""}
+    onChange={handleFormChange}
+    placeholder="e.g. 60"
+    type="number"
+    style={inputStyle}
+  />
+  {form.promoPrice && (
+    <p style={{ fontSize: "11px", color: "#E8572A", marginTop: "4px" }}>
+      Promo active! Original price will be shown as strikethrough.
+    </p>
+  )}
+</div>
+
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Description / Order comes with</label>
                     <textarea name="description" value={form.description} onChange={handleFormChange}
                       placeholder="Describe this product..."
                       rows={3} style={{ ...inputStyle, resize: "vertical" }} />
                   </div>
+
+                  
 
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Product Pictures (up to 5)</label>

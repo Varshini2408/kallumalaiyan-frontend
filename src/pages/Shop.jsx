@@ -197,7 +197,20 @@ export default function Shop() {
                       <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>
                         {product.name}
                       </p>
-                      <p style={{ fontSize: "14px", color: "#666" }}>From RM 80</p>
+                      {product.promoPrice ? (
+  <div style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
+    <p style={{
+      fontSize: "12px", color: "#999",
+      textDecoration: "line-through", margin: 0
+    }}>RM 80</p>
+    <p style={{
+      fontSize: "14px", color: "#E8572A",
+      fontWeight: "700", margin: 0
+    }}>RM {product.promoPrice}</p>
+  </div>
+) : (
+  <p style={{ fontSize: "13px", color: "#666" }}>From RM 80</p>
+)}
                     </div>
                   </div>
                 )
@@ -270,7 +283,20 @@ export default function Shop() {
                       </div>
                       <div style={{ padding: "10px 12px", textAlign: "center" }}>
                         <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
-                        <p style={{ fontSize: "14px", color: "#666" }}>From RM 80</p>
+                        {product.promoPrice ? (
+  <div style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
+    <p style={{
+      fontSize: "12px", color: "#999",
+      textDecoration: "line-through", margin: 0
+    }}>RM 80</p>
+    <p style={{
+      fontSize: "14px", color: "#E8572A",
+      fontWeight: "700", margin: 0
+    }}>RM {product.promoPrice}</p>
+  </div>
+) : (
+  <p style={{ fontSize: "13px", color: "#666" }}>From RM 80</p>
+)}
                       </div>
                     </div>
                   )
