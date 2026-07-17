@@ -200,54 +200,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* Best Seller */}
-{hotSelling.length > 0 && (
-  <div style={{ marginTop: "32px" }}>
-    <SectionHeader title="Best Seller" />
-    <div style={{ padding: "0 24px", position: "relative" }}>
-      <button
-        onClick={() => document.getElementById('best-seller-slider').scrollBy({ left: -300, behavior: 'smooth' })}
-        style={{
-          position: "absolute", left: "0px", top: "50%",
-          transform: "translateY(-50%)", zIndex: 10,
-          background: "#1A1714", color: "white", border: "none",
-          borderRadius: "50%", width: "36px", height: "36px",
-          cursor: "pointer", fontSize: "18px", display: "flex",
-          alignItems: "center", justifyContent: "center",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
-        }}
-      >&#8249;</button>
-      <div
-        id="best-seller-slider"
-        style={{
-          display: "flex", gap: "16px", overflowX: "auto",
-          scrollSnapType: "x mandatory", paddingBottom: "8px",
-          scrollbarWidth: "none", msOverflowStyle: "none",
-          WebkitOverflowScrolling: "touch"
-        }}
-      >
-        {hotSelling.map(p => (
-          <div key={p._id} style={{ minWidth: "220px", maxWidth: "220px", scrollSnapAlign: "start" }}>
-            <ProductCard product={p} />
-          </div>
-        ))}
-      </div>
-      <button
-        onClick={() => document.getElementById('best-seller-slider').scrollBy({ left: 300, behavior: 'smooth' })}
-        style={{
-          position: "absolute", right: "0px", top: "50%",
-          transform: "translateY(-50%)", zIndex: 10,
-          background: "#1A1714", color: "white", border: "none",
-          borderRadius: "50%", width: "36px", height: "36px",
-          cursor: "pointer", fontSize: "18px", display: "flex",
-          alignItems: "center", justifyContent: "center",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
-        }}
-      >&#8250;</button>
-    </div>
-  </div>
-)}
-
         {/* New Collection */}
 {newArrivals.length > 0 && (
   <div style={{ marginTop: "32px" }}>
@@ -282,6 +234,54 @@ export default function Home() {
       </div>
       <button
         onClick={() => document.getElementById('new-collection-slider').scrollBy({ left: 300, behavior: 'smooth' })}
+        style={{
+          position: "absolute", right: "0px", top: "50%",
+          transform: "translateY(-50%)", zIndex: 10,
+          background: "#1A1714", color: "white", border: "none",
+          borderRadius: "50%", width: "36px", height: "36px",
+          cursor: "pointer", fontSize: "18px", display: "flex",
+          alignItems: "center", justifyContent: "center",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
+        }}
+      >&#8250;</button>
+    </div>
+  </div>
+)}
+
+{/* Best Seller */}
+{hotSelling.length > 0 && (
+  <div style={{ marginTop: "32px" }}>
+    <SectionHeader title="Best Seller" />
+    <div style={{ padding: "0 24px", position: "relative" }}>
+      <button
+        onClick={() => document.getElementById('best-seller-slider').scrollBy({ left: -300, behavior: 'smooth' })}
+        style={{
+          position: "absolute", left: "0px", top: "50%",
+          transform: "translateY(-50%)", zIndex: 10,
+          background: "#1A1714", color: "white", border: "none",
+          borderRadius: "50%", width: "36px", height: "36px",
+          cursor: "pointer", fontSize: "18px", display: "flex",
+          alignItems: "center", justifyContent: "center",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
+        }}
+      >&#8249;</button>
+      <div
+        id="best-seller-slider"
+        style={{
+          display: "flex", gap: "16px", overflowX: "auto",
+          scrollSnapType: "x mandatory", paddingBottom: "8px",
+          scrollbarWidth: "none", msOverflowStyle: "none",
+          WebkitOverflowScrolling: "touch"
+        }}
+      >
+        {hotSelling.map(p => (
+          <div key={p._id} style={{ minWidth: "220px", maxWidth: "220px", scrollSnapAlign: "start" }}>
+            <ProductCard product={p} />
+          </div>
+        ))}
+      </div>
+      <button
+        onClick={() => document.getElementById('best-seller-slider').scrollBy({ left: 300, behavior: 'smooth' })}
         style={{
           position: "absolute", right: "0px", top: "50%",
           transform: "translateY(-50%)", zIndex: 10,
