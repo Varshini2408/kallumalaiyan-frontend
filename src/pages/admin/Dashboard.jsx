@@ -7,6 +7,7 @@ const emptyForm = {
   name: "",
   category: "",
   description: "",
+  price: "80",
   promoDiscount: "",
   imageBWFiles: [],
   imageBWPreviews: [],
@@ -131,6 +132,7 @@ export default function Dashboard() {
       name: product.name,
       category: product.category,
       description: product.description || "",
+      price: product.price || 80,
       promoDiscount: product.promoDiscount || "",
       imageBWFiles: [],
       imageBWPreviews: product.imagesBW && product.imagesBW.length > 0
@@ -165,6 +167,7 @@ export default function Dashboard() {
       formData.append("name", form.name)
       formData.append("category", form.category)
       formData.append("description", form.description)
+      formData.append("price", form.price || 80)
       formData.append("promoDiscount", form.promoDiscount || "")
       formData.append("isHotSelling", String(form.isHotSelling))
       formData.append("isNewArrival", String(form.isNewArrival))
@@ -475,6 +478,18 @@ export default function Dashboard() {
                       })}
                     </select>
                   </div>
+
+                  <div>
+  <label style={labelStyle}>Base Price (RM) — Lowest size price</label>
+  <input
+    name="price"
+    value={form.price || "80"}
+    onChange={handleFormChange}
+    placeholder="80"
+    type="number"
+    style={inputStyle}
+  />
+</div>
 
                   <div>
                     <label style={labelStyle}>Discount % — Leave empty if no promo</label>

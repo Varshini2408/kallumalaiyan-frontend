@@ -199,10 +199,12 @@ export default function Shop() {
                       </p>
                       {product.promoPrice ? (
   <div style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
-    <p style={{
-      fontSize: "12px", color: "#999",
-      textDecoration: "line-through", margin: 0
-    }}>RM 80</p>
+    <p style={{ fontSize: "12px", color: "#999", textDecoration: "line-through", margin: 0 }}>
+  From RM 80
+</p>
+<p style={{ fontSize: "15px", color: "#DC2626", fontWeight: "700", margin: 0 }}>
+  RM {Math.round(80 * (1 - product.promoDiscount / 100))}
+</p>
     <p style={{
       fontSize: "14px", color: "#E8572A",
       fontWeight: "700", margin: 0
