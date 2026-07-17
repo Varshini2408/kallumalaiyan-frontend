@@ -11,6 +11,7 @@ import About from './pages/About'
 import Enquiry from './pages/Enquiry'
 import Categories from './pages/Categories'
 
+
 export default function App() {
   return (
     <CartProvider>
