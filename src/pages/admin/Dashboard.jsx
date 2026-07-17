@@ -480,7 +480,7 @@ export default function Dashboard() {
                   </div>
 
                   <div style={{ gridColumn: "1 / -1" }}>
-                    <label style={labelStyle}>Black and White Images (up to 5)</label>
+                    <label style={labelStyle}>Product Pictures (up to 5)</label>
                     <input
                       type="file" accept="image/*" multiple
                       onChange={e => {
@@ -495,7 +495,7 @@ export default function Dashboard() {
                     {form.imageBWPreviews && form.imageBWPreviews.length > 0 && (
                       <div style={{ marginTop: "10px" }}>
                         <p style={{ fontSize: "11px", color: "#8B7355", marginBottom: "6px" }}>
-                          Black and White Preview ({form.imageBWPreviews.length} image{form.imageBWPreviews.length > 1 ? "s" : ""}):
+                          Product Pictures Preview ({form.imageBWPreviews.length} image{form.imageBWPreviews.length > 1 ? "s" : ""}):
                         </p>
                         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                           {form.imageBWPreviews.map((src, i) => (
@@ -520,46 +520,6 @@ export default function Dashboard() {
                     )}
                   </div>
 
-                  <div style={{ gridColumn: "1 / -1" }}>
-                    <label style={labelStyle}>Color Images (up to 5)</label>
-                    <input
-                      type="file" accept="image/*" multiple
-                      onChange={e => {
-                        const files = Array.from(e.target.files).slice(0, 5)
-                        setForm({ ...form, imageColorFiles: files, imageColorPreviews: files.map(f => URL.createObjectURL(f)) })
-                      }}
-                      style={{ ...inputStyle, padding: "8px" }}
-                    />
-                    <p style={{ fontSize: "11px", color: "#8B7355", marginTop: "4px" }}>
-                      First image is the main display photo. Select up to 5 images.
-                    </p>
-                    {form.imageColorPreviews && form.imageColorPreviews.length > 0 && (
-                      <div style={{ marginTop: "10px" }}>
-                        <p style={{ fontSize: "11px", color: "#8B7355", marginBottom: "6px" }}>
-                          Color Preview ({form.imageColorPreviews.length} image{form.imageColorPreviews.length > 1 ? "s" : ""}):
-                        </p>
-                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                          {form.imageColorPreviews.map((src, i) => (
-                            <div key={i} style={{ position: "relative" }}>
-                              <img src={src} alt={"color " + i} style={{
-                                width: "72px", height: "90px", objectFit: "contain",
-                                borderRadius: "6px", background: "#F5F5F5",
-                                border: i === 0 ? "2px solid #1A1714" : "1px solid #E8E2D9"
-                              }} />
-                              {i === 0 && (
-                                <span style={{
-                                  position: "absolute", bottom: "4px", left: 0, right: 0,
-                                  textAlign: "center", fontSize: "9px",
-                                  background: "rgba(0,0,0,0.6)", color: "white",
-                                  padding: "2px 0", borderRadius: "0 0 4px 4px"
-                                }}>Main</span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
 
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Product Tags</label>

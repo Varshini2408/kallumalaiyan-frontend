@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+﻿import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useCart } from "../context/CartContext"
@@ -8,10 +8,9 @@ const API = "https://kallumalaiyan-backend.onrender.com"
 
 const colors = ["Black and White", "Color"]
 const sizes = [
-  { label: "4R (4 x 6 Inc)", value: "4R", price: 45 },
-  { label: "5R (5 x 7 Inc)", value: "5R", price: 55 },
-  { label: "A4 (8.3 x 11.1 Inc)", value: "A4", price: 60 },
-  { label: "A3 (11.7 x 16.5 Inc)", value: "A3", price: 80 },
+  { label: "6R (6 x 8 Inc)", value: "6R", price: 80 },
+  { label: "A4 (8.3 x 11.1 Inc)", value: "A4", price: 150 },
+  { label: "A3 (11.7 x 16.5 Inc)", value: "A3", price: 250 },
 ]
 
 
@@ -145,7 +144,7 @@ const getAllImages = () => {
                 <div style={{
                   width: "100%", height: "100%", display: "flex",
                   alignItems: "center", justifyContent: "center", fontSize: "80px"
-                }}>🎨</div>
+                }}>ðŸŽ¨</div>
               )}
             </div>
 
@@ -193,34 +192,6 @@ const getAllImages = () => {
               }}>
                 RM{selectedSize.price}.00
               </p>
-            </div>
-
-            {/* Sketch Style */}
-            <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "10px" }}>
-              Sketch Style
-            </p>
-            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-              {colors.map(color => {
-                const hasImage = color === "Black and White" ? !!product.imageBW : !!product.imageColor
-                return (
-                  <button
-                    key={color}
-                    onClick={() => setSelectedColor(color)}
-                    disabled={!hasImage && !!(product.imageBW || product.imageColor)}
-                    style={{
-                      flex: 1, padding: "10px",
-                      border: "1px solid #1A1714", borderRadius: "6px",
-                      background: selectedColor === color ? "#1A1714" : "white",
-                      color: selectedColor === color ? "white" : "#1A1714",
-                      cursor: hasImage || !(product.imageBW || product.imageColor) ? "pointer" : "not-allowed",
-                      fontSize: "13px", fontFamily: "inherit",
-                      opacity: !hasImage && (product.imageBW || product.imageColor) ? 0.4 : 1
-                    }}
-                  >
-                    {color}
-                  </button>
-                )
-              })}
             </div>
 
             {/* Size */}
@@ -343,14 +314,14 @@ const getAllImages = () => {
                           <div style={{
                             width: "100%", height: "100%", display: "flex",
                             alignItems: "center", justifyContent: "center", fontSize: "40px"
-                          }}>🎨</div>
+                          }}>ðŸŽ¨</div>
                         )}
                       </div>
                       <div style={{ padding: "10px 12px", textAlign: "center" }}>
                         <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>
                           {p.name}
                         </p>
-                        <p style={{ fontSize: "14px", color: "#666" }}>From RM 45</p>
+                        <p style={{ fontSize: "14px", color: "#666" }}>From RM 80</p>
                       </div>
                     </div>
                   )

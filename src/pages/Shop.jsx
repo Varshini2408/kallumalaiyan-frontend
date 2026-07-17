@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+﻿import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
@@ -197,7 +197,7 @@ export default function Shop() {
                       <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>
                         {product.name}
                       </p>
-                      <p style={{ fontSize: "14px", color: "#666" }}>From RM 45</p>
+                      <p style={{ fontSize: "14px", color: "#666" }}>From RM 80</p>
                     </div>
                   </div>
                 )
@@ -270,7 +270,7 @@ export default function Shop() {
                       </div>
                       <div style={{ padding: "10px 12px", textAlign: "center" }}>
                         <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
-                        <p style={{ fontSize: "14px", color: "#666" }}>From RM 45</p>
+                        <p style={{ fontSize: "14px", color: "#666" }}>From RM 80</p>
                       </div>
                     </div>
                   )
@@ -371,3 +371,4 @@ export default function Shop() {
     </div>
   )
 }
+

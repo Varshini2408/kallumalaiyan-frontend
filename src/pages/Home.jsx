@@ -103,7 +103,7 @@ export default function Home() {
             fontSize: "15px", fontWeight: "700",
             color: "#1A1714", marginBottom: "2px"
           }}>{product.name}</p>
-          <p style={{ fontSize: "14px", color: "#666" }}>From RM 45</p>
+          <p style={{ fontSize: "14px", color: "#666" }}>From RM 80</p>
         </div>
       </div>
     )
@@ -284,5 +284,6 @@ export default function Home() {
     </div>
   )
 }
+
 
 

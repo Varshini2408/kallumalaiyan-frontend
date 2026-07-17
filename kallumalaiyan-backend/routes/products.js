@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 const { upload, uploadToCloudinary } = require("../services/upload");
@@ -31,7 +31,7 @@ router.post("/", upload.fields([
       name: req.body.name,
       category: req.body.category,
       price: Number(req.body.price) || 60,
-      description: req.body.description,
+      description: req.body.description,promoPrice: req.body.promoPrice ? Number(req.body.promoPrice) : null,
       isHotSelling:  req.body.isHotSelling  === "true",
       isNewArrival:  req.body.isNewArrival  === "true",
       isRecommended: req.body.isRecommended === "true",
@@ -75,7 +75,7 @@ router.put("/:id", upload.fields([
       name: req.body.name,
       category: req.body.category,
       price: Number(req.body.price) || 60,
-      description: req.body.description,
+      description: req.body.description,promoPrice: req.body.promoPrice ? Number(req.body.promoPrice) : null,
       isHotSelling:  req.body.isHotSelling  === "true",
       isNewArrival:  req.body.isNewArrival  === "true",
       isRecommended: req.body.isRecommended === "true",
@@ -118,3 +118,4 @@ router.delete("/:id", async (req, res) => {
 });
 
 module.exports = router;
+
