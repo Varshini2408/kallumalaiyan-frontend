@@ -90,7 +90,7 @@ export default function Enquiry() {
               background: "#F5F5F5", borderRadius: "8px",
               padding: "20px", border: "1px solid #E8E2D9", marginTop: "8px"
             }}>
-              <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.8" }}>
+              <p style={{ fontSize: "15px", color: "#555", lineHeight: "1.8" }}>
                 Please fill out the form with as much detail as possible and we
                 will get back to you as soon as possible.
               </p>
@@ -116,7 +116,7 @@ export default function Enquiry() {
                 <h3 style={{ fontSize: "20px", fontWeight: "700", marginBottom: "8px" }}>
                   Message Sent!
                 </h3>
-                <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.8" }}>
+                <p style={{ fontSize: "15px", color: "#555", lineHeight: "1.8" }}>
                   Thank you for reaching out. We will get back to you within 24 hours.
                 </p>
                 <button
@@ -226,7 +226,7 @@ export default function Enquiry() {
                   Send Message
                 </button>
                 <p style={{
-                  fontSize: "11px", color: "#888",
+                  fontSize: "13px", color: "#888",
                   textAlign: "center", marginTop: "12px"
                 }}>
                   * Required fields

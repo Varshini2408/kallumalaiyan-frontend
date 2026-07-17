@@ -103,7 +103,7 @@ export default function Home() {
             fontSize: "13px", fontWeight: "700",
             color: "#1A1714", marginBottom: "2px"
           }}>{product.name}</p>
-          <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
+          <p style={{ fontSize: "14px", color: "#666" }}>From RM 45</p>
         </div>
       </div>
     )
@@ -124,7 +124,7 @@ export default function Home() {
             Sketch Art
           </h1>
           <p style={{
-            fontSize: "13px", color: "#555",
+            fontSize: "15px", color: "#555",
             lineHeight: "1.8", maxWidth: "600px"
           }}>
             Sacred devotional artwork - digitally sketched portraits of Hindu deities
@@ -166,8 +166,8 @@ export default function Home() {
                     background: "rgba(255,255,255,0.92)",
                     padding: "10px 12px", textAlign: "center"
                   }}>
-                    <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
-                    <p style={{ fontSize: "11px", color: "#888" }}>Click to explore</p>
+                    <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
+                    <p style={{ fontSize: "13px", color: "#888" }}>Click to explore</p>
                   </div>
                 </div>
               )

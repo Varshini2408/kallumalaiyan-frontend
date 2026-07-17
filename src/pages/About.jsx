@@ -30,7 +30,7 @@ export default function About() {
         {/* Story */}
         <div style={{ marginBottom: "48px" }}>
           <p style={{
-            fontSize: "14px", color: "#333",
+            fontSize: "16px", color: "#333",
             lineHeight: "1.9", marginBottom: "20px", textAlign: "justify"
           }}>
             Every portrait tells a story, but for the artist behind Kallumalaiyan
@@ -38,7 +38,7 @@ export default function About() {
             of a single moment.
           </p>
           <p style={{
-            fontSize: "14px", color: "#333",
+            fontSize: "16px", color: "#333",
             lineHeight: "1.9", marginBottom: "20px", textAlign: "justify"
           }}>
             Specializing in hyper-realistic graphite, charcoal, and custom medium
@@ -80,14 +80,14 @@ export default function About() {
               Artist and Founder, Kallumalaiyan SketchArt
             </p>
             <p style={{
-              fontSize: "14px", color: "#333",
+              fontSize: "16px", color: "#333",
               lineHeight: "1.9", marginBottom: "16px", textAlign: "justify"
             }}>
               While many artists gravitate toward vibrant colors, Sharrmanraj found
               their true calling in the raw power of black and white.
             </p>
             <p style={{
-              fontSize: "14px", color: "#333",
+              fontSize: "16px", color: "#333",
               lineHeight: "1.9", textAlign: "justify"
             }}>
               Guided by patience and an eye for microscopic detail, they mastered
@@ -130,7 +130,7 @@ export default function About() {
                 }}>
                   {val.title}
                 </h3>
-                <p style={{ fontSize: "13px", color: "#666", lineHeight: "1.7" }}>
+                <p style={{fontSize: "15px", color: "#666", lineHeight: "1.7" }}>
                   {val.desc}
                 </p>
               </div>

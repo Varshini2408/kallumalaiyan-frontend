@@ -115,7 +115,7 @@ export default function Shop() {
           }}>
             {selected === "All" ? "Sketch Art" : selected}
           </h1>
-          <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.7" }}>
+          <p style={{ fontSize: "15px", color: "#555", lineHeight: "1.7" }}>
             Sacred devotional artwork - digitally sketched portraits of Hindu deities.
           </p>
         </div>
@@ -194,10 +194,10 @@ export default function Shop() {
                           display: "inline-block", marginBottom: "4px", marginLeft: "4px"
                         }}>NEW</span>
                       )}
-                      <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>
+                      <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>
                         {product.name}
                       </p>
-                      <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
+                      <p style={{ fontSize: "14px", color: "#666" }}>From RM 45</p>
                     </div>
                   </div>
                 )
@@ -269,8 +269,8 @@ export default function Shop() {
                         )}
                       </div>
                       <div style={{ padding: "10px 12px", textAlign: "center" }}>
-                        <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
-                        <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
+                        <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
+                        <p style={{ fontSize: "14px", color: "#666" }}>From RM 45</p>
                       </div>
                     </div>
                   )

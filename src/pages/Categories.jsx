@@ -47,7 +47,7 @@ export default function Categories() {
           Sketch Art Categories
         </h1>
         <p style={{
-          fontSize: "13px", color: "#555", lineHeight: "1.8",
+          fontSize: "15px", color: "#555", lineHeight: "1.8",
           marginBottom: "24px"
         }}>
           Browse our collection of sacred devotional artwork by category.
@@ -92,8 +92,8 @@ export default function Categories() {
                     background: "rgba(255,255,255,0.92)",
                     padding: "10px 12px", textAlign: "center"
                   }}>
-                    <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
-                    <p style={{ fontSize: "11px", color: "#888" }}>Click to explore</p>
+                    <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
+                    <p style={{ fontSize: "13px", color: "#888" }}>Click to explore</p>
                   </div>
                 </div>
               )

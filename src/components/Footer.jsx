@@ -21,7 +21,7 @@ export default function Footer() {
             <p style={{ fontWeight: "700", fontSize: "15px", marginBottom: "16px" }}>
               Kallumalaiyan SketchArt
             </p>
-            <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.8" }}>
+            <p style={{ fontSize: "15px", color: "#555", lineHeight: "1.8" }}>
               Sacred devotional artwork crafted with soul and devotion.
             </p>
           </div>
@@ -34,7 +34,7 @@ export default function Footer() {
               { label: "Enquiry", href: "/enquiry" },
             ].map(l => (
               <a key={l.label} href={l.href} style={{
-                display: "block", fontSize: "13px", color: "#555",
+                display: "block", fontSize: "15px", color: "#555",
                 textDecoration: "none", marginBottom: "6px"
               }}>{l.label}</a>
             ))}
@@ -42,24 +42,24 @@ export default function Footer() {
           <div>
             <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Contacts</p>
             <a href="mailto:kallumalaiyansketchart@gmail.com" style={{
-              display: "block", fontSize: "13px", color: "#555",
+              display: "block", fontSize: "15px", color: "#555",
               textDecoration: "none", marginBottom: "4px"
             }}>
               kallumalaiyansketchart@gmail.com
             </a>
             <a href="https://wa.me/600194079787" style={{
-              display: "block", fontSize: "13px", color: "#555",
+              display: "block", fontSize: "15px", color: "#555",
               textDecoration: "none", marginBottom: "4px"
             }}>
               +60 19-407 9787
             </a>
-            <p style={{ fontSize: "13px", color: "#555" }}>Malaysia</p>
+            <p style={{ fontSize: "15px", color: "#555" }}>Malaysia</p>
           </div>
           <div>
             <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Follow Us</p>
             {socials.map(s => (
               <a key={s.label} href={s.url} target="_blank" rel="noreferrer" style={{
-                display: "block", fontSize: "13px", color: "#555",
+                display: "block", fontSize: "15px", color: "#555",
                 textDecoration: "none", marginBottom: "6px"
               }}>{s.label}</a>
             ))}

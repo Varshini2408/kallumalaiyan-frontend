@@ -164,7 +164,7 @@ export default function Checkout() {
             <div style={{
               padding: "14px 16px", background: "#F5F5F5",
               border: "1px solid #E8E2D9", borderRadius: "6px",
-              fontSize: "13px", color: "#555", marginTop: "4px"
+              fontSize: "15px", color: "#555", marginTop: "4px"
             }}>
               
             </div>
@@ -220,7 +220,7 @@ export default function Checkout() {
                             RM {item.product.price * item.qty}
                           </p>
                         </div>
-                        <p style={{ fontSize: "11px", color: "#888", marginTop: "2px" }}>
+                        <p style={{ fontSize: "13px", color: "#888", marginTop: "2px" }}>
                           {item.variant.color} · {item.variant.size} x{item.qty}
                         </p>
                       </div>

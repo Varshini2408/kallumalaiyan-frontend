@@ -347,10 +347,10 @@ const getAllImages = () => {
                         )}
                       </div>
                       <div style={{ padding: "10px 12px", textAlign: "center" }}>
-                        <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "2px" }}>
+                        <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>
                           {p.name}
                         </p>
-                        <p style={{ fontSize: "12px", color: "#666" }}>From RM 45</p>
+                        <p style={{ fontSize: "14px", color: "#666" }}>From RM 45</p>
                       </div>
                     </div>
                   )
@@ -406,10 +406,10 @@ const getAllImages = () => {
                 <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "4px" }}>
                   {product.name}
                 </p>
-                <p style={{ fontSize: "12px", color: "#666", marginBottom: "2px" }}>
+                <p style={{ fontSize: "14px", color: "#666", marginBottom: "2px" }}>
                   Sketch Style: {selectedColor}
                 </p>
-                <p style={{ fontSize: "12px", color: "#666" }}>
+                <p style={{ fontSize: "14px", color: "#666" }}>
                   Size: {selectedSize.label}
                 </p>
               </div>

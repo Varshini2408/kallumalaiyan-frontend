@@ -55,11 +55,11 @@ export default function Cart() {
               marginBottom: "8px"
             }}>
               <p style={{
-                fontSize: "11px", color: "#888",
+                fontSize: "13px", color: "#888",
                 letterSpacing: "0.1em", textTransform: "uppercase"
               }}>Product</p>
               <p style={{
-                fontSize: "11px", color: "#888",
+                fontSize: "13px", color: "#888",
                 letterSpacing: "0.1em", textTransform: "uppercase"
               }}>Total</p>
             </div>
@@ -100,10 +100,10 @@ export default function Cart() {
                       </p>
                     </div>
 
-                    <p style={{ fontSize: "12px", color: "#666", marginBottom: "2px" }}>
+                    <p style={{ fontSize: "14px", color: "#666", marginBottom: "2px" }}>
                       Sketch Style: {item.variant.color}
                     </p>
-                    <p style={{ fontSize: "12px", color: "#666", marginBottom: "16px" }}>
+                    <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>
                       Size: {item.variant.size}
                     </p>
 

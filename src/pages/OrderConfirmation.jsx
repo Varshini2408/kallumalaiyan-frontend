@@ -64,7 +64,7 @@ export default function OrderConfirmation() {
             padding: "10px 0"
           }}>
             <p style={{ fontSize: "13px", color: "#888" }}>Questions?</p>
-            <p style={{ fontSize: "13px", color: "#555" }}>Telegram us anytime</p>
+            <p style={{ fontSize: "15px", color: "#555" }}>Telegram us anytime</p>
           </div>
         </div>
 
