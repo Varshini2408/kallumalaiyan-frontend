@@ -30,7 +30,7 @@ router.post("/", upload.fields([
     const productData = {
       name: req.body.name,
       category: req.body.category,
-      price: Number(req.body.price) || 60,
+      price: Number(req.body.price) || 80,
       description: req.body.description,promoDiscount: req.body.promoDiscount ? Number(req.body.promoDiscount) : null,
       isHotSelling:  req.body.isHotSelling  === "true",
       isNewArrival:  req.body.isNewArrival  === "true",
@@ -74,7 +74,7 @@ router.put("/:id", upload.fields([
     const updateData = {
       name: req.body.name,
       category: req.body.category,
-      price: Number(req.body.price) || 60,
+      price: Number(req.body.price) || 80,
       description: req.body.description,promoDiscount: req.body.promoDiscount ? Number(req.body.promoDiscount) : null,
       isHotSelling:  req.body.isHotSelling  === "true",
       isNewArrival:  req.body.isNewArrival  === "true",
@@ -118,4 +118,5 @@ router.delete("/:id", async (req, res) => {
 });
 
 module.exports = router;
+
 
