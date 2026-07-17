@@ -175,7 +175,7 @@ export default function Home() {
           </div>
           {categories.length > 4 && (
             <div style={{ textAlign: "right", marginBottom: "8px" }}>
-              <a href="/shop" style={{
+              <a href="/categories" style={{
                 fontSize: "12px", color: "#1A1714", textDecoration: "underline"
               }}>View All Categories</a>
             </div>
