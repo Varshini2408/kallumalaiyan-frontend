@@ -60,7 +60,7 @@ export default function Footer() {
             <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Follow Us</p>
             {socials.map(s => (
               <a key={s.label} href={s.url} target="_blank" rel="noreferrer" style={{
-                display: "block", fontSize: "15px", color: "#555",
+                display: "block", fontSize: "13px", color: "#555",
                 textDecoration: "none", marginBottom: "6px"
               }}>{s.label}</a>
             ))}
