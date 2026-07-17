@@ -88,7 +88,9 @@ const getAllImages = () => {
 }
 
 const handleAddToCart = () => {
-  const finalPrice = product.promoPrice ? product.promoPrice : selectedSize.price
+  const finalPrice = product.promoDiscount
+    ? Math.round(selectedSize.price * (1 - product.promoDiscount / 100))
+    : selectedSize.price
   addToCart(
     { ...product, price: finalPrice },
     { color: selectedColor, size: selectedSize.label },
@@ -188,34 +190,35 @@ const handleAddToCart = () => {
                 {product.name}
               </h1>
               <div style={{ marginLeft: "12px", textAlign: "right" }}>
-  {product.promoPrice ? (
+  {product.promoDiscount ? (
     <>
+      <span style={{
+        background: "#FEE2E2", color: "#DC2626",
+        fontSize: "11px", padding: "2px 8px",
+        borderRadius: "10px", fontWeight: "600",
+        display: "inline-block", marginBottom: "4px"
+      }}>
+        {product.promoDiscount}% OFF
+      </span>
       <p style={{
         fontSize: "14px", color: "#999",
         textDecoration: "line-through", margin: 0
       }}>
-        RM{selectedSize.price}.00
+        RM {selectedSize.price}.00
       </p>
       <p style={{
         fontSize: "22px", fontWeight: "700",
         color: "#E8572A", margin: 0
       }}>
-        RM{product.promoPrice}.00
+        RM {Math.round(selectedSize.price * (1 - product.promoDiscount / 100))}.00
       </p>
-      <span style={{
-        background: "#FEE2E2", color: "#DC2626",
-        fontSize: "11px", padding: "2px 8px",
-        borderRadius: "10px", fontWeight: "600"
-      }}>
-        PROMO
-      </span>
     </>
   ) : (
     <p style={{
       fontSize: "22px", fontWeight: "700",
       margin: 0, whiteSpace: "nowrap"
     }}>
-      RM{selectedSize.price}.00
+      RM {selectedSize.price}.00
     </p>
   )}
 </div>

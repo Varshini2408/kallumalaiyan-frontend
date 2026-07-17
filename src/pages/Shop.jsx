@@ -283,16 +283,21 @@ export default function Shop() {
                       </div>
                       <div style={{ padding: "10px 12px", textAlign: "center" }}>
                         <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>{name}</p>
-                        {product.promoPrice ? (
-  <div style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
-    <p style={{
-      fontSize: "12px", color: "#999",
-      textDecoration: "line-through", margin: 0
-    }}>RM 80</p>
-    <p style={{
-      fontSize: "14px", color: "#E8572A",
-      fontWeight: "700", margin: 0
-    }}>RM {product.promoPrice}</p>
+                        {product.promoDiscount ? (
+  <div style={{ textAlign: "center" }}>
+    <span style={{
+      background: "#FEE2E2", color: "#DC2626", fontSize: "9px",
+      padding: "2px 6px", borderRadius: "8px", fontWeight: "600",
+      display: "inline-block", marginBottom: "2px"
+    }}>{product.promoDiscount}% OFF</span>
+    <div style={{ display: "flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
+      <p style={{ fontSize: "12px", color: "#999", textDecoration: "line-through", margin: 0 }}>
+        RM 80
+      </p>
+      <p style={{ fontSize: "14px", color: "#E8572A", fontWeight: "700", margin: 0 }}>
+        RM {Math.round(80 * (1 - product.promoDiscount / 100))}
+      </p>
+    </div>
   </div>
 ) : (
   <p style={{ fontSize: "13px", color: "#666" }}>From RM 80</p>
