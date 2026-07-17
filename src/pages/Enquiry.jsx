@@ -16,6 +16,28 @@ export default function Enquiry() {
     background: "white"
   })
 
+  const handleSubmit = async () => {
+  if (!form.name || !form.email || !form.comment) {
+    alert("Please fill in name, email and message!")
+    return
+  }
+  try {
+    const res = await fetch("https://kallumalaiyan-backend.onrender.com/api/enquiry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form)
+    })
+    const data = await res.json()
+    if (data.success) {
+      setSent(true)
+    } else {
+      alert("Failed to send. Please try again!")
+    }
+  } catch (err) {
+    alert("Error sending message. Please try again!")
+  }
+}
+
   return (
     <div style={{ background: "white", minHeight: "100vh" }}>
       <Navbar />
@@ -210,10 +232,7 @@ export default function Enquiry() {
                 </div>
 
                 <button
-                  onClick={() => {
-                    if (!form.name || !form.email || !form.comment) return
-                    setSent(true)
-                  }}
+                  onClick={handleSubmit}
                   style={{
                     width: "100%", padding: "14px",
                     background: "#1A1714", color: "white",
