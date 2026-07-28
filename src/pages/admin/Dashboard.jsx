@@ -261,7 +261,7 @@ export default function Dashboard() {
               KSA Admin
             </p>
             <p style={{ fontSize: "13px", color: "#8B7355" }}>
-              Kallumalaiyan SketchArt Dashboard
+              Kallumalaiyan Sketchart Dashboard
             </p>
           </div>
           <div style={{ marginBottom: "16px" }}>
@@ -293,7 +293,7 @@ export default function Dashboard() {
             Login
           </button>
           <p style={{ textAlign: "center", fontSize: "11px", color: "#8B7355", marginTop: "20px" }}>
-            Protected area - Kallumalaiyan SketchArt
+            Protected area - Kallumalaiyan Sketchart
           </p>
         </div>
       </div>

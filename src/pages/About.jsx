@@ -77,7 +77,7 @@ export default function About() {
             <p style={{
               fontSize: "13px", color: "#888", marginBottom: "16px"
             }}>
-              Artist and Founder, Kallumalaiyan SketchArt
+              Artist and Founder, Kallumalaiyan Sketchart
             </p>
             <p style={{
               fontSize: "16px", color: "#333",

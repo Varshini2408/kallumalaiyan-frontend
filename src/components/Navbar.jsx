@@ -48,7 +48,7 @@ export default function Navbar() {
         <Link to="/" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
           <img
             src={logo}
-            alt="Kallumalaiyan SketchArt"
+            alt="Kallumalaiyan Sketchart"
             style={{
               width: "60px", height: "60px",
               objectFit: "contain", borderRadius: "50%",

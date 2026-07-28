@@ -1,8 +1,8 @@
 export default function Footer() {
   const socials = [
-    { label: "Instagram", url: "https://www.instagram.com/kallumalaiyan_sketchart?igsh=MXJnOXR2dGlqNTJqaQ==" },
+    { label: "Instagram", url: "https://www.instagram.com/kallumalaiyan_Sketchart?igsh=MXJnOXR2dGlqNTJqaQ==" },
     { label: "WhatsApp", url: "https://wa.me/600194079787" },
-    { label: "TikTok", url: "https://www.tiktok.com/@kallumalaiyan_sketchart" },
+    { label: "TikTok", url: "https://www.tiktok.com/@kallumalaiyan_Sketchart" },
   ]
 
   return (
@@ -18,7 +18,7 @@ export default function Footer() {
         }}>
           <div>
             <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "16px" }}>
-              Kallumalaiyan SketchArt
+              Kallumalaiyan Sketchart
             </p>
             <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.8" }}>
               Sacred devotional artwork crafted with soul and devotion.
@@ -40,12 +40,12 @@ export default function Footer() {
           </div>
           <div>
             <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Contacts</p>
-            <a href="mailto:kallumalaiyansketchart@gmail.com" style={{
+            <a href="mailto:kallumalaiyanSketchart@gmail.com" style={{
   display: "block", fontSize: "13px", color: "#555",
   textDecoration: "none", marginBottom: "4px",
   wordBreak: "break-all"
 }}>
-  kallumalaiyansketchart@gmail.com
+  kallumalaiyanSketchart@gmail.com
 </a>
             <a href="https://wa.me/600194079787" style={{
               display: "block", fontSize: "13px", color: "#555",
