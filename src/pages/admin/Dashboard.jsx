@@ -40,7 +40,7 @@ export default function Dashboard() {
   const [adminProductCategory, setAdminProductCategory] = useState("All")
 
   useEffect(() => {
-    const auth = sessionStorage.getItem("ksa-admin-auth")
+    const auth = sessionStorage.getItem("KS-admin-auth")
     if (auth === "true") setIsLoggedIn(true)
     fetchOrders()
     fetchProducts()
@@ -49,7 +49,7 @@ export default function Dashboard() {
 
   const handleLogin = () => {
     if (password === "kallumalaiyan2024") {
-      sessionStorage.setItem("ksa-admin-auth", "true")
+      sessionStorage.setItem("KS-admin-auth", "true")
       setIsLoggedIn(true)
       setLoginError("")
     } else {
@@ -58,7 +58,7 @@ export default function Dashboard() {
   }
 
   const handleLogout = () => {
-    sessionStorage.removeItem("ksa-admin-auth")
+    sessionStorage.removeItem("KS-admin-auth")
     setIsLoggedIn(false)
   }
 
@@ -258,7 +258,7 @@ export default function Dashboard() {
         }}>
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
             <p style={{ fontSize: "24px", fontWeight: "600", color: "#1A1714", marginBottom: "4px" }}>
-              KSA Admin
+              KS Admin
             </p>
             <p style={{ fontSize: "13px", color: "#8B7355" }}>
               Kallumalaiyan Sketchart Dashboard
@@ -310,7 +310,7 @@ export default function Dashboard() {
         flexDirection: "column", gap: "4px", flexShrink: 0
       }}>
         <p style={{ color: "#C4A882", fontSize: "18px", fontWeight: "600", marginBottom: "4px" }}>
-          KSA Admin
+          KS Admin
         </p>
         <p style={{ color: "#8B7355", fontSize: "11px", letterSpacing: "0.1em", marginBottom: "24px" }}>
           DASHBOARD
