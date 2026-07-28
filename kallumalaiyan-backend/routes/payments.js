@@ -32,6 +32,25 @@ orderId: order._id,
 res.status(500).json({ error: err.message });
 }
 });
+
+// GET /api/payment/callback (ToyyibPay redirect)
+router.get("/callback", async (req, res) => {
+  const { billcode, order_id, status_id, transaction_id } = req.query;
+  try {
+    if (status_id === "1") {
+      const order = await Order.findById(order_id)
+      if (order) {
+        order.status = "paid"
+        order.transactionId = transaction_id
+        await order.save()
+        await sendOrderNotification(order)
+      }
+    }
+  } catch (err) {
+    console.error("Callback error:", err)
+  }
+  res.redirect("https://kallumalaiyan-frontend.vercel.app/order-confirmation")
+});
 // POST /api/payment/callback (ToyyibPay calls this after payment)
 router.post("/callback", async (req, res) => {
 const { billcode, order_id, status_id, transaction_id } = req.body;
