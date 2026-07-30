@@ -168,15 +168,42 @@ export default function Navbar() {
             </button>
           </div>
 
-          <a href="/about" onClick={() => setMenuOpen(false)} style={{
-            display: "block", padding: "18px 20px",
-            fontSize: "15px", fontWeight: "600",
-            color: "#1A1714", textDecoration: "none",
-            borderBottom: "1px solid #F0EDE8",
-            background: "#F5F5F5"
-          }}>
-            Bio
-          </a>
+          <a href="/" onClick={() => setMenuOpen(false)} style={{
+  display: "block", padding: "18px 20px",
+  fontSize: "15px", fontWeight: "600",
+  color: "#1A1714", textDecoration: "none",
+  borderBottom: "1px solid #F0EDE8",
+  background: "#F5F5F5"
+}}>
+  Home
+</a>
+<a href="/about" onClick={() => setMenuOpen(false)} style={{
+  display: "block", padding: "18px 20px",
+  fontSize: "15px", fontWeight: "600",
+  color: "#1A1714", textDecoration: "none",
+  borderBottom: "1px solid #F0EDE8",
+  background: "white"
+}}>
+  Bio
+</a>
+<a href="/categories" onClick={() => setMenuOpen(false)} style={{
+  display: "block", padding: "18px 20px",
+  fontSize: "15px", fontWeight: "600",
+  color: "#1A1714", textDecoration: "none",
+  borderBottom: "1px solid #F0EDE8",
+  background: "white"
+}}>
+  Art Categories
+</a>
+<a href="/enquiry" onClick={() => setMenuOpen(false)} style={{
+  display: "block", padding: "18px 20px",
+  fontSize: "15px", fontWeight: "600",
+  color: "#1A1714", textDecoration: "none",
+  borderBottom: "1px solid #F0EDE8",
+  background: "white"
+}}>
+  Enquiry
+</a>
           <a href="/categories" onClick={() => setMenuOpen(false)} style={{
             display: "block", padding: "18px 20px",
             fontSize: "15px", fontWeight: "600",
