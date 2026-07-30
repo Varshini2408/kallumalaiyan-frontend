@@ -47,14 +47,14 @@ export default function About() {
         }}>
           <div style={{
   borderRadius: "12px", overflow: "hidden",
-  border: "1px solid #E8E2D9", maxHeight: "350px"
+  border: "1px solid #E8E2D9"
 }}>
   <img
     src={founderPhoto}
     alt="Sharrmanraj - Founder"
     style={{
-      width: "100%", height: "100%",
-      objectFit: "cover", display: "block"
+      width: "100%", height: "auto",
+      display: "block"
     }}
   />
 </div>
