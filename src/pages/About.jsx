@@ -81,7 +81,7 @@ export default function About() {
             }}>
               Sharrmanraj, the artist behind Kallumalaiyan Sketchart, is a passionate coloured sketch artist dedicated to creating premium portraits of Hindu deities that celebrate faith, culture, and spirituality. With a keen eye for detail and a deep appreciation for Hindu traditions, he transforms every sketch into a meaningful work of art that reflects both artistic excellence and divine beauty.
 
-Inspired by the rich heritage of Hinduism, Sharrmanraj specializes in hand-crafted coloured sketches that capture the grace, power, and symbolism of revered deities. Every piece is carefully created using premium-quality materials and meticulous techniques, ensuring vibrant colours, lifelike expressions, and intricate details that resonate with devotees and art collectors alike.
+Inspired by the rich heritage of Hinduism, Sharrmanraj specializes in hand-crafted coloured sketches that capture the grace, power, and symbolism of revered deities. Created with care and quality, each piece is designed to celebrate faith, tradition, and timeless artistry.
             </p>
             <p style={{
               fontSize: "16px", color: "#333",
