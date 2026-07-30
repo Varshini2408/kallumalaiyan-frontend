@@ -115,9 +115,13 @@ export default function Shop() {
           }}>
             {selected === "All" ? "Sketchart" : selected}
           </h1>
-          <p style={{ fontSize: "15px", color: "#555", lineHeight: "1.7" }}>
-            Sacred devotional artwork - digitally sketched portraits of Hindu deities.
-          </p>
+          <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.7" }}>
+  {selected !== "All"
+    ? categories.find(c => (typeof c === "string" ? c : c.name) === selected)?.description ||
+      "Sacred devotional artwork - digitally sketched portraits of Hindu deities."
+    : "Sacred devotional artwork - digitally sketched portraits of Hindu deities."
+  }
+</p>
         </div>
 
         {/* Sort button */}
