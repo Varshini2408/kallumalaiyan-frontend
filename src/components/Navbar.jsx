@@ -204,24 +204,6 @@ export default function Navbar() {
 }}>
   Enquiry
 </a>
-          <a href="/categories" onClick={() => setMenuOpen(false)} style={{
-            display: "block", padding: "18px 20px",
-            fontSize: "15px", fontWeight: "600",
-            color: "#1A1714", textDecoration: "none",
-            borderBottom: "1px solid #F0EDE8",
-            background: "white"
-          }}>
-            Art Categories
-          </a>
-          <a href="/enquiry" onClick={() => setMenuOpen(false)} style={{
-            display: "block", padding: "18px 20px",
-            fontSize: "15px", fontWeight: "600",
-            color: "#1A1714", textDecoration: "none",
-            borderBottom: "1px solid #F0EDE8",
-            background: "white"
-          }}>
-            Enquiry
-          </a>
         </div>
       )}
     </>
