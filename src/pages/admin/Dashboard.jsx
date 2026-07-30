@@ -11,8 +11,6 @@ const emptyForm = {
   promoDiscount: "",
   imageBWFiles: [],
   imageBWPreviews: [],
-  imageColorFiles: [],
-  imageColorPreviews: [],
   isHotSelling: false,
   isNewArrival: false,
   isRecommended: false,
@@ -34,13 +32,18 @@ export default function Dashboard() {
   const [message, setMessage] = useState("")
   const [showAddCategory, setShowAddCategory] = useState(false)
   const [newCategory, setNewCategory] = useState("")
+  const [newCategoryDesc, setNewCategoryDesc] = useState("")
   const [newCategoryImage, setNewCategoryImage] = useState(null)
   const [newCategoryPreview, setNewCategoryPreview] = useState(null)
   const [adminProductSort, setAdminProductSort] = useState("newest")
   const [adminProductCategory, setAdminProductCategory] = useState("All")
+  const [editingCategory, setEditingCategory] = useState(null)
+  const [editCategoryImage, setEditCategoryImage] = useState(null)
+  const [editCategoryPreview, setEditCategoryPreview] = useState(null)
+  const [editCategoryDesc, setEditCategoryDesc] = useState("")
 
   useEffect(() => {
-    const auth = sessionStorage.getItem("KS-admin-auth")
+    const auth = sessionStorage.getItem("ksa-admin-auth")
     if (auth === "true") setIsLoggedIn(true)
     fetchOrders()
     fetchProducts()
@@ -49,7 +52,7 @@ export default function Dashboard() {
 
   const handleLogin = () => {
     if (password === "kallumalaiyan2024") {
-      sessionStorage.setItem("KS-admin-auth", "true")
+      sessionStorage.setItem("ksa-admin-auth", "true")
       setIsLoggedIn(true)
       setLoginError("")
     } else {
@@ -58,7 +61,7 @@ export default function Dashboard() {
   }
 
   const handleLogout = () => {
-    sessionStorage.removeItem("KS-admin-auth")
+    sessionStorage.removeItem("ksa-admin-auth")
     setIsLoggedIn(false)
   }
 
@@ -96,6 +99,7 @@ export default function Dashboard() {
     try {
       const formData = new FormData()
       formData.append("name", newCategory.trim())
+      formData.append("description", newCategoryDesc.trim())
       if (newCategoryImage) formData.append("image", newCategoryImage)
       const res = await fetch(API + "/api/categories", { method: "POST", body: formData })
       const data = await res.json()
@@ -103,6 +107,7 @@ export default function Dashboard() {
         setCategories(data.categories)
         setMessage("Category added: " + newCategory.trim())
         setNewCategory("")
+        setNewCategoryDesc("")
         setNewCategoryImage(null)
         setNewCategoryPreview(null)
         setShowAddCategory(false)
@@ -123,6 +128,30 @@ export default function Dashboard() {
     } catch (err) { setMessage("Error removing category") }
   }
 
+  const handleUpdateCategory = async () => {
+    try {
+      const formData = new FormData()
+      formData.append("name", editingCategory.name)
+      formData.append("description", editCategoryDesc)
+      if (editCategoryImage) formData.append("image", editCategoryImage)
+      const res = await fetch(API + "/api/categories/update", {
+        method: "POST",
+        body: formData
+      })
+      const data = await res.json()
+      if (data.categories) {
+        setCategories(data.categories)
+        setMessage("Category updated!")
+        setEditingCategory(null)
+        setEditCategoryImage(null)
+        setEditCategoryPreview(null)
+        setEditCategoryDesc("")
+      } else {
+        setMessage("Error: " + data.error)
+      }
+    } catch (err) { setMessage("Error: " + err.message) }
+  }
+
   const openAddForm = () => {
     setForm(emptyForm)
     setEditingProduct(null)
@@ -140,8 +169,6 @@ export default function Dashboard() {
       imageBWPreviews: product.imagesBW && product.imagesBW.length > 0
         ? product.imagesBW
         : product.imageBW ? [product.imageBW] : [],
-      imageColorFiles: [],
-      imageColorPreviews: [],
       isHotSelling: product.isHotSelling || false,
       isNewArrival: product.isNewArrival || false,
       isRecommended: product.isRecommended || false,
@@ -258,10 +285,10 @@ export default function Dashboard() {
         }}>
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
             <p style={{ fontSize: "24px", fontWeight: "600", color: "#1A1714", marginBottom: "4px" }}>
-              KS Admin
+              KSA Admin
             </p>
             <p style={{ fontSize: "13px", color: "#8B7355" }}>
-              Kallumalaiyan Sketchart Dashboard
+              Kallumalaiyan SketchArt Dashboard
             </p>
           </div>
           <div style={{ marginBottom: "16px" }}>
@@ -293,7 +320,7 @@ export default function Dashboard() {
             Login
           </button>
           <p style={{ textAlign: "center", fontSize: "11px", color: "#8B7355", marginTop: "20px" }}>
-            Protected area - Kallumalaiyan Sketchart
+            Protected area - Kallumalaiyan SketchArt
           </p>
         </div>
       </div>
@@ -302,15 +329,13 @@ export default function Dashboard() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-
-      {/* Sidebar */}
       <div style={{
         width: "220px", background: "#1A1714",
         padding: "24px 16px", display: "flex",
         flexDirection: "column", gap: "4px", flexShrink: 0
       }}>
         <p style={{ color: "#C4A882", fontSize: "18px", fontWeight: "600", marginBottom: "4px" }}>
-          KS Admin
+          KSA Admin
         </p>
         <p style={{ color: "#8B7355", fontSize: "11px", letterSpacing: "0.1em", marginBottom: "24px" }}>
           DASHBOARD
@@ -344,7 +369,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div style={{ flex: 1, padding: "32px", background: "#F5F3EF", overflowY: "auto" }}>
 
         {message && (
@@ -361,7 +385,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ORDERS PAGE */}
+        {/* ORDERS */}
         {page === "orders" && (
           <div>
             <h2 style={{ fontSize: "24px", fontWeight: "400", marginBottom: "24px" }}>Orders</h2>
@@ -454,7 +478,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* PRODUCTS PAGE */}
+        {/* PRODUCTS */}
         {page === "products" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
@@ -462,9 +486,7 @@ export default function Dashboard() {
               <button onClick={openAddForm} style={{
                 background: "#1A1714", color: "white", border: "none",
                 padding: "10px 20px", borderRadius: "6px", cursor: "pointer", fontSize: "13px"
-              }}>
-                + Add Product
-              </button>
+              }}>+ Add Product</button>
             </div>
 
             {showForm && (
@@ -476,13 +498,11 @@ export default function Dashboard() {
                   {editingProduct ? "Edit Product" : "Add New Product"}
                 </h3>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-
                   <div>
                     <label style={labelStyle}>Product Name</label>
                     <input name="name" value={form.name} onChange={handleFormChange}
                       placeholder="e.g. Lord Murugan Portrait" style={inputStyle} />
                   </div>
-
                   <div>
                     <label style={labelStyle}>Category</label>
                     <select name="category" value={form.category} onChange={handleFormChange} style={inputStyle}>
@@ -493,18 +513,15 @@ export default function Dashboard() {
                       })}
                     </select>
                   </div>
-
                   <div>
                     <label style={labelStyle}>Base Price (RM)</label>
                     <input name="price" value={form.price || "80"} onChange={handleFormChange}
                       placeholder="80" type="number" style={inputStyle} />
                   </div>
-
                   <div>
                     <label style={labelStyle}>Discount % — Leave empty if no promo</label>
                     <input name="promoDiscount" value={form.promoDiscount || ""}
-                      onChange={handleFormChange}
-                      placeholder="e.g. 10 for 10% off"
+                      onChange={handleFormChange} placeholder="e.g. 10 for 10% off"
                       type="number" min="1" max="99" style={inputStyle} />
                     {form.promoDiscount && (
                       <p style={{ fontSize: "11px", color: "#E8572A", marginTop: "4px" }}>
@@ -512,24 +529,20 @@ export default function Dashboard() {
                       </p>
                     )}
                   </div>
-
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Description / Order comes with</label>
                     <textarea name="description" value={form.description} onChange={handleFormChange}
-                      placeholder="Describe this product..."
-                      rows={3} style={{ ...inputStyle, resize: "vertical" }} />
+                      placeholder="Describe this product..." rows={3}
+                      style={{ ...inputStyle, resize: "vertical" }} />
                   </div>
-
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Product Pictures (up to 5)</label>
-                    <input
-                      type="file" accept="image/*" multiple
+                    <input type="file" accept="image/*" multiple
                       onChange={e => {
                         const files = Array.from(e.target.files).slice(0, 5)
                         setForm({ ...form, imageBWFiles: files, imageBWPreviews: files.map(f => URL.createObjectURL(f)) })
                       }}
-                      style={{ ...inputStyle, padding: "8px" }}
-                    />
+                      style={{ ...inputStyle, padding: "8px" }} />
                     <p style={{ fontSize: "11px", color: "#8B7355", marginTop: "4px" }}>
                       First image is the main display photo. Select up to 5 images.
                     </p>
@@ -560,7 +573,6 @@ export default function Dashboard() {
                       </div>
                     )}
                   </div>
-
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Product Tags</label>
                     <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
@@ -573,19 +585,15 @@ export default function Dashboard() {
                           display: "flex", alignItems: "center", gap: "8px",
                           cursor: "pointer", fontSize: "13px", color: "#3D3830"
                         }}>
-                          <input
-                            type="checkbox"
-                            checked={form[tag.key] || false}
+                          <input type="checkbox" checked={form[tag.key] || false}
                             onChange={e => setForm({ ...form, [tag.key]: e.target.checked })}
-                            style={{ width: "16px", height: "16px", accentColor: "#1A1714" }}
-                          />
+                            style={{ width: "16px", height: "16px", accentColor: "#1A1714" }} />
                           {tag.label}
                         </label>
                       ))}
                     </div>
                   </div>
                 </div>
-
                 <div style={{ display: "flex", gap: "12px", marginTop: "20px" }}>
                   <button onClick={handleSave} disabled={saving} style={{
                     background: "#1A1714", color: "white", border: "none",
@@ -597,31 +605,23 @@ export default function Dashboard() {
                   <button onClick={() => setShowForm(false)} style={{
                     background: "white", color: "#1A1714", border: "1px solid #E8E2D9",
                     padding: "10px 24px", borderRadius: "6px", cursor: "pointer", fontSize: "13px"
-                  }}>
-                    Cancel
-                  </button>
+                  }}>Cancel</button>
                 </div>
               </div>
             )}
 
             {/* Filter & Sort Bar */}
             <div style={{
-              display: "flex", gap: "12px", marginBottom: "20px",
-              flexWrap: "wrap", alignItems: "center",
-              padding: "12px 16px", background: "white",
+              display: "flex", gap: "12px", marginBottom: "20px", flexWrap: "wrap",
+              alignItems: "center", padding: "12px 16px", background: "white",
               border: "1px solid #E8E2D9", borderRadius: "8px"
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <label style={{ fontSize: "12px", color: "#8B7355" }}>Category:</label>
-                <select
-                  value={adminProductCategory}
+                <select value={adminProductCategory}
                   onChange={e => setAdminProductCategory(e.target.value)}
-                  style={{
-                    padding: "6px 10px", border: "1px solid #E8E2D9",
-                    borderRadius: "4px", fontSize: "13px",
-                    fontFamily: "inherit", outline: "none"
-                  }}
-                >
+                  style={{ padding: "6px 10px", border: "1px solid #E8E2D9",
+                    borderRadius: "4px", fontSize: "13px", fontFamily: "inherit", outline: "none" }}>
                   <option value="All">All Categories</option>
                   {categories.map(cat => {
                     const name = typeof cat === "string" ? cat : cat.name
@@ -631,15 +631,10 @@ export default function Dashboard() {
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <label style={{ fontSize: "12px", color: "#8B7355" }}>Sort:</label>
-                <select
-                  value={adminProductSort}
+                <select value={adminProductSort}
                   onChange={e => setAdminProductSort(e.target.value)}
-                  style={{
-                    padding: "6px 10px", border: "1px solid #E8E2D9",
-                    borderRadius: "4px", fontSize: "13px",
-                    fontFamily: "inherit", outline: "none"
-                  }}
-                >
+                  style={{ padding: "6px 10px", border: "1px solid #E8E2D9",
+                    borderRadius: "4px", fontSize: "13px", fontFamily: "inherit", outline: "none" }}>
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
                   <option value="az">A to Z</option>
@@ -660,20 +655,16 @@ export default function Dashboard() {
                 }}>Add your first product</button>
               </div>
             ) : (
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                gap: "16px"
-              }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>
                 {getFilteredSortedProducts().map(product => (
                   <div key={product._id} style={{
                     background: "white", border: "1px solid #E8E2D9",
                     borderRadius: "8px", overflow: "hidden"
                   }}>
                     <div style={{
-                      height: "160px", background: "#F5F5F5",
-                      display: "flex", alignItems: "center",
-                      justifyContent: "center", overflow: "hidden", position: "relative"
+                      height: "160px", background: "#F5F5F5", display: "flex",
+                      alignItems: "center", justifyContent: "center",
+                      overflow: "hidden", position: "relative"
                     }}>
                       {getProductImage(product) ? (
                         <img src={getProductImage(product)} alt={product.name}
@@ -683,32 +674,19 @@ export default function Dashboard() {
                       )}
                       <div style={{ position: "absolute", top: "6px", right: "6px", display: "flex", gap: "4px", flexWrap: "wrap" }}>
                         {product.isHotSelling && (
-                          <span style={{
-                            background: "#FEE2E2", color: "#DC2626",
-                            fontSize: "9px", padding: "2px 6px", borderRadius: "10px"
-                          }}>HOT</span>
+                          <span style={{ background: "#FEE2E2", color: "#DC2626", fontSize: "9px", padding: "2px 6px", borderRadius: "10px" }}>HOT</span>
                         )}
                         {product.isNewArrival && (
-                          <span style={{
-                            background: "#DCFCE7", color: "#16A34A",
-                            fontSize: "9px", padding: "2px 6px", borderRadius: "10px"
-                          }}>NEW</span>
+                          <span style={{ background: "#DCFCE7", color: "#16A34A", fontSize: "9px", padding: "2px 6px", borderRadius: "10px" }}>NEW</span>
                         )}
                         {product.promoDiscount && (
-                          <span style={{
-                            background: "#FEE2E2", color: "#DC2626",
-                            fontSize: "9px", padding: "2px 6px", borderRadius: "10px"
-                          }}>{product.promoDiscount}% OFF</span>
+                          <span style={{ background: "#FEE2E2", color: "#DC2626", fontSize: "9px", padding: "2px 6px", borderRadius: "10px" }}>{product.promoDiscount}% OFF</span>
                         )}
                       </div>
                     </div>
                     <div style={{ padding: "12px" }}>
-                      <p style={{ fontWeight: "500", fontSize: "14px", marginBottom: "2px" }}>
-                        {product.name}
-                      </p>
-                      <p style={{ fontSize: "12px", color: "#8B7355", marginBottom: "4px" }}>
-                        {product.category}
-                      </p>
+                      <p style={{ fontWeight: "500", fontSize: "14px", marginBottom: "2px" }}>{product.name}</p>
+                      <p style={{ fontSize: "12px", color: "#8B7355", marginBottom: "4px" }}>{product.category}</p>
                       <p style={{ fontSize: "12px", color: "#8B7355", marginBottom: "8px" }}>
                         RM {product.price}
                         {product.promoDiscount && (
@@ -737,7 +715,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* CATEGORIES PAGE */}
+        {/* CATEGORIES */}
         {page === "categories" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
@@ -745,11 +723,78 @@ export default function Dashboard() {
               <button onClick={() => setShowAddCategory(true)} style={{
                 background: "#1A1714", color: "white", border: "none",
                 padding: "10px 20px", borderRadius: "6px", cursor: "pointer", fontSize: "13px"
-              }}>
-                + Add Category
-              </button>
+              }}>+ Add Category</button>
             </div>
 
+            {/* Edit Category */}
+            {editingCategory && (
+              <div style={{
+                background: "white", border: "1px solid #E8E2D9",
+                borderRadius: "8px", padding: "20px", marginBottom: "24px"
+              }}>
+                <h3 style={{ fontSize: "16px", fontWeight: "500", marginBottom: "16px" }}>
+                  Edit: {editingCategory.name}
+                </h3>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div>
+                    <label style={labelStyle}>Current Image</label>
+                    {editingCategory.img ? (
+                      <img src={editingCategory.img} alt={editingCategory.name} style={{
+                        width: "80px", height: "80px", objectFit: "cover",
+                        borderRadius: "6px", border: "1px solid #E8E2D9"
+                      }} />
+                    ) : (
+                      <p style={{ fontSize: "12px", color: "#888" }}>No image yet</p>
+                    )}
+                  </div>
+                  <div>
+                    <label style={labelStyle}>New Image</label>
+                    <input type="file" accept="image/*"
+                      onChange={e => {
+                        const file = e.target.files[0]
+                        if (file) {
+                          setEditCategoryImage(file)
+                          setEditCategoryPreview(URL.createObjectURL(file))
+                        }
+                      }}
+                      style={{ ...inputStyle, padding: "8px" }} />
+                    {editCategoryPreview && (
+                      <img src={editCategoryPreview} alt="preview" style={{
+                        width: "80px", height: "80px", objectFit: "cover",
+                        borderRadius: "6px", border: "1px solid #E8E2D9", marginTop: "8px"
+                      }} />
+                    )}
+                  </div>
+                  <div style={{ gridColumn: "1 / -1" }}>
+                    <label style={labelStyle}>Description</label>
+                    <textarea
+                      value={editCategoryDesc}
+                      onChange={e => setEditCategoryDesc(e.target.value)}
+                      placeholder="e.g. Sacred artworks of Lord Murugan..."
+                      rows={2}
+                      style={{ ...inputStyle, resize: "vertical" }}
+                    />
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                  <button onClick={handleUpdateCategory} style={{
+                    background: "#1A1714", color: "white", border: "none",
+                    padding: "10px 20px", borderRadius: "6px", cursor: "pointer", fontSize: "13px"
+                  }}>Update</button>
+                  <button onClick={() => {
+                    setEditingCategory(null)
+                    setEditCategoryImage(null)
+                    setEditCategoryPreview(null)
+                    setEditCategoryDesc("")
+                  }} style={{
+                    background: "white", color: "#1A1714", border: "1px solid #E8E2D9",
+                    padding: "10px 20px", borderRadius: "6px", cursor: "pointer", fontSize: "13px"
+                  }}>Cancel</button>
+                </div>
+              </div>
+            )}
+
+            {/* Add Category */}
             {showAddCategory && (
               <div style={{
                 background: "white", border: "1px solid #E8E2D9",
@@ -761,18 +806,13 @@ export default function Dashboard() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                   <div>
                     <label style={labelStyle}>Category Name</label>
-                    <input
-                      value={newCategory}
-                      onChange={e => setNewCategory(e.target.value)}
+                    <input value={newCategory} onChange={e => setNewCategory(e.target.value)}
                       onKeyDown={e => e.key === "Enter" && handleAddCategory()}
-                      placeholder="e.g. Lord Ganesha"
-                      style={inputStyle}
-                    />
+                      placeholder="e.g. Lord Ganesha" style={inputStyle} />
                   </div>
                   <div>
                     <label style={labelStyle}>Category Image</label>
-                    <input
-                      type="file" accept="image/*"
+                    <input type="file" accept="image/*"
                       onChange={e => {
                         const file = e.target.files[0]
                         if (file) {
@@ -780,8 +820,14 @@ export default function Dashboard() {
                           setNewCategoryPreview(URL.createObjectURL(file))
                         }
                       }}
-                      style={{ ...inputStyle, padding: "8px" }}
-                    />
+                      style={{ ...inputStyle, padding: "8px" }} />
+                  </div>
+                  <div style={{ gridColumn: "1 / -1" }}>
+                    <label style={labelStyle}>Description</label>
+                    <textarea value={newCategoryDesc}
+                      onChange={e => setNewCategoryDesc(e.target.value)}
+                      placeholder="e.g. Sacred devotional artworks of Lord Ganesha..."
+                      rows={2} style={{ ...inputStyle, resize: "vertical" }} />
                   </div>
                   {newCategoryPreview && (
                     <div style={{ gridColumn: "1 / -1" }}>
@@ -800,6 +846,7 @@ export default function Dashboard() {
                   <button onClick={() => {
                     setShowAddCategory(false)
                     setNewCategory("")
+                    setNewCategoryDesc("")
                     setNewCategoryImage(null)
                     setNewCategoryPreview(null)
                   }} style={{
@@ -810,12 +857,14 @@ export default function Dashboard() {
               </div>
             )}
 
+            {/* Categories List */}
             <div style={{ background: "white", border: "1px solid #E8E2D9", borderRadius: "8px", overflow: "hidden" }}>
               {categories.length === 0 ? (
                 <p style={{ padding: "20px", color: "#8B7355" }}>No categories yet!</p>
               ) : categories.map((cat, i) => {
                 const name = typeof cat === "string" ? cat : cat.name
                 const img = typeof cat === "object" ? cat.image : null
+                const desc = typeof cat === "object" ? cat.description : ""
                 return (
                   <div key={name} style={{
                     display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -837,13 +886,30 @@ export default function Dashboard() {
                           fontSize: "12px", color: "#8B7355"
                         }}>IMG</div>
                       )}
-                      <span style={{ fontSize: "14px", fontWeight: "500" }}>{name}</span>
+                      <div>
+                        <p style={{ fontSize: "14px", fontWeight: "500" }}>{name}</p>
+                        {desc && (
+                          <p style={{ fontSize: "11px", color: "#8B7355", marginTop: "2px" }}>{desc}</p>
+                        )}
+                      </div>
                     </div>
-                    <button onClick={() => handleDeleteCategory(name)} style={{
-                      background: "none", border: "1px solid #F7C1C1",
-                      color: "#A32D2D", padding: "4px 12px",
-                      borderRadius: "4px", cursor: "pointer", fontSize: "11px"
-                    }}>Remove</button>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button onClick={() => {
+                        setEditingCategory({ name, img })
+                        setEditCategoryImage(null)
+                        setEditCategoryPreview(null)
+                        setEditCategoryDesc(desc || "")
+                      }} style={{
+                        background: "none", border: "1px solid #E8E2D9",
+                        color: "#1A1714", padding: "4px 12px",
+                        borderRadius: "4px", cursor: "pointer", fontSize: "11px"
+                      }}>Edit</button>
+                      <button onClick={() => handleDeleteCategory(name)} style={{
+                        background: "none", border: "1px solid #F7C1C1",
+                        color: "#A32D2D", padding: "4px 12px",
+                        borderRadius: "4px", cursor: "pointer", fontSize: "11px"
+                      }}>Remove</button>
+                    </div>
                   </div>
                 )
               })}

@@ -28,17 +28,6 @@ export default function About() {
 
       <div style={{ maxWidth: "900px", margin: "0 auto", padding: "48px 24px" }}>
 
-        {/* Story */}
-        <div style={{ marginBottom: "48px" }}>
-          <p style={{
-            fontSize: "16px", color: "#333",
-            lineHeight: "1.9", marginBottom: "20px", textAlign: "justify"
-          }}>
-            Kallumalaiyan Sketchart is a premium coloured sketch art studio dedicated to bringing the divine beauty of Hindu deities to life through intricate craftsmanship and vibrant artistry. Every piece is meticulously hand-crafted with exceptional attention to detail, capturing the grace, power, and spiritual essence of each deity.
-          </p>
-          
-        </div>
-
         {/* Meet the Artist */}
         <div style={{
           display: "grid",
