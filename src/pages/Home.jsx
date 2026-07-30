@@ -139,11 +139,11 @@ export default function Home() {
             fontSize: "clamp(18px, 3vw, 28px)", fontWeight: "700",
             color: "#1A1714", marginBottom: "10px"
           }}>
-            Premium Hindu Deity Sketches,Crafted with Devotion.
+            Premium Hindu Deity Sketches,Crafted with Devotion
           </h1>
           <p style={{
             fontSize: "15px", color: "#555",
-            lineHeight: "1.8", maxWidth: "600px"
+            lineHeight: "1.8", maxWidth: "1200px"
           }}>
             Experience the divine through premium handcrafted coloured sketches of Hindu deities by Kallumalaiyan Sketchart. Each masterpiece is meticulously created by Sharrmanraj, capturing the beauty, grace, and spiritual essence of every deity with exceptional detail and vibrant colours. Own a timeless work of art that celebrates faith, tradition, and craftsmanship.
           </p>
