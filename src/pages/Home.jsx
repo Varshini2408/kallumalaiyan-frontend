@@ -145,7 +145,7 @@ export default function Home() {
             fontSize: "15px", color: "#555",
             lineHeight: "1.8", maxWidth: "1200px"
           }}>
-            Experience the divine through premium handcrafted coloured sketches of Hindu deities by Kallumalaiyan Sketchart. Each masterpiece is meticulously created by Sharrmanraj, capturing the beauty, grace, and spiritual essence of every deity with exceptional detail and vibrant colours. Own a timeless work of art that celebrates faith, tradition, and craftsmanship.
+            Experience the divine through premium handcrafted coloured sketches of Hindu deities by Kallumalaiyan Sketchart. Created with care and quality, each piece is designed to celebrate faith, tradition, and timeless artistry. Own a timeless work of art that celebrates faith, tradition, and craftsmanship.
           </p>
         </div>
 
