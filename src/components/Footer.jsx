@@ -40,12 +40,12 @@ export default function Footer() {
           </div>
           <div>
             <p style={{ fontWeight: "700", fontSize: "14px", marginBottom: "12px" }}>Contacts</p>
-            <a href="mailto:kallumalaiyanSketchart@gmail.com" style={{
+            <a href="mailto:kallumalaiyansketchart@gmail.com" style={{
   display: "block", fontSize: "13px", color: "#555",
   textDecoration: "none", marginBottom: "4px",
   wordBreak: "break-all"
 }}>
-  kallumalaiyanSketchart@gmail.com
+  kallumalaiyansketchart@gmail.com
 </a>
             <a href="https://wa.me/600194079787" style={{
               display: "block", fontSize: "13px", color: "#555",
