@@ -6,12 +6,6 @@ import Footer from "../components/Footer"
 const API = "https://kallumalaiyan-backend.onrender.com"
 
 
-const gridStyle = {
-  display: "grid",
-  gridTemplateColumns: "repeat(2, 1fr)",
-  gap: "12px"
-}
-
 export default function Shop() {
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
@@ -393,4 +387,3 @@ export default function Shop() {
     </div>
   )
 }
-

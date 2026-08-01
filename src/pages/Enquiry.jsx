@@ -33,7 +33,7 @@ export default function Enquiry() {
     } else {
       alert("Failed to send. Please try again!")
     }
-  } catch (err) {
+  } catch {
     alert("Error sending message. Please try again!")
   }
 }
@@ -80,7 +80,7 @@ export default function Enquiry() {
             </h2>
 
             {[
-              { icon: "📧", label: "Email", value: "kallumalaiyanSketchart@gmail.com" },
+              { icon: "📧", label: "Email", value: "kallumalaiyansketchart@gmail.com" },
               { icon: "📱", label: "Phone", value: "+60 19-407 9787" },
               { icon: "📍", label: "Location", value: "Malaysia" },
               { icon: "🕐", label: "Response Time", value: "Within 24 hours" },

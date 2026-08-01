@@ -6,7 +6,6 @@ import Footer from "../components/Footer"
 
 const API = "https://kallumalaiyan-backend.onrender.com"
 
-const colors = ["Black and White", "Color"]
 const sizes = [
   { label: "6R (6 x 8 Inc)", value: "6R", price: 80 },
   { label: "A4 (8.3 x 11.1 Inc)", value: "A4", price: 150 },
@@ -159,7 +158,7 @@ const handleAddToCart = () => {
                 padding: "10px 0", background: "white",
                 borderBottom: "1px solid #E8E2D9"
               }}>
-                <button onClick={() => { setSelectedColor(color); setActiveImg(0) }} style={{
+                <button onClick={() => setActiveImg(i => Math.max(0, i - 1))} style={{
                   background: "none", border: "none", cursor: "pointer",
                   fontSize: "16px", color: "#1A1714"
                 }}>{"<"}</button>
@@ -222,6 +221,24 @@ const handleAddToCart = () => {
     </p>
   )}
 </div>
+            </div>
+
+            <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "10px" }}>Sketch Style</p>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+              {["Black and White", "Color"].map(color => (
+                <button
+                  key={color}
+                  onClick={() => { setSelectedColor(color); setActiveImg(0) }}
+                  style={{
+                    padding: "10px 14px", border: "1px solid #1A1714", borderRadius: "6px",
+                    background: selectedColor === color ? "#1A1714" : "white",
+                    color: selectedColor === color ? "white" : "#1A1714",
+                    cursor: "pointer", fontSize: "12px", fontFamily: "inherit"
+                  }}
+                >
+                  {color}
+                </button>
+              ))}
             </div>
 
             {/* Size */}

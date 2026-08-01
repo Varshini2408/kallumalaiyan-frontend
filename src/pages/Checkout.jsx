@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useCart } from "../context/CartContext"
 import Footer from "../components/Footer"
@@ -10,7 +9,6 @@ const API = "https://kallumalaiyan-backend.onrender.com"
 
 export default function Checkout() {
   const { cartItems, total, clearCart } = useCart()
-  const navigate = useNavigate()
 
   const [form, setForm] = useState({
     name: "",

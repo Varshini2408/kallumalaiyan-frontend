@@ -125,7 +125,7 @@ export default function Dashboard() {
         setCategories(data.categories)
         setMessage("Category removed: " + cat)
       }
-    } catch (err) { setMessage("Error removing category") }
+    } catch { setMessage("Error removing category") }
   }
 
   const handleUpdateCategory = async () => {
@@ -221,7 +221,7 @@ export default function Dashboard() {
       await fetch(API + "/api/products/" + productId, { method: "DELETE" })
       setMessage("Product deleted!")
       fetchProducts()
-    } catch (err) { setMessage("Error deleting product") }
+    } catch { setMessage("Error deleting product") }
   }
 
   const updateOrderStatus = async (orderId, newStatus) => {
@@ -236,7 +236,7 @@ export default function Dashboard() {
         setOrders(prev => prev.map(o => o._id === data._id ? { ...o, status: data.status } : o))
         setMessage("Status updated to: " + newStatus)
       }
-    } catch (err) { setMessage("Error updating status") }
+    } catch { setMessage("Error updating status") }
   }
 
   const getStatusStyle = (status) => {
