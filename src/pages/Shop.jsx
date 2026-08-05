@@ -232,7 +232,6 @@ export default function Shop() {
           RM {Math.round(product.price * (1 - product.promoDiscount / 100))}
         </p>
       </div>
-    </div>
   ) : (
     <p style={{ fontSize: "13px", color: "#666" }}>From RM {product.price}</p>
   )}
