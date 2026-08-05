@@ -83,8 +83,12 @@ export default function Shop() {
   }
 
   const filtered = selected === "All"
-    ? products
-    : products.filter(p => p.category === selected)
+  ? products
+  : selected === "__new__"
+  ? products.filter(p => p.isNewArrival)
+  : selected === "__hot__"
+  ? products.filter(p => p.isHotSelling)
+  : products.filter(p => p.category === selected)
 
   const sorted = sortProducts(filtered)
   const totalPages = Math.ceil(sorted.length / perPage)
@@ -104,11 +108,14 @@ export default function Shop() {
 
         <div style={{ marginBottom: "16px" }}>
           <h1 style={{
-            fontSize: "clamp(18px, 3vw, 28px)", fontWeight: "700",
-            color: "#1A1714", marginBottom: "8px"
-          }}>
-            {selected === "All" ? "Sketchart" : selected}
-          </h1>
+  fontSize: "clamp(18px, 3vw, 28px)", fontWeight: "700",
+  color: "#1A1714", marginBottom: "8px"
+}}>
+  {selected === "All" ? "Sketch Art"
+    : selected === "__new__" ? "New Collection"
+    : selected === "__hot__" ? "Best Seller"
+    : selected}
+</h1>
           <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.7" }}>
   {selected !== "All"
     ? categories.find(c => (typeof c === "string" ? c : c.name) === selected)?.description ||
@@ -356,20 +363,22 @@ export default function Shop() {
                 display: "block", textTransform: "uppercase", letterSpacing: "0.08em"
               }}>Sketchart Category</label>
               <select
-                value={selected}
-                onChange={e => { setSelected(e.target.value); setPage(1) }}
-                style={{
-                  width: "100%", padding: "10px 12px",
-                  border: "1px solid #E8E2D9", borderRadius: "6px",
-                  fontSize: "14px", fontFamily: "inherit", outline: "none"
-                }}
-              >
-                <option value="All">All Categories</option>
-                {categories.map(cat => {
-                  const name = getCatName(cat)
-                  return <option key={name} value={name}>{name}</option>
-                })}
-              </select>
+  value={selected}
+  onChange={e => { setSelected(e.target.value); setPage(1) }}
+  style={{
+    width: "100%", padding: "10px 12px",
+    border: "1px solid #E8E2D9", borderRadius: "6px",
+    fontSize: "14px", fontFamily: "inherit", outline: "none"
+  }}
+>
+  <option value="All">All Categories</option>
+  <option value="__new__">🆕 New Collection</option>
+  <option value="__hot__">🔥 Best Seller</option>
+  {categories.map(cat => {
+    const name = getCatName(cat)
+    return <option key={name} value={name}>{name}</option>
+  })}
+</select>
             </div>
 
             <button
