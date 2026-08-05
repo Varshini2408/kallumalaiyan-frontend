@@ -228,15 +228,7 @@ export default function Shop() {
     <p style={{ fontSize: "13px", color: "#666" }}>From RM {product.price}</p>
   )}
 </div>
-        <p style={{ fontSize: "15px", color: "#DC2626", fontWeight: "700", margin: 0 }}>
-          RM {Math.round(product.price * (1 - product.promoDiscount / 100))}
-        </p>
-      </div>
-  ) : (
-    <p style={{ fontSize: "13px", color: "#666" }}>From RM {product.price}</p>
-  )}
                     </div>
-                  </div>
                 )
               })}
             </div>
@@ -410,4 +402,3 @@ export default function Shop() {
     </div>
   )
 }
-
