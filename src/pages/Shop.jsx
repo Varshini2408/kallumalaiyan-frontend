@@ -185,7 +185,7 @@ export default function Shop() {
                       )}
                     </div>
                     <div style={{ padding: "10px 12px", textAlign: "center" }}>
-  <div style={{ minHeight: "24px", marginBottom: "4px" }}>
+  <div style={{ minHeight: "20px", marginBottom: "4px" }}>
     {product.isHotSelling && (
       <span style={{
         background: "#FEE2E2", color: "#DC2626", fontSize: "9px",
@@ -201,7 +201,11 @@ export default function Shop() {
       }}>NEW</span>
     )}
   </div>
-  <p style={{ fontSize: "15px", fontWeight: "700", marginBottom: "6px", minHeight: "44px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+  <p style={{
+    fontSize: "15px", fontWeight: "700", marginBottom: "6px",
+    minHeight: "48px", display: "flex", alignItems: "center",
+    justifyContent: "center"
+  }}>
     {product.name}
   </p>
   {product.promoDiscount ? (
@@ -215,6 +219,15 @@ export default function Shop() {
         <p style={{ fontSize: "12px", color: "#999", textDecoration: "line-through", margin: 0 }}>
           From RM {product.price}
         </p>
+        <p style={{ fontSize: "15px", color: "#DC2626", fontWeight: "700", margin: 0 }}>
+          RM {Math.round(product.price * (1 - product.promoDiscount / 100))}
+        </p>
+      </div>
+    </div>
+  ) : (
+    <p style={{ fontSize: "13px", color: "#666" }}>From RM {product.price}</p>
+  )}
+</div>
         <p style={{ fontSize: "15px", color: "#DC2626", fontWeight: "700", margin: 0 }}>
           RM {Math.round(product.price * (1 - product.promoDiscount / 100))}
         </p>
