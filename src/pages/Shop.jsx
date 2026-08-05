@@ -116,7 +116,7 @@ export default function Shop() {
     : selected === "__hot__" ? "Best Seller"
     : selected}
 </h1>
-          <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.7" }}>
+          <p style={{ fontSize: "16px", color: "#555", lineHeight: "1.7" }}>
   {selected !== "All"
     ? categories.find(c => (typeof c === "string" ? c : c.name) === selected)?.description ||
       "Sacred devotional artwork - digitally sketched portraits of Hindu deities."
