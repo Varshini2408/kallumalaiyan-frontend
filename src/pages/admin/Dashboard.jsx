@@ -320,7 +320,7 @@ export default function Dashboard() {
             Login
           </button>
           <p style={{ textAlign: "center", fontSize: "11px", color: "#8B7355", marginTop: "20px" }}>
-            Protected area - Kallumalaiyan SketchArt
+            Protected area - Kallumalaiyan Sketchart
           </p>
         </div>
       </div>
@@ -335,7 +335,7 @@ export default function Dashboard() {
         flexDirection: "column", gap: "4px", flexShrink: 0
       }}>
         <p style={{ color: "#C4A882", fontSize: "18px", fontWeight: "600", marginBottom: "4px" }}>
-          KSA Admin
+          KS Admin
         </p>
         <p style={{ color: "#8B7355", fontSize: "11px", letterSpacing: "0.1em", marginBottom: "24px" }}>
           DASHBOARD
@@ -577,9 +577,8 @@ export default function Dashboard() {
                     <label style={labelStyle}>Product Tags</label>
                     <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
                       {[
-                        { key: "isHotSelling", label: "Hot Selling" },
-                        { key: "isNewArrival", label: "New Arrival" },
-                        { key: "isRecommended", label: "Recommended" },
+                        { key: "isHotSelling", label: "Best Seller" },
+                        { key: "isNewArrival", label: "New Collection" },
                       ].map(tag => (
                         <label key={tag.key} style={{
                           display: "flex", alignItems: "center", gap: "8px",
