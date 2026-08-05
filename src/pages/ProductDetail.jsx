@@ -223,24 +223,6 @@ const handleAddToCart = () => {
 </div>
             </div>
 
-            <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "10px" }}>Sketch Style</p>
-            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-              {["Black and White", "Color"].map(color => (
-                <button
-                  key={color}
-                  onClick={() => { setSelectedColor(color); setActiveImg(0) }}
-                  style={{
-                    padding: "10px 14px", border: "1px solid #1A1714", borderRadius: "6px",
-                    background: selectedColor === color ? "#1A1714" : "white",
-                    color: selectedColor === color ? "white" : "#1A1714",
-                    cursor: "pointer", fontSize: "12px", fontFamily: "inherit"
-                  }}
-                >
-                  {color}
-                </button>
-              ))}
-            </div>
-
             {/* Size */}
             <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "10px" }}>Size</p>
             <div style={{
@@ -423,9 +405,6 @@ const handleAddToCart = () => {
               <div>
                 <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "4px" }}>
                   {product.name}
-                </p>
-                <p style={{ fontSize: "14px", color: "#666", marginBottom: "2px" }}>
-                  Sketch Style: {selectedColor}
                 </p>
                 <p style={{ fontSize: "14px", color: "#666" }}>
                   Size: {selectedSize.label}

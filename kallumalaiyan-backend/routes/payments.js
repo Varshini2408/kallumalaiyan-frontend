@@ -30,7 +30,7 @@ router.post("/create-bill", async (req, res) => {
 
     // 4. Return payment URL to frontend
     res.json({
-      paymentUrl: `https://toyyibpay.com/demoks/${bill.BillCode}`,
+      paymentUrl: `https://toyyibpay.com/Kallumalaiyan-Sketchart-Enterp/${bill.BillCode}`,
       orderId: order._id,
     });
   } catch (err) {

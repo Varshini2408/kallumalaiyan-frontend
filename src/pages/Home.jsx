@@ -84,7 +84,7 @@ export default function Home() {
             }}>No Image</div>
           )}
         </div>
-        <div style={{ padding: "10px 12px", textAlign: "center" }}>
+        <div style={{ padding: "10px 12px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", minHeight: "80px", justifyContent: "flex-end" }}>
           {product.isHotSelling && (
             <span style={{
               background: "#FEE2E2", color: "#DC2626", fontSize: "9px",
@@ -301,6 +301,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 
 
