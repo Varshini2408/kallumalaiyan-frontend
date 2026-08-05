@@ -203,7 +203,7 @@ export default function Shop() {
   </div>
   <p style={{
     fontSize: "15px", fontWeight: "700", marginBottom: "6px",
-    minHeight: "48px", display: "flex", alignItems: "center",
+    minHeight: "60px", display: "flex", alignItems: "center",
     justifyContent: "center"
   }}>
     {product.name}
@@ -402,3 +402,4 @@ export default function Shop() {
     </div>
   )
 }
+
