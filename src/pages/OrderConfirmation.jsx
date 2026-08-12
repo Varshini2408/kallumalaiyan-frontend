@@ -51,7 +51,7 @@ export default function OrderConfirmation() {
         }}>
           {success
             ? "Thank you for your order!  Your order has been successfully received. We’ve received your payment and your sketch is now in our queue for processing."
-            : "Your payment was not successful. Please try again or contact us via Telegram for assistance."
+            : "Your payment was not successful. Please try again or contact us via Whatsapp for assistance."
           }
         </p>
 
