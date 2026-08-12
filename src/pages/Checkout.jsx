@@ -5,8 +5,6 @@ import Footer from "../components/Footer"
 
 const API = "https://kallumalaiyan-backend.onrender.com"
 
-
-
 export default function Checkout() {
   const { cartItems, total, clearCart } = useCart()
 
@@ -37,37 +35,43 @@ export default function Checkout() {
       setError("Your cart is empty!")
       return
     }
-
     setLoading(true)
     setError("")
-
-    const orderData = {
-      customer: form,
-      items: cartItems.map(i => ({
-        name: i.product.name,
-        color: i.variant.color,
-        size: i.variant.size,
-        qty: i.qty,
-        price: i.product.price
-      })),
-      subtotal: total,
-      shipping: 0,
-      total: total
-    }
-
-    const res = await fetch(API + "/api/orders/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderData)
-    })
-
-    const data = await res.json()
-
-    if (data.success) {
-      clearCart()
-      window.location.href = "https://toyyibpay.com/Kallumalaiyan-Sketchart-Enterp"
-    } else {
-      setError("Order failed: " + data.error)
+    try {
+      const res = await fetch(API + "/api/payment/create-bill", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: {
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            address: form.address,
+            city: form.city,
+            postcode: form.postcode,
+            state: form.state,
+          },
+          items: cartItems.map(i => ({
+            name: i.product.name,
+            color: i.variant.color,
+            size: i.variant.size,
+            qty: i.qty,
+            price: i.product.price
+          })),
+          subtotal: total,
+          shipping: 0,
+          total: total
+        })
+      })
+      const data = await res.json()
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl
+      } else {
+        setError("Payment error: " + (data.error || "Unknown error"))
+        setLoading(false)
+      }
+    } catch (err) {
+      setError("Error: " + err.message)
       setLoading(false)
     }
   }
@@ -96,7 +100,6 @@ export default function Checkout() {
           Checkout
         </h1>
 
-        {/* Two column layout on desktop */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
@@ -162,9 +165,11 @@ export default function Checkout() {
             <div style={{
               padding: "14px 16px", background: "#F5F5F5",
               border: "1px solid #E8E2D9", borderRadius: "6px",
-              fontSize: "15px", color: "#555", marginTop: "4px"
+              fontSize: "13px", color: "#555", marginTop: "4px",
+              lineHeight: "1.6"
             }}>
-              
+              🚚 Free delivery within Malaysia. Your sketch will be carefully
+              crafted and shipped within 7 working days.
             </div>
           </div>
 
@@ -189,10 +194,10 @@ export default function Checkout() {
               <>
                 {cartItems.map(item => {
                   const img = item.variant.color === "Color"
-  ? (item.product.imagesColor?.[0] || item.product.imageColor ||
-     item.product.imageBW || item.product.image)
-  : (item.product.imagesBW?.[0] || item.product.imageBW ||
-     item.product.images?.[0] || item.product.image)
+                    ? (item.product.imagesColor?.[0] || item.product.imageColor ||
+                       item.product.imageBW || item.product.image)
+                    : (item.product.imagesBW?.[0] || item.product.imageBW ||
+                       item.product.images?.[0] || item.product.image)
                   return (
                     <div key={item.key} style={{
                       display: "flex", gap: "12px",
@@ -219,7 +224,7 @@ export default function Checkout() {
                           </p>
                         </div>
                         <p style={{ fontSize: "13px", color: "#888", marginTop: "2px" }}>
-                          {item.variant.color} · {item.variant.size} x{item.qty}
+                          {item.variant.size} x{item.qty}
                         </p>
                       </div>
                     </div>
@@ -281,4 +286,3 @@ export default function Checkout() {
     </div>
   )
 }
-

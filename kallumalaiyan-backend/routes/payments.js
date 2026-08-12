@@ -8,13 +8,9 @@ const { sendOrderNotification } = require("../services/telegram");
 router.post("/create-bill", async (req, res) => {
   try {
     const { customer, items, subtotal, shipping, total } = req.body;
-
-    // 1. Save order as pending
     const order = await Order.create({
       customer, items, subtotal, shipping, total, status: "pending"
     });
-
-    // 2. Create ToyyibPay bill
     const bill = await createBill({
       orderRef: order._id.toString(),
       amount: total,
@@ -23,14 +19,10 @@ router.post("/create-bill", async (req, res) => {
       customerPhone: customer.phone,
       description: `Order ${order._id}`,
     });
-
-    // 3. Save bill code
     order.billCode = bill.BillCode;
     await order.save();
-
-    // 4. Return payment URL to frontend
     res.json({
-      paymentUrl: `https://toyyibpay.com/Kallumalaiyan-Sketchart-Enterp/${bill.BillCode}`,
+      paymentUrl: `https://toyyibpay.com/${bill.BillCode}`,
       orderId: order._id,
     });
   } catch (err) {
@@ -38,36 +30,38 @@ router.post("/create-bill", async (req, res) => {
   }
 });
 
-// GET /api/payment/callback (ToyyibPay redirects here after payment)
+// GET /api/payment/callback (ToyyibPay Return URL)
 router.get("/callback", async (req, res) => {
-  const { billcode, order_id, status_id, transaction_id } = req.query;
+  console.log("GET callback received:", req.query);
+  const { status_id, billcode, order_id } = req.query;
   try {
     if (status_id === "1") {
       const order = await Order.findById(order_id)
       if (order) {
         order.status = "paid"
-        order.transactionId = transaction_id
         await order.save()
-        // Send full telegram notification with all order details
         await sendOrderNotification(order)
       }
     }
   } catch (err) {
     console.error("Callback error:", err)
   }
-  // Redirect to new domain order confirmation
-  res.redirect("https://www.kallumalaiyansketchart.com/order-confirmation?status=" + (status_id === "1" ? "success" : "failed"))
+  const redirectUrl = status_id === "1"
+    ? "https://www.kallumalaiyansketchart.com/order-confirmation?status=success"
+    : "https://www.kallumalaiyansketchart.com/order-confirmation?status=failed"
+  res.redirect(redirectUrl)
 });
 
-// POST /api/payment/callback (ToyyibPay server callback)
+// POST /api/payment/callback (ToyyibPay server-side callback)
 router.post("/callback", async (req, res) => {
-  const { billcode, order_id, status_id, transaction_id } = req.body;
+  console.log("POST callback received:", req.body);
+  const { status, order_id, refno } = req.body;
   try {
-    if (status_id === "1") {
+    if (status === "1") {
       const order = await Order.findById(order_id)
       if (order) {
         order.status = "paid"
-        order.transactionId = transaction_id
+        order.transactionId = refno
         await order.save()
         await sendOrderNotification(order)
       }
