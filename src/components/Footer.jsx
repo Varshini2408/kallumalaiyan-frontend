@@ -69,9 +69,14 @@ export default function Footer() {
           <p style={{ fontSize: "12px", color: "#888", marginBottom: "4px" }}>
             @Kallumalaiyan Sketchart. All right reserved.
           </p>
-          <p style={{ fontSize: "11px", color: "#aaa" }}>
-            Powered by TechMentor Solutions
-          </p>
+          <a 
+  href="https://techmentorsolutions.com" 
+  target="_blank" 
+  rel="noreferrer"
+  style={{ fontSize: "11px", color: "#aaa", textDecoration: "none" }}
+>
+  Powered by TechMentor Solutions
+</a>
         </div>
       </div>
     </footer>
