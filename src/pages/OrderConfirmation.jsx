@@ -50,7 +50,7 @@ export default function OrderConfirmation() {
           marginBottom: "32px", fontSize: "14px"
         }}>
           {success
-            ? "Thank you for your order! Sharrman has been notified via Telegram and will process your sketch within 7 working days."
+            ? "Thank you for your order!  Your order has been successfully received. We’ve received your payment and your sketch is now in our queue for processing."
             : "Your payment was not successful. Please try again or contact us via Telegram for assistance."
           }
         </p>
@@ -63,13 +63,12 @@ export default function OrderConfirmation() {
         }}>
           {(success ? [
             { label: "Payment Status", value: "✅ Paid" },
-            { label: "Notification", value: "📲 Telegram sent to seller" },
-            { label: "Delivery", value: "📦 Within 7 working days" },
-            { label: "Questions?", value: "Telegram us anytime" },
+            { label: "Processing & Delivery", value: "📦 Your order will be processed and delivered within 3-5 working days." },
+            { label: "Questions?", value: "💬 Have any questions about your order? Feel free to contact us anytime." },
           ] : [
             { label: "Payment Status", value: "❌ Failed" },
             { label: "Action", value: "Please try again" },
-            { label: "Need Help?", value: "Contact us via Telegram" },
+            { label: "Need Help?", value: "💬 Contact us via Whatsapp" },
           ]).map(row => (
             <div key={row.label} style={{
               display: "flex", justifyContent: "space-between",
