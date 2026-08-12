@@ -1,0 +1,9 @@
+{
+  "name": "Kallumalaiyan SketchArt",
+  "short_name": "KS SketchArt",
+  "description": "Premium Hindu Deity Sketches, Crafted with Devotion",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1A1714"
+}
