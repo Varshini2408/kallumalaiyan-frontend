@@ -18,8 +18,12 @@ const emptyForm = {
 
 export default function Dashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [password, setPassword] = useState("")
-  const [loginError, setLoginError] = useState("")
+const [password, setPassword] = useState("")
+const [loginError, setLoginError] = useState("")
+const [changePwForm, setChangePwForm] = useState({ current: "", newPw: "", confirm: "" })
+const [changePwMsg, setChangePwMsg] = useState("")
+const [changePwError, setChangePwError] = useState("")
+const [showChangePw, setShowChangePw] = useState(false)
   const [page, setPage] = useState("orders")
   const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
@@ -50,20 +54,67 @@ export default function Dashboard() {
     fetchCategories()
   }, [])
 
-  const handleLogin = () => {
-    if (password === "kallumalaiyan2024") {
+  const handleLogin = async () => {
+  try {
+    const res = await fetch(API + "/api/settings/verify-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password })
+    })
+    const data = await res.json()
+    if (data.success) {
       sessionStorage.setItem("ksa-admin-auth", "true")
       setIsLoggedIn(true)
       setLoginError("")
     } else {
-      setLoginError("Wrong password! Try again.")
+      setLoginError(data.error || "Wrong password! Try again.")
     }
+  } catch (err) {
+    setLoginError("Error connecting to server. Try again!")
   }
+}
 
   const handleLogout = () => {
     sessionStorage.removeItem("ksa-admin-auth")
     setIsLoggedIn(false)
   }
+
+  const handleChangePassword = async () => {
+  setChangePwError("")
+  setChangePwMsg("")
+  if (!changePwForm.current || !changePwForm.newPw || !changePwForm.confirm) {
+    setChangePwError("Please fill in all fields!")
+    return
+  }
+  if (changePwForm.newPw !== changePwForm.confirm) {
+    setChangePwError("New passwords do not match!")
+    return
+  }
+  if (changePwForm.newPw.length < 6) {
+    setChangePwError("New password must be at least 6 characters!")
+    return
+  }
+  try {
+    const res = await fetch(API + "/api/settings/change-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        currentPassword: changePwForm.current,
+        newPassword: changePwForm.newPw
+      })
+    })
+    const data = await res.json()
+    if (data.success) {
+      setChangePwMsg("Password changed successfully!")
+      setChangePwForm({ current: "", newPw: "", confirm: "" })
+      setShowChangePw(false)
+    } else {
+      setChangePwError(data.error || "Failed to change password!")
+    }
+  } catch (err) {
+    setChangePwError("Error connecting to server!")
+  }
+}
 
   const fetchOrders = async () => {
     try {
@@ -355,18 +406,114 @@ export default function Dashboard() {
           </button>
         ))}
         <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "8px" }}>
-          <Link to="/" style={{ color: "#8B7355", fontSize: "12px", textDecoration: "none" }}>
-            Back to Site
-          </Link>
-          <button onClick={handleLogout} style={{
-            padding: "8px 14px", background: "transparent",
-            color: "#8B7355", border: "1px solid #3D3830",
-            borderRadius: "6px", cursor: "pointer",
-            fontSize: "12px", textAlign: "left"
-          }}>
-            Logout
-          </button>
-        </div>
+  <Link to="/" style={{ color: "#8B7355", fontSize: "12px", textDecoration: "none" }}>
+    Back to Site
+  </Link>
+  <button onClick={() => setShowChangePw(true)} style={{
+    padding: "8px 14px", background: "transparent",
+    color: "#8B7355", border: "1px solid #3D3830",
+    borderRadius: "6px", cursor: "pointer",
+    fontSize: "12px", textAlign: "left"
+  }}>
+    Change Password
+  </button>
+  <button onClick={handleLogout} style={{
+    padding: "8px 14px", background: "transparent",
+    color: "#8B7355", border: "1px solid #3D3830",
+    borderRadius: "6px", cursor: "pointer",
+    fontSize: "12px", textAlign: "left"
+  }}>
+    Logout
+  </button>
+</div>
+{/* Change Password Modal */}
+{showChangePw && (
+  <>
+    <div onClick={() => setShowChangePw(false)} style={{
+      position: "fixed", top: 0, left: 0,
+      width: "100vw", height: "100vh",
+      background: "rgba(0,0,0,0.5)", zIndex: 300
+    }} />
+    <div style={{
+      position: "fixed", top: "50%", left: "50%",
+      transform: "translate(-50%, -50%)",
+      background: "white", borderRadius: "12px",
+      padding: "32px", width: "90%", maxWidth: "400px",
+      zIndex: 301, boxShadow: "0 8px 32px rgba(0,0,0,0.2)"
+    }}>
+      <h3 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "20px" }}>
+        Change Password
+      </h3>
+
+      {changePwError && (
+        <div style={{
+          background: "#FCEBEB", color: "#A32D2D",
+          padding: "10px 14px", borderRadius: "6px",
+          fontSize: "13px", marginBottom: "16px"
+        }}>{changePwError}</div>
+      )}
+
+      {changePwMsg && (
+        <div style={{
+          background: "#EAF3DE", color: "#3B6D11",
+          padding: "10px 14px", borderRadius: "6px",
+          fontSize: "13px", marginBottom: "16px"
+        }}>{changePwMsg}</div>
+      )}
+
+      <label style={labelStyle}>Current Password</label>
+      <input
+        type="password"
+        value={changePwForm.current}
+        onChange={e => setChangePwForm({ ...changePwForm, current: e.target.value })}
+        placeholder="Enter current password"
+        style={{ ...inputStyle, marginBottom: "12px" }}
+      />
+
+      <label style={labelStyle}>New Password</label>
+      <input
+        type="password"
+        value={changePwForm.newPw}
+        onChange={e => setChangePwForm({ ...changePwForm, newPw: e.target.value })}
+        placeholder="Enter new password (min 6 chars)"
+        style={{ ...inputStyle, marginBottom: "12px" }}
+      />
+
+      <label style={labelStyle}>Confirm New Password</label>
+      <input
+        type="password"
+        value={changePwForm.confirm}
+        onChange={e => setChangePwForm({ ...changePwForm, confirm: e.target.value })}
+        placeholder="Confirm new password"
+        style={{ ...inputStyle, marginBottom: "20px" }}
+      />
+
+      <div style={{ display: "flex", gap: "12px" }}>
+        <button onClick={handleChangePassword} style={{
+          flex: 1, padding: "12px",
+          background: "#1A1714", color: "white",
+          border: "none", borderRadius: "6px",
+          cursor: "pointer", fontSize: "13px"
+        }}>
+          Change Password
+        </button>
+        <button onClick={() => {
+          setShowChangePw(false)
+          setChangePwError("")
+          setChangePwMsg("")
+          setChangePwForm({ current: "", newPw: "", confirm: "" })
+        }} style={{
+          flex: 1, padding: "12px",
+          background: "white", color: "#1A1714",
+          border: "1px solid #E8E2D9", borderRadius: "6px",
+          cursor: "pointer", fontSize: "13px"
+        }}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </>
+)}
       </div>
 
       <div style={{ flex: 1, padding: "32px", background: "#F5F3EF", overflowY: "auto" }}>
