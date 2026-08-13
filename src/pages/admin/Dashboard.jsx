@@ -18,12 +18,8 @@ const emptyForm = {
 
 export default function Dashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-const [password, setPassword] = useState("")
-const [loginError, setLoginError] = useState("")
-const [changePwForm, setChangePwForm] = useState({ current: "", newPw: "", confirm: "" })
-const [changePwMsg, setChangePwMsg] = useState("")
-const [changePwError, setChangePwError] = useState("")
-const [showChangePw, setShowChangePw] = useState(false)
+  const [password, setPassword] = useState("")
+  const [loginError, setLoginError] = useState("")
   const [page, setPage] = useState("orders")
   const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
@@ -45,6 +41,10 @@ const [showChangePw, setShowChangePw] = useState(false)
   const [editCategoryImage, setEditCategoryImage] = useState(null)
   const [editCategoryPreview, setEditCategoryPreview] = useState(null)
   const [editCategoryDesc, setEditCategoryDesc] = useState("")
+  const [changePwForm, setChangePwForm] = useState({ current: "", newPw: "", confirm: "" })
+  const [changePwMsg, setChangePwMsg] = useState("")
+  const [changePwError, setChangePwError] = useState("")
+  const [showChangePw, setShowChangePw] = useState(false)
 
   useEffect(() => {
     const auth = sessionStorage.getItem("ksa-admin-auth")
@@ -55,24 +55,24 @@ const [showChangePw, setShowChangePw] = useState(false)
   }, [])
 
   const handleLogin = async () => {
-  try {
-    const res = await fetch(API + "/api/settings/verify-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password })
-    })
-    const data = await res.json()
-    if (data.success) {
-      sessionStorage.setItem("ksa-admin-auth", "true")
-      setIsLoggedIn(true)
-      setLoginError("")
-    } else {
-      setLoginError(data.error || "Wrong password! Try again.")
+    try {
+      const res = await fetch(API + "/api/settings/verify-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      })
+      const data = await res.json()
+      if (data.success) {
+        sessionStorage.setItem("ksa-admin-auth", "true")
+        setIsLoggedIn(true)
+        setLoginError("")
+      } else {
+        setLoginError(data.error || "Wrong password! Try again.")
+      }
+    } catch (err) {
+      setLoginError("Error connecting to server. Try again!")
     }
-  } catch (err) {
-    setLoginError("Error connecting to server. Try again!")
   }
-}
 
   const handleLogout = () => {
     sessionStorage.removeItem("ksa-admin-auth")
@@ -80,41 +80,41 @@ const [showChangePw, setShowChangePw] = useState(false)
   }
 
   const handleChangePassword = async () => {
-  setChangePwError("")
-  setChangePwMsg("")
-  if (!changePwForm.current || !changePwForm.newPw || !changePwForm.confirm) {
-    setChangePwError("Please fill in all fields!")
-    return
-  }
-  if (changePwForm.newPw !== changePwForm.confirm) {
-    setChangePwError("New passwords do not match!")
-    return
-  }
-  if (changePwForm.newPw.length < 6) {
-    setChangePwError("New password must be at least 6 characters!")
-    return
-  }
-  try {
-    const res = await fetch(API + "/api/settings/change-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        currentPassword: changePwForm.current,
-        newPassword: changePwForm.newPw
-      })
-    })
-    const data = await res.json()
-    if (data.success) {
-      setChangePwMsg("Password changed successfully!")
-      setChangePwForm({ current: "", newPw: "", confirm: "" })
-      setShowChangePw(false)
-    } else {
-      setChangePwError(data.error || "Failed to change password!")
+    setChangePwError("")
+    setChangePwMsg("")
+    if (!changePwForm.current || !changePwForm.newPw || !changePwForm.confirm) {
+      setChangePwError("Please fill in all fields!")
+      return
     }
-  } catch (err) {
-    setChangePwError("Error connecting to server!")
+    if (changePwForm.newPw !== changePwForm.confirm) {
+      setChangePwError("New passwords do not match!")
+      return
+    }
+    if (changePwForm.newPw.length < 6) {
+      setChangePwError("New password must be at least 6 characters!")
+      return
+    }
+    try {
+      const res = await fetch(API + "/api/settings/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword: changePwForm.current,
+          newPassword: changePwForm.newPw
+        })
+      })
+      const data = await res.json()
+      if (data.success) {
+        setChangePwMsg("Password changed successfully!")
+        setChangePwForm({ current: "", newPw: "", confirm: "" })
+        setTimeout(() => setShowChangePw(false), 2000)
+      } else {
+        setChangePwError(data.error || "Failed to change password!")
+      }
+    } catch (err) {
+      setChangePwError("Error connecting to server!")
+    }
   }
-}
 
   const fetchOrders = async () => {
     try {
@@ -176,7 +176,7 @@ const [showChangePw, setShowChangePw] = useState(false)
         setCategories(data.categories)
         setMessage("Category removed: " + cat)
       }
-    } catch { setMessage("Error removing category") }
+    } catch (err) { setMessage("Error removing category") }
   }
 
   const handleUpdateCategory = async () => {
@@ -185,10 +185,7 @@ const [showChangePw, setShowChangePw] = useState(false)
       formData.append("name", editingCategory.name)
       formData.append("description", editCategoryDesc)
       if (editCategoryImage) formData.append("image", editCategoryImage)
-      const res = await fetch(API + "/api/categories/update", {
-        method: "POST",
-        body: formData
-      })
+      const res = await fetch(API + "/api/categories/update", { method: "POST", body: formData })
       const data = await res.json()
       if (data.categories) {
         setCategories(data.categories)
@@ -272,7 +269,17 @@ const [showChangePw, setShowChangePw] = useState(false)
       await fetch(API + "/api/products/" + productId, { method: "DELETE" })
       setMessage("Product deleted!")
       fetchProducts()
-    } catch { setMessage("Error deleting product") }
+    } catch (err) { setMessage("Error deleting product") }
+  }
+
+  const handleDeleteOrder = async (orderId) => {
+    const confirmed = window.confirm("Delete this order permanently?")
+    if (!confirmed) return
+    try {
+      await fetch(API + "/api/orders/" + orderId, { method: "DELETE" })
+      setOrders(prev => prev.filter(o => o._id !== orderId))
+      setMessage("Order deleted!")
+    } catch (err) { setMessage("Error deleting order") }
   }
 
   const updateOrderStatus = async (orderId, newStatus) => {
@@ -287,7 +294,7 @@ const [showChangePw, setShowChangePw] = useState(false)
         setOrders(prev => prev.map(o => o._id === data._id ? { ...o, status: data.status } : o))
         setMessage("Status updated to: " + newStatus)
       }
-    } catch { setMessage("Error updating status") }
+    } catch (err) { setMessage("Error updating status") }
   }
 
   const getStatusStyle = (status) => {
@@ -371,7 +378,7 @@ const [showChangePw, setShowChangePw] = useState(false)
             Login
           </button>
           <p style={{ textAlign: "center", fontSize: "11px", color: "#8B7355", marginTop: "20px" }}>
-            Protected area - Kallumalaiyan Sketchart
+            Protected area - Kallumalaiyan SketchArt
           </p>
         </div>
       </div>
@@ -380,13 +387,15 @@ const [showChangePw, setShowChangePw] = useState(false)
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
+
+      {/* Sidebar */}
       <div style={{
         width: "220px", background: "#1A1714",
         padding: "24px 16px", display: "flex",
         flexDirection: "column", gap: "4px", flexShrink: 0
       }}>
         <p style={{ color: "#C4A882", fontSize: "18px", fontWeight: "600", marginBottom: "4px" }}>
-          KS Admin
+          KSA Admin
         </p>
         <p style={{ color: "#8B7355", fontSize: "11px", letterSpacing: "0.1em", marginBottom: "24px" }}>
           DASHBOARD
@@ -406,116 +415,29 @@ const [showChangePw, setShowChangePw] = useState(false)
           </button>
         ))}
         <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "8px" }}>
-  <Link to="/" style={{ color: "#8B7355", fontSize: "12px", textDecoration: "none" }}>
-    Back to Site
-  </Link>
-  <button onClick={() => setShowChangePw(true)} style={{
-    padding: "8px 14px", background: "transparent",
-    color: "#8B7355", border: "1px solid #3D3830",
-    borderRadius: "6px", cursor: "pointer",
-    fontSize: "12px", textAlign: "left"
-  }}>
-    Change Password
-  </button>
-  <button onClick={handleLogout} style={{
-    padding: "8px 14px", background: "transparent",
-    color: "#8B7355", border: "1px solid #3D3830",
-    borderRadius: "6px", cursor: "pointer",
-    fontSize: "12px", textAlign: "left"
-  }}>
-    Logout
-  </button>
-</div>
-{/* Change Password Modal */}
-{showChangePw && (
-  <>
-    <div onClick={() => setShowChangePw(false)} style={{
-      position: "fixed", top: 0, left: 0,
-      width: "100vw", height: "100vh",
-      background: "rgba(0,0,0,0.5)", zIndex: 300
-    }} />
-    <div style={{
-      position: "fixed", top: "50%", left: "50%",
-      transform: "translate(-50%, -50%)",
-      background: "white", borderRadius: "12px",
-      padding: "32px", width: "90%", maxWidth: "400px",
-      zIndex: 301, boxShadow: "0 8px 32px rgba(0,0,0,0.2)"
-    }}>
-      <h3 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "20px" }}>
-        Change Password
-      </h3>
-
-      {changePwError && (
-        <div style={{
-          background: "#FCEBEB", color: "#A32D2D",
-          padding: "10px 14px", borderRadius: "6px",
-          fontSize: "13px", marginBottom: "16px"
-        }}>{changePwError}</div>
-      )}
-
-      {changePwMsg && (
-        <div style={{
-          background: "#EAF3DE", color: "#3B6D11",
-          padding: "10px 14px", borderRadius: "6px",
-          fontSize: "13px", marginBottom: "16px"
-        }}>{changePwMsg}</div>
-      )}
-
-      <label style={labelStyle}>Current Password</label>
-      <input
-        type="password"
-        value={changePwForm.current}
-        onChange={e => setChangePwForm({ ...changePwForm, current: e.target.value })}
-        placeholder="Enter current password"
-        style={{ ...inputStyle, marginBottom: "12px" }}
-      />
-
-      <label style={labelStyle}>New Password</label>
-      <input
-        type="password"
-        value={changePwForm.newPw}
-        onChange={e => setChangePwForm({ ...changePwForm, newPw: e.target.value })}
-        placeholder="Enter new password (min 6 chars)"
-        style={{ ...inputStyle, marginBottom: "12px" }}
-      />
-
-      <label style={labelStyle}>Confirm New Password</label>
-      <input
-        type="password"
-        value={changePwForm.confirm}
-        onChange={e => setChangePwForm({ ...changePwForm, confirm: e.target.value })}
-        placeholder="Confirm new password"
-        style={{ ...inputStyle, marginBottom: "20px" }}
-      />
-
-      <div style={{ display: "flex", gap: "12px" }}>
-        <button onClick={handleChangePassword} style={{
-          flex: 1, padding: "12px",
-          background: "#1A1714", color: "white",
-          border: "none", borderRadius: "6px",
-          cursor: "pointer", fontSize: "13px"
-        }}>
-          Change Password
-        </button>
-        <button onClick={() => {
-          setShowChangePw(false)
-          setChangePwError("")
-          setChangePwMsg("")
-          setChangePwForm({ current: "", newPw: "", confirm: "" })
-        }} style={{
-          flex: 1, padding: "12px",
-          background: "white", color: "#1A1714",
-          border: "1px solid #E8E2D9", borderRadius: "6px",
-          cursor: "pointer", fontSize: "13px"
-        }}>
-          Cancel
-        </button>
-      </div>
-    </div>
-  </>
-)}
+          <Link to="/" style={{ color: "#8B7355", fontSize: "12px", textDecoration: "none" }}>
+            Back to Site
+          </Link>
+          <button onClick={() => setShowChangePw(true)} style={{
+            padding: "8px 14px", background: "transparent",
+            color: "#8B7355", border: "1px solid #3D3830",
+            borderRadius: "6px", cursor: "pointer",
+            fontSize: "12px", textAlign: "left"
+          }}>
+            Change Password
+          </button>
+          <button onClick={handleLogout} style={{
+            padding: "8px 14px", background: "transparent",
+            color: "#8B7355", border: "1px solid #3D3830",
+            borderRadius: "6px", cursor: "pointer",
+            fontSize: "12px", textAlign: "left"
+          }}>
+            Logout
+          </button>
+        </div>
       </div>
 
+      {/* Main Content */}
       <div style={{ flex: 1, padding: "32px", background: "#F5F3EF", overflowY: "auto" }}>
 
         {message && (
@@ -563,7 +485,7 @@ const [showChangePw, setShowChangePw] = useState(false)
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
                   <thead>
                     <tr style={{ background: "#FAF8F4" }}>
-                      {["Customer", "Phone", "Address", "Items", "Total", "Status", "Date"].map(h => (
+                      {["Customer", "Phone", "Address", "Items", "Total", "Status", "Date", ""].map(h => (
                         <th key={h} style={thStyle}>{h}</th>
                       ))}
                     </tr>
@@ -615,6 +537,16 @@ const [showChangePw, setShowChangePw] = useState(false)
                         <td style={tdStyle}>
                           <p style={{ fontSize: "11px" }}>{new Date(order.createdAt).toLocaleDateString()}</p>
                           <p style={{ fontSize: "11px", color: "#8B7355" }}>{new Date(order.createdAt).toLocaleTimeString()}</p>
+                        </td>
+                        <td style={tdStyle}>
+                          <button
+                            onClick={() => handleDeleteOrder(order._id)}
+                            style={{
+                              background: "none", border: "1px solid #F7C1C1",
+                              color: "#A32D2D", padding: "4px 10px",
+                              borderRadius: "4px", cursor: "pointer", fontSize: "11px"
+                            }}
+                          >Delete</button>
                         </td>
                       </tr>
                     ))}
@@ -724,8 +656,9 @@ const [showChangePw, setShowChangePw] = useState(false)
                     <label style={labelStyle}>Product Tags</label>
                     <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
                       {[
-                        { key: "isHotSelling", label: "Best Seller" },
-                        { key: "isNewArrival", label: "New Collection" },
+                        { key: "isHotSelling", label: "Hot Selling" },
+                        { key: "isNewArrival", label: "New Arrival" },
+                        { key: "isRecommended", label: "Recommended" },
                       ].map(tag => (
                         <label key={tag.key} style={{
                           display: "flex", alignItems: "center", gap: "8px",
@@ -872,7 +805,6 @@ const [showChangePw, setShowChangePw] = useState(false)
               }}>+ Add Category</button>
             </div>
 
-            {/* Edit Category */}
             {editingCategory && (
               <div style={{
                 background: "white", border: "1px solid #E8E2D9",
@@ -913,13 +845,10 @@ const [showChangePw, setShowChangePw] = useState(false)
                   </div>
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Description</label>
-                    <textarea
-                      value={editCategoryDesc}
+                    <textarea value={editCategoryDesc}
                       onChange={e => setEditCategoryDesc(e.target.value)}
                       placeholder="e.g. Sacred artworks of Lord Murugan..."
-                      rows={2}
-                      style={{ ...inputStyle, resize: "vertical" }}
-                    />
+                      rows={2} style={{ ...inputStyle, resize: "vertical" }} />
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
@@ -940,7 +869,6 @@ const [showChangePw, setShowChangePw] = useState(false)
               </div>
             )}
 
-            {/* Add Category */}
             {showAddCategory && (
               <div style={{
                 background: "white", border: "1px solid #E8E2D9",
@@ -1003,7 +931,6 @@ const [showChangePw, setShowChangePw] = useState(false)
               </div>
             )}
 
-            {/* Categories List */}
             <div style={{ background: "white", border: "1px solid #E8E2D9", borderRadius: "8px", overflow: "hidden" }}>
               {categories.length === 0 ? (
                 <p style={{ padding: "20px", color: "#8B7355" }}>No categories yet!</p>
@@ -1034,9 +961,7 @@ const [showChangePw, setShowChangePw] = useState(false)
                       )}
                       <div>
                         <p style={{ fontSize: "14px", fontWeight: "500" }}>{name}</p>
-                        {desc && (
-                          <p style={{ fontSize: "11px", color: "#8B7355", marginTop: "2px" }}>{desc}</p>
-                        )}
+                        {desc && <p style={{ fontSize: "11px", color: "#8B7355", marginTop: "2px" }}>{desc}</p>}
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
@@ -1066,6 +991,76 @@ const [showChangePw, setShowChangePw] = useState(false)
           </div>
         )}
       </div>
+
+      {/* Change Password Modal */}
+      {showChangePw && (
+        <>
+          <div onClick={() => setShowChangePw(false)} style={{
+            position: "fixed", top: 0, left: 0,
+            width: "100vw", height: "100vh",
+            background: "rgba(0,0,0,0.5)", zIndex: 300
+          }} />
+          <div style={{
+            position: "fixed", top: "50%", left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "white", borderRadius: "12px",
+            padding: "32px", width: "90%", maxWidth: "400px",
+            zIndex: 301, boxShadow: "0 8px 32px rgba(0,0,0,0.2)"
+          }}>
+            <h3 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "20px" }}>
+              Change Password
+            </h3>
+            {changePwError && (
+              <div style={{
+                background: "#FCEBEB", color: "#A32D2D",
+                padding: "10px 14px", borderRadius: "6px",
+                fontSize: "13px", marginBottom: "16px"
+              }}>{changePwError}</div>
+            )}
+            {changePwMsg && (
+              <div style={{
+                background: "#EAF3DE", color: "#3B6D11",
+                padding: "10px 14px", borderRadius: "6px",
+                fontSize: "13px", marginBottom: "16px"
+              }}>{changePwMsg}</div>
+            )}
+            <label style={labelStyle}>Current Password</label>
+            <input type="password" value={changePwForm.current}
+              onChange={e => setChangePwForm({ ...changePwForm, current: e.target.value })}
+              placeholder="Enter current password"
+              style={{ ...inputStyle, marginBottom: "12px" }} />
+            <label style={labelStyle}>New Password</label>
+            <input type="password" value={changePwForm.newPw}
+              onChange={e => setChangePwForm({ ...changePwForm, newPw: e.target.value })}
+              placeholder="Enter new password (min 6 chars)"
+              style={{ ...inputStyle, marginBottom: "12px" }} />
+            <label style={labelStyle}>Confirm New Password</label>
+            <input type="password" value={changePwForm.confirm}
+              onChange={e => setChangePwForm({ ...changePwForm, confirm: e.target.value })}
+              placeholder="Confirm new password"
+              style={{ ...inputStyle, marginBottom: "20px" }} />
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button onClick={handleChangePassword} style={{
+                flex: 1, padding: "12px",
+                background: "#1A1714", color: "white",
+                border: "none", borderRadius: "6px",
+                cursor: "pointer", fontSize: "13px"
+              }}>Change Password</button>
+              <button onClick={() => {
+                setShowChangePw(false)
+                setChangePwError("")
+                setChangePwMsg("")
+                setChangePwForm({ current: "", newPw: "", confirm: "" })
+              }} style={{
+                flex: 1, padding: "12px",
+                background: "white", color: "#1A1714",
+                border: "1px solid #E8E2D9", borderRadius: "6px",
+                cursor: "pointer", fontSize: "13px"
+              }}>Cancel</button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
