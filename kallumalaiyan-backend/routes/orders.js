@@ -1,63 +1,54 @@
-const express = require("express");
-const router = express.Router();
-const Order = require("../models/Order");
-const { sendOrderNotification } = require("../services/telegram");
+const express = require("express")
+const router = express.Router()
+const Order = require("../models/Order")
+const { sendOrderNotification } = require("../services/telegram")
 
-router.post("/create", async (req, res) => {
-  try {
-    console.log("Order received!");
-    const { customer, items, subtotal, shipping, total } = req.body;
-
-    const order = await Order.create({
-      customer,
-      items,
-      subtotal,
-      shipping,
-      total,
-      status: "pending"
-    });
-
-    console.log("Order saved:", order._id.toString());
-
-    await sendOrderNotification({
-      _id: order._id,
-      customer,
-      items,
-      subtotal,
-      shipping,
-      total
-    });
-
-    console.log("Telegram sent!");
-    res.json({ success: true, orderId: order._id });
-
-  } catch (err) {
-    console.error("Order error:", err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
-
+// GET all orders
 router.get("/", async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
-    res.json(orders);
+    const orders = await Order.find().sort({ createdAt: -1 })
+    res.json(orders)
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message })
   }
-});
+})
 
+// POST create order
+router.post("/", async (req, res) => {
+  try {
+    const { customer, items, subtotal, shipping, total } = req.body
+    const order = await Order.create({
+      customer, items, subtotal, shipping, total, status: "pending"
+    })
+    await sendOrderNotification(order)
+    res.json(order)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// PATCH update status
 router.patch("/:id/status", async (req, res) => {
   try {
-    const { status } = req.body;
     const order = await Order.findByIdAndUpdate(
       req.params.id,
-      { status },
+      { status: req.body.status },
       { new: true }
-    );
-    res.json(order);
+    )
+    res.json(order)
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message })
   }
-});
+})
 
-module.exports = router;
+// DELETE order
+router.delete("/:id", async (req, res) => {
+  try {
+    await Order.findByIdAndDelete(req.params.id)
+    res.json({ success: true })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+module.exports = router
