@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import KsQR from "../assets/KS_QR.png"
+import KsQR from "../assets/KS QR.png"
 
 export default function OrderConfirmation() {
   const navigate = useNavigate()
