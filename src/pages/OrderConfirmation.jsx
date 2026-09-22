@@ -205,7 +205,7 @@ export default function OrderConfirmation() {
               fontSize: "12px", color: "#888",
               textAlign: "center", lineHeight: "1.6"
             }}>
-              After sending receipt, Sharrman will confirm your payment
+              After sending receipt, we will confirm your payment
               and begin your sketch within 1-2 working days.
             </p>
           </div>
