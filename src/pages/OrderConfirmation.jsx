@@ -8,9 +8,13 @@ export default function OrderConfirmation() {
   const location = useLocation()
   const { orderId, customerName, customerPhone, total, items } = location.state || {}
 
-  const whatsappMessage = encodeURIComponent(
-    `Hi! I have made payment for my order.\n\nOrder ID: ${orderId}\nName: ${customerName}\nPhone: ${customerPhone}\nTotal: RM ${total}.00\n\nPlease find my payment receipt attached.`
-  )
+  const itemsList = items && items.length > 0
+  ? items.map(i => `- ${i.product.name} (${i.variant.size}) x${i.qty}`).join("\n")
+  : ""
+
+const whatsappMessage = encodeURIComponent(
+  `Hi! I have made payment for my order.\n\nOrder ID: ${orderId}\nName: ${customerName}\nPhone: ${customerPhone}\n\nItems:\n${itemsList}\n\nTotal: RM ${total}.00\n\nPlease find my payment receipt attached.`
+)
   const whatsappUrl = `https://wa.me/60194079787?text=${whatsappMessage}`
 
   return (
