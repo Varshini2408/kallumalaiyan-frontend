@@ -170,7 +170,7 @@ export default function OrderConfirmation() {
               {[
                 { label: "Bank", value: "Hong Leong Bank" },
                 { label: "Account Name", value: "Kallumalaiyan Sketchart Enterprise" },
-                { label: "Account No", value: "XXXXXXXXXX" },
+                { label: "Account No", value: "39501273203" },
                 { label: "Reference", value: customerPhone || "Your phone number" },
               ].map(row => (
                 <div key={row.label} style={{
