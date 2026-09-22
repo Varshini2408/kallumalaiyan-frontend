@@ -50,6 +50,42 @@ export default function OrderConfirmation() {
           )}
         </div>
 
+        {/* Order Items */}
+        {items && items.length > 0 && (
+          <div style={{
+            background: "#F5F5F5", border: "1px solid #E8E2D9",
+            borderRadius: "8px", padding: "16px", marginBottom: "24px"
+          }}>
+            <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "10px" }}>
+              Order Summary:
+            </p>
+            {items.map((item, i) => (
+              <div key={i} style={{
+                display: "flex", justifyContent: "space-between",
+                alignItems: "center",
+                fontSize: "13px", padding: "6px 0",
+                borderBottom: i < items.length - 1 ? "1px solid #E8E2D9" : "none",
+                gap: "12px"
+              }}>
+                <p style={{ color: "#555" }}>
+                  {item.product.name} ({item.variant.size}) x{item.qty}
+                </p>
+                <p style={{ fontWeight: "600", flexShrink: 0 }}>
+                  RM {item.product.price * item.qty}
+                </p>
+              </div>
+            ))}
+            <div style={{
+              display: "flex", justifyContent: "space-between",
+              paddingTop: "10px", marginTop: "4px",
+              borderTop: "1px solid #1A1714"
+            }}>
+              <p style={{ fontSize: "14px", fontWeight: "700" }}>Total</p>
+              <p style={{ fontSize: "14px", fontWeight: "700" }}>RM {total}.00</p>
+            </div>
+          </div>
+        )}
+
         {/* Payment Instructions */}
         <div style={{
           border: "2px solid #1A1714", borderRadius: "12px",
@@ -175,11 +211,14 @@ export default function OrderConfirmation() {
               ].map(row => (
                 <div key={row.label} style={{
                   display: "flex", justifyContent: "space-between",
-                  padding: "6px 0", borderBottom: "1px solid #E8E2D9",
+                  alignItems: "flex-start", gap: "12px",
+                  padding: "8px 0", borderBottom: "1px solid #E8E2D9",
                   fontSize: "13px"
                 }}>
-                  <p style={{ color: "#888" }}>{row.label}</p>
-                  <p style={{ fontWeight: "600", color: "#1A1714" }}>{row.value}</p>
+                  <p style={{ color: "#888", flexShrink: 0 }}>{row.label}</p>
+                  <p style={{ fontWeight: "600", color: "#1A1714", textAlign: "right" }}>
+                    {row.value}
+                  </p>
                 </div>
               ))}
             </div>
@@ -205,7 +244,7 @@ export default function OrderConfirmation() {
               fontSize: "12px", color: "#888",
               textAlign: "center", lineHeight: "1.6"
             }}>
-              After sending receipt, we will confirm your payment
+              After sending receipt, Sharrman will confirm your payment
               and begin your sketch within 1-2 working days.
             </p>
           </div>

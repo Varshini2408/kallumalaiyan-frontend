@@ -21,10 +21,10 @@ async function sendOrderNotification(order) {
     "🛍️ ORDER ITEMS\n" +
     items + "\n\n" +
     "💰 PAYMENT SUMMARY\n" +
-    "Subtotal: RM " + (order.subtotal || order.total) + "\n" +
-    "Shipping: RM " + (order.shipping || 0) + "\n" +
-    "Total Paid: RM " + order.total + "\n\n" +
-    "📦 Status: PAID ✅\n" +
+    "Total: RM " + order.total + "\n\n" +
+    "📦 Status: PENDING PAYMENT ⏳\n" +
+    "💳 Awaiting bank transfer from customer\n" +
+    "📱 Customer will send receipt via WhatsApp\n\n" +
     "🔖 Order ID: " + order._id + "\n" +
     "━━━━━━━━━━━━━━━━━━━━"
 
