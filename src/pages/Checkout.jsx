@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useCart } from "../context/CartContext"
 import Footer from "../components/Footer"
@@ -7,6 +8,7 @@ const API = "https://kallumalaiyan-backend.onrender.com"
 
 export default function Checkout() {
   const { cartItems, total, clearCart } = useCart()
+  const navigate = useNavigate()
 
   const [form, setForm] = useState({
     name: "",
@@ -25,10 +27,10 @@ export default function Checkout() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handlePay = async () => {
+  const handlePlaceOrder = async () => {
     const empty = Object.values(form).some(v => v.trim() === "")
     if (empty) {
-      setError("Please fill in all fields!")
+      setError("Please fill in all delivery details!")
       return
     }
     if (cartItems.length === 0) {
@@ -38,7 +40,7 @@ export default function Checkout() {
     setLoading(true)
     setError("")
     try {
-      const res = await fetch(API + "/api/payment/create-bill", {
+      const res = await fetch(API + "/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -64,10 +66,19 @@ export default function Checkout() {
         })
       })
       const data = await res.json()
-      if (data.paymentUrl) {
-        window.location.href = data.paymentUrl
+      if (data._id) {
+        clearCart()
+        navigate("/order-confirmation", {
+          state: {
+            orderId: data._id,
+            customerName: form.name,
+            customerPhone: form.phone,
+            total: total,
+            items: cartItems
+          }
+        })
       } else {
-        setError("Payment error: " + (data.error || "Unknown error"))
+        setError("Failed to place order. Please try again!")
         setLoading(false)
       }
     } catch (err) {
@@ -95,7 +106,6 @@ export default function Checkout() {
       <Navbar />
 
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 24px" }}>
-
         <h1 style={{ fontSize: "22px", fontWeight: "700", marginBottom: "32px" }}>
           Checkout
         </h1>
@@ -169,7 +179,7 @@ export default function Checkout() {
               lineHeight: "1.6"
             }}>
               🚚 Free delivery within Malaysia. Your sketch will be carefully
-              crafted and shipped within 7 working days.
+              crafted and shipped within 7 working days after payment confirmation.
             </div>
           </div>
 
@@ -193,16 +203,12 @@ export default function Checkout() {
             ) : (
               <>
                 {cartItems.map(item => {
-                  const img = item.variant.color === "Color"
-                    ? (item.product.imagesColor?.[0] || item.product.imageColor ||
-                       item.product.imageBW || item.product.image)
-                    : (item.product.imagesBW?.[0] || item.product.imageBW ||
-                       item.product.images?.[0] || item.product.image)
+                  const img = item.product.imagesBW?.[0] || item.product.imageBW ||
+                    item.product.images?.[0] || item.product.image
                   return (
                     <div key={item.key} style={{
                       display: "flex", gap: "12px",
-                      padding: "12px 0",
-                      borderBottom: "1px solid #E8E2D9"
+                      padding: "12px 0", borderBottom: "1px solid #E8E2D9"
                     }}>
                       {img && (
                         <img src={img} alt={item.product.name} style={{
@@ -213,9 +219,7 @@ export default function Checkout() {
                         }} />
                       )}
                       <div style={{ flex: 1 }}>
-                        <div style={{
-                          display: "flex", justifyContent: "space-between"
-                        }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <p style={{ fontSize: "13px", fontWeight: "600" }}>
                             {item.product.name}
                           </p>
@@ -223,7 +227,7 @@ export default function Checkout() {
                             RM {item.product.price * item.qty}
                           </p>
                         </div>
-                        <p style={{ fontSize: "13px", color: "#888", marginTop: "2px" }}>
+                        <p style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>
                           {item.variant.size} x{item.qty}
                         </p>
                       </div>
@@ -233,15 +237,13 @@ export default function Checkout() {
 
                 <div style={{ paddingTop: "16px" }}>
                   <div style={{
-                    display: "flex", justifyContent: "space-between",
-                    marginBottom: "8px"
+                    display: "flex", justifyContent: "space-between", marginBottom: "8px"
                   }}>
                     <p style={{ fontSize: "13px", color: "#888" }}>Subtotal</p>
                     <p style={{ fontSize: "13px" }}>RM {total}.00</p>
                   </div>
                   <div style={{
-                    display: "flex", justifyContent: "space-between",
-                    marginBottom: "16px"
+                    display: "flex", justifyContent: "space-between", marginBottom: "16px"
                   }}>
                     <p style={{ fontSize: "13px", color: "#888" }}>Shipping</p>
                     <p style={{ fontSize: "13px", color: "#16A34A" }}>FREE</p>
@@ -256,7 +258,7 @@ export default function Checkout() {
                   </div>
 
                   <button
-                    onClick={handlePay}
+                    onClick={handlePlaceOrder}
                     disabled={loading}
                     style={{
                       width: "100%", padding: "14px",
@@ -266,14 +268,14 @@ export default function Checkout() {
                       fontSize: "14px", fontFamily: "inherit", fontWeight: "500"
                     }}
                   >
-                    {loading ? "Processing..." : "Pay RM " + total + ".00"}
+                    {loading ? "Placing Order..." : "Place Order — RM " + total + ".00"}
                   </button>
 
                   <p style={{
                     textAlign: "center", fontSize: "11px",
                     color: "#888", marginTop: "10px"
                   }}>
-                    Secure payment via ToyyibPay · FPX
+                    You will be shown payment instructions after placing your order
                   </p>
                 </div>
               </>
